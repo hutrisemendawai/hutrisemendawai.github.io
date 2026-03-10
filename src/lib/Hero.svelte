@@ -12,7 +12,6 @@
     let tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
     tl.from(heroContainer, { opacity: 0, duration: 1 })
       .from(planet, { scale: 0.5, opacity: 0, duration: 1.5, ease: "back.out(1.5)" }, "-=0.8")
-      .from(astronaut, { x: 100, y: -100, opacity: 0, duration: 1.2, rotation: 45 }, "-=1")
       .from(title, { y: 50, opacity: 0, duration: 1 }, "-=1")
       .from(subtitle, { y: 30, opacity: 0, duration: 0.8 }, "-=0.8");
   });
@@ -20,7 +19,6 @@
 
 <section class="hero-section" bind:this={heroContainer} id="hero">
   <div class="planet" bind:this={planet}></div>
-  <div class="astronaut" bind:this={astronaut}>👨‍🚀</div>
   <div class="content">
     <h1 bind:this={title}>Ahmad Hutri Semendawai</h1>
     <h2 bind:this={subtitle}>He/Him | Java Programmer - ERP</h2>
@@ -65,29 +63,16 @@
     max-width: 800px;
     max-height: 800px;
     border-radius: 50%;
-    background: radial-gradient(circle at 30% 30%, #ffd60a, #d00000 40%, #03071e 80%);
-    box-shadow: 0 0 120px rgba(255, 214, 10, 0.4), inset -50px -50px 100px rgba(0,0,0,0.8);
+    background: radial-gradient(circle at 30% 30%, #9d4edd, #3c096c 40%, #050510 80%);
+    box-shadow: 0 0 120px rgba(157, 78, 221, 0.4), inset -50px -50px 100px rgba(0,0,0,0.8);
     filter: blur(2px);
     z-index: 0;
     opacity: 0.7;
     animation: rotatePlanet 100s linear infinite;
   }
-  .astronaut {
-    position: absolute;
-    font-size: 6rem;
-    top: 25%;
-    right: 15%;
-    z-index: 2;
-    animation: float 6s ease-in-out infinite;
-    filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5));
-  }
   @keyframes rotatePlanet {
     0% { transform: translate(-50%, -50%) rotate(0deg); }
     100% { transform: translate(-50%, -50%) rotate(360deg); }
-  }
-  @keyframes float {
-    0%, 100% { transform: translateY(0) rotate(-10deg); }
-    50% { transform: translateY(-30px) rotate(10deg); }
   }
   .content {
     z-index: 2;

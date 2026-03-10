@@ -38,24 +38,34 @@
     });
 
     // Skills reveal
-    let tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: skillsContainer,
-        start: "top 85%",
-        toggleActions: "play none none reverse",
-      },
-    });
-
-    tl.from(skillHeader, { opacity: 0, y: 30, duration: 0.8 }).from(
-      skillsContainer.children,
+    gsap.fromTo(skillHeader, 
+      { opacity: 0, y: 30 },
       {
-        scale: 0,
-        opacity: 0,
+        opacity: 1, 
+        y: 0, 
+        duration: 0.8,
+        scrollTrigger: {
+          trigger: skillsContainer,
+          start: "top 85%",
+          toggleActions: "play none none none",
+        }
+      }
+    );
+
+    gsap.fromTo(skillsContainer.children,
+      { scale: 0, opacity: 0 },
+      {
+        scale: 1,
+        opacity: 1,
         duration: 0.5,
         stagger: 0.1,
         ease: "back.out(1.7)",
-      },
-      "-=0.4",
+        scrollTrigger: {
+          trigger: skillsContainer,
+          start: "top 85%",
+          toggleActions: "play none none none",
+        }
+      }
     );
   });
 </script>
