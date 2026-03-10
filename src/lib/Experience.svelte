@@ -1,7 +1,7 @@
 <script>
-  import { onMount } from 'svelte';
-  import gsap from 'gsap';
-  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import { onMount } from "svelte";
+  import gsap from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
 
   gsap.registerPlugin(ScrollTrigger);
 
@@ -11,21 +11,23 @@
 
   const experiences = [
     {
-      role: 'Java Programmer',
-      company: 'Charoen Pokphand Indonesia',
-      date: 'May 2025 - Present',
-      location: 'Jakarta, Indonesia',
-      description: 'Developing and optimizing enterprise ERP systems using Java and Spring Boot. Enhancing business logic and database performance.',
-      skills: ['Java', 'Spring Boot', 'ERP', 'PostgreSQL']
+      role: "Java Programmer",
+      company: "Charoen Pokphand Indonesia",
+      date: "May 2025 - Present",
+      location: "Jakarta, Indonesia",
+      description:
+        "Developing and optimizing enterprise ERP systems using Java and Spring Boot. Enhancing business logic and database performance.",
+      skills: ["Java", "Spring Boot", "ERP", "PostgreSQL"],
     },
     {
-      role: 'Software Developer Internship',
-      company: 'Charoen Pokphand Indonesia',
-      date: 'Dec 2023 - Feb 2024',
-      location: 'Palembang, Indonesia',
-      description: 'Assisted in building scalable backend services. Collaborated with cross-functional teams to deliver software solutions.',
-      skills: ['Java', 'Software Development']
-    }
+      role: "Software Developer Internship",
+      company: "Charoen Pokphand Indonesia",
+      date: "Dec 2023 - Feb 2024",
+      location: "Palembang, Indonesia",
+      description:
+        "Assisted in building scalable backend services. Collaborated with cross-functional teams to deliver software solutions.",
+      skills: ["Java", "Software Development"],
+    },
   ];
 
   onMount(() => {
@@ -35,11 +37,11 @@
         trigger: expContainer,
         start: "top 60%",
         end: "bottom 80%",
-        scrub: 1
+        scrub: 1,
       },
       scaleY: 0,
       transformOrigin: "top center",
-      ease: "none"
+      ease: "none",
     });
 
     // Animate each experience item popping in
@@ -49,12 +51,12 @@
         scrollTrigger: {
           trigger: item,
           start: "top 85%",
-          toggleActions: "play none none reverse"
+          toggleActions: "play none none reverse",
         },
         x: i % 2 === 0 ? -50 : 50,
         opacity: 0,
         duration: 0.8,
-        ease: "back.out(1.5)"
+        ease: "back.out(1.5)",
       });
     });
   });
@@ -67,7 +69,7 @@
 
   <div class="timeline-container">
     <div bind:this={timelineLine} class="timeline-line"></div>
-    
+
     <div bind:this={expItems} class="timeline-items">
       {#each experiences as exp, i}
         <div class="timeline-item {i % 2 === 0 ? 'left' : 'right'}">
@@ -100,7 +102,7 @@
     opacity: 1; /* override global for specific ScrollTrigger */
     transform: none;
   }
-  
+
   .header-container {
     max-width: 900px;
     width: 100%;
@@ -132,7 +134,11 @@
     top: 0;
     bottom: 0;
     width: 4px;
-    background: linear-gradient(to bottom, var(--neon-blue), var(--nebula-purple));
+    background: linear-gradient(
+      to bottom,
+      var(--neon-blue),
+      var(--nebula-purple)
+    );
     transform: translateX(-50%);
     border-radius: 2px;
     box-shadow: 0 0 15px var(--neon-blue);
@@ -185,7 +191,9 @@
   .exp-card {
     width: 100%;
     padding: 2rem;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
   }
 
   .exp-card:hover {
@@ -204,18 +212,20 @@
     font-size: 1.1rem;
     color: var(--neon-blue);
     margin-bottom: 1rem;
-    font-family: 'Outfit', sans-serif;
+    font-family: "Outfit", sans-serif;
     font-weight: 600;
   }
 
   .meta {
-    font-family: 'Space Mono', monospace;
+    font-family: "Space Mono", monospace;
     font-size: 0.85rem;
     color: var(--text-muted);
     margin-bottom: 1.5rem;
   }
 
-  .date { color: var(--star-gold); }
+  .date {
+    color: var(--star-gold);
+  }
 
   p {
     font-size: 1rem;
@@ -241,7 +251,7 @@
   }
 
   .skill-tag {
-    font-family: 'Space Mono', monospace;
+    font-family: "Space Mono", monospace;
     font-size: 0.75rem;
     padding: 4px 10px;
     border: 1px solid var(--glass-border);
@@ -254,18 +264,24 @@
     .timeline-line {
       left: 20px;
     }
-    .timeline-item.left, .timeline-item.right {
+    .timeline-item.left,
+    .timeline-item.right {
       width: 100%;
       margin-left: 0;
       padding-left: 60px;
       padding-right: 0;
       text-align: left;
     }
-    .timeline-item.left .timeline-node, .timeline-item.right .timeline-node {
+    .timeline-item.left .timeline-node,
+    .timeline-item.right .timeline-node {
       left: 10px;
       right: auto;
     }
-    .timeline-item.left p { text-align: left; }
-    .timeline-item.left .skills-list { justify-content: flex-start; }
+    .timeline-item.left p {
+      text-align: left;
+    }
+    .timeline-item.left .skills-list {
+      justify-content: flex-start;
+    }
   }
 </style>

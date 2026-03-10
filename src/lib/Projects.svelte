@@ -1,31 +1,67 @@
 <script>
-  import { onMount, tick } from 'svelte';
-  import gsap from 'gsap';
-  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import { onMount, tick } from "svelte";
+  import gsap from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
 
   gsap.registerPlugin(ScrollTrigger);
 
   let projectsContainer;
   let horizontalScrollArea;
   let titleRef;
+  let currentProject = 0;
+  let sections = [];
+
+  function jumpToProject(i) {
+    let st = ScrollTrigger.getById("projectsScroll");
+    if (st && sections.length > 1) {
+      let moveRatio = 0.6;
+      let targetProgress = (i / (sections.length - 1)) * moveRatio;
+      let targetScroll = st.start + (st.end - st.start) * targetProgress;
+      window.scrollTo({ top: targetScroll, behavior: "smooth" });
+    }
+  }
 
   const projects = [
     {
-      title: 'Data Collection for Fishery Activities',
-      subtitle: '- New Generation -',
-      date: 'Dec 2025 – Present',
-      desc: 'Developed an offline-first Android application for collecting fishery activity data. Built with Flutter, the app allows users to input data without an internet connection and automatically synchronizes with a PocketBase backend once online. Designed the administrative web dashboard using Laravel.',
-      tech: ['Flutter', 'PHP', 'Laravel', 'PocketBase', 'Android', 'Offline-First'],
-      images: ['/images/placeholder1.jpg', '/images/placeholder2.jpg', '/images/placeholder3.jpg', '/images/placeholder4.jpg']
+      title: "Data Collection for Fishery Activities",
+      subtitle: "- New Generation -",
+      date: "Dec 2025 – Present",
+      desc: "Developed an offline-first Android application for collecting fishery activity data. Built with Flutter, the app allows users to input data without an internet connection and automatically synchronizes with a PocketBase backend once online. Designed the administrative web dashboard using Laravel.",
+      tech: [
+        "Flutter",
+        "PHP",
+        "Laravel",
+        "PocketBase",
+        "Android",
+        "Offline-First",
+      ],
+      images: [
+        "/images/placeholder1.jpg",
+        "/images/placeholder2.jpg",
+        "/images/placeholder3.jpg",
+        "/images/placeholder4.jpg",
+      ],
     },
     {
-      title: 'Asset360',
-      subtitle: 'Asset Management Information System',
-      date: 'Completed',
-      desc: 'Asset360 is a web-based asset management system designed to streamline asset tracking and lifecycle management. Offers comprehensive features including real-time status monitoring, assignment tracking, and unique QR code generation for fast identification. Built for scalability, security, and ease of use.',
-      tech: ['Spring Boot', 'Java', 'PostgreSQL', 'QR Integration', 'Web Dashboard'],
-      images: ['/images/placeholder5.jpg', '/images/placeholder6.jpg', '/images/placeholder7.jpg', '/images/placeholder8.jpg', '/images/placeholder9.jpg']
-    }
+      title: "Asset360",
+      subtitle: "Asset Management Information System",
+      date: "Completed",
+      desc: "Asset360 is a web-based asset management system designed to streamline asset tracking and lifecycle management. Offers comprehensive features including real-time status monitoring, assignment tracking, and unique QR code generation for fast identification. Built for scalability, security, and ease of use.",
+      tech: [
+        "Spring Boot",
+        "Java",
+        "PostgreSQL",
+        "QR Integration",
+        "Web Dashboard",
+      ],
+      images: [
+        "/images/placeholder5.jpg",
+        "/images/placeholder6.jpg",
+        "/images/placeholder7.jpg",
+        "/images/placeholder8.jpg",
+        "/images/placeholder9.jpg",
+      ],
+    },
   ];
 
   onMount(async () => {
@@ -35,51 +71,60 @@
     gsap.from(titleRef, {
       scrollTrigger: {
         trigger: projectsContainer,
-        start: "top 80%",
-        toggleActions: "play none none reverse"
+        start: "top 70%",
+        toggleActions: "play none none reverse",
       },
       y: 50,
       opacity: 0,
       duration: 1,
-      ease: "power3.out"
+      ease: "power3.out",
     });
 
     // Horizontal Scroll Setup
-    let sections = gsap.utils.toArray('.project-panel');
-    
-    let scrollTween = gsap.to(sections, {
-      xPercent: -100 * (sections.length - 1),
-      ease: "none",
+    sections = gsap.utils.toArray(".project-panel");
+    let moveRatio = 0.6;
+
+    let tl = gsap.timeline({
       scrollTrigger: {
-        trigger: horizontalScrollArea,
+        id: "projectsScroll",
+        trigger: projectsContainer,
+        start: "top top",
         pin: true,
         scrub: 1,
-        snap: {
-          snapTo: 1 / (sections.length - 1),
-          duration: { min: 0.2, max: 0.3 },
-          delay: 0.1,
-          ease: "power1.inOut"
+        end: "+=2000",
+        onUpdate: (self) => {
+          let p = self.progress / moveRatio;
+          if (p > 1) p = 1;
+          let newProject = Math.round(p * (sections.length - 1));
+          if (currentProject !== newProject) {
+            currentProject = newProject;
+          }
         },
-        end: () => "+=" + horizontalScrollArea.offsetWidth * sections.length
-      }
+      },
     });
+
+    tl.to(".projects-track", {
+      xPercent: -50,
+      ease: "none",
+      duration: moveRatio,
+    }).to({}, { duration: 1 - moveRatio }); // Hold at the end for footer spacing
 
     // Image staggering inside panels
     sections.forEach((panel) => {
-      let images = gsap.utils.toArray(panel.querySelectorAll('.mockup-img'));
+      let images = gsap.utils.toArray(panel.querySelectorAll(".mockup-img"));
       gsap.from(images, {
         scrollTrigger: {
           trigger: panel,
           start: "left center",
-          containerAnimation: scrollTween,
-          toggleActions: "play none none reverse"
+          containerAnimation: tl,
+          toggleActions: "play none none reverse",
         },
         y: 100,
         opacity: 0,
         rotation: 5,
         stagger: 0.15,
         duration: 1,
-        ease: "back.out(1.5)"
+        ease: "back.out(1.5)",
       });
     });
   });
@@ -87,7 +132,22 @@
 
 <section bind:this={projectsContainer} id="projects" class="projects-section">
   <div class="title-container" bind:this={titleRef}>
-    <h2><span class="neon-text">/</span> Featured Projects</h2>
+    <div class="header-content">
+      <h2><span class="neon-text">/</span> Featured Projects</h2>
+      <div class="project-nav">
+        {#each projects as p, i}
+          <button
+            class="nav-btn {currentProject === i ? 'active' : ''}"
+            on:click={() => jumpToProject(i)}
+          >
+            0{i + 1}
+          </button>
+          {#if i < projects.length - 1}
+            <span class="nav-divider"></span>
+          {/if}
+        {/each}
+      </div>
+    </div>
     <p class="section-desc">Scroll to explore my universe of applications.</p>
   </div>
 
@@ -107,14 +167,14 @@
                 {/each}
               </div>
             </div>
-            
+
             <div class="images-content">
-              <div class="image-grid grid-{project.images.length}">
-                {#each project.images as img, i}
-                  <div class="mockup-img img-{i+1}">
+              <div class="image-grid grid-{Math.min(project.images.length, 5)}">
+                {#each project.images.slice(0, 5) as img, i}
+                  <div class="mockup-img img-{i + 1}">
                     <div class="placeholder-content">
                       <span class="icon">🚀</span>
-                      <span>Screenshot {i+1}</span>
+                      <span>Screenshot {i + 1}</span>
                     </div>
                   </div>
                 {/each}
@@ -130,17 +190,32 @@
 <style>
   .projects-section {
     position: relative;
-    padding-top: 100px;
     width: 100%;
+    height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr;
     overflow: hidden;
     opacity: 1;
     transform: none;
+    padding-top: 5rem; /* Ensure space below navbar/top edge */
   }
 
   .title-container {
     max-width: 1200px;
-    margin: 0 auto 3rem auto;
-    padding: 0 2rem;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 2rem 2rem 2rem;
+    position: relative;
+    z-index: 20;
+  }
+
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+    gap: 20px;
   }
 
   h2 {
@@ -148,7 +223,45 @@
     display: flex;
     align-items: center;
     gap: 15px;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0;
+  }
+
+  .project-nav {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 8px 20px;
+    border-radius: 30px;
+    border: 1px solid var(--glass-border);
+  }
+
+  .nav-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-family: "Space Mono", monospace;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 5px;
+  }
+
+  .nav-btn.active {
+    color: var(--neon-blue);
+    text-shadow: 0 0 10px rgba(0, 243, 255, 0.6);
+    font-weight: 700;
+    transform: scale(1.1);
+  }
+
+  .nav-btn:hover:not(.active) {
+    color: var(--starlight);
+  }
+
+  .nav-divider {
+    width: 30px;
+    height: 2px;
+    background: var(--glass-border);
   }
 
   .neon-text {
@@ -157,32 +270,36 @@
   }
 
   .section-desc {
-    font-family: 'Space Mono', monospace;
+    font-family: "Space Mono", monospace;
     color: var(--text-muted);
     font-size: 1.1rem;
+    margin-bottom: 2rem; /* Add space below description */
   }
 
   .horizontal-scroll-container {
     width: 100%;
-    height: 100vh;
+    height: 100%;
     display: flex;
     flex-wrap: nowrap;
     overflow: hidden;
+    position: relative;
+    z-index: 10;
   }
 
   .projects-track {
     display: flex;
     width: 200vw; /* 2 panels = 200vw */
     height: 100%;
+    align-items: center;
   }
 
   .project-panel {
     flex-shrink: 0;
     width: 100vw;
     height: 100%;
-    padding: 2rem;
+    padding: 0 2rem;
     display: flex;
-    align-items: center;
+    align-items: flex-start; /* Align closer to the top now that header is separated */
     justify-content: center;
   }
 
@@ -190,17 +307,34 @@
     display: flex;
     width: 100%;
     max-width: 1400px;
-    height: 80vh;
+    height: 100%;
+    max-height: 800px;
     gap: 3rem;
+    padding-bottom: 2rem;
   }
 
   .text-content {
     flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    padding: 3rem;
+    justify-content: flex-start;
+    padding: 1rem 3rem 2rem 3rem;
     border-color: rgba(0, 243, 255, 0.2);
+    z-index: 10;
+    overflow-y: auto;
+  }
+
+  /* Custom Scrollbar for Text Content */
+  .text-content::-webkit-scrollbar {
+    width: 6px;
+  }
+  .text-content::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+  }
+  .text-content::-webkit-scrollbar-thumb {
+    background: var(--neon-blue);
+    border-radius: 10px;
   }
 
   .text-content h3 {
@@ -218,7 +352,7 @@
   }
 
   .date {
-    font-family: 'Space Mono', monospace;
+    font-family: "Space Mono", monospace;
     font-size: 0.9rem;
     color: var(--star-gold);
     display: inline-block;
@@ -243,7 +377,7 @@
   }
 
   .tech-tag {
-    font-family: 'Space Mono', monospace;
+    font-family: "Space Mono", monospace;
     font-size: 0.8rem;
     padding: 6px 14px;
     border: 1px solid var(--nebula-purple);
@@ -279,22 +413,40 @@
     grid-template-rows: repeat(2, 1fr);
   }
 
-  .grid-5 .img-1 { grid-column: 1 / 4; grid-row: 1; }
-  .grid-5 .img-2 { grid-column: 4 / 7; grid-row: 1; }
-  .grid-5 .img-3 { grid-column: 1 / 3; grid-row: 2; }
-  .grid-5 .img-4 { grid-column: 3 / 5; grid-row: 2; }
-  .grid-5 .img-5 { grid-column: 5 / 7; grid-row: 2; }
+  .grid-5 .img-1 {
+    grid-column: 1 / 4;
+    grid-row: 1;
+  }
+  .grid-5 .img-2 {
+    grid-column: 4 / 7;
+    grid-row: 1;
+  }
+  .grid-5 .img-3 {
+    grid-column: 1 / 3;
+    grid-row: 2;
+  }
+  .grid-5 .img-4 {
+    grid-column: 3 / 5;
+    grid-row: 2;
+  }
+  .grid-5 .img-5 {
+    grid-column: 5 / 7;
+    grid-row: 2;
+  }
 
   .mockup-img {
     background: linear-gradient(135deg, #1b1b2f, #050510);
     border: 1px solid var(--glass-border);
     border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease,
+      border-color 0.3s ease;
     cursor: crosshair;
   }
 
@@ -311,7 +463,7 @@
     align-items: center;
     gap: 10px;
     color: var(--text-muted);
-    font-family: 'Space Mono', monospace;
+    font-family: "Space Mono", monospace;
     font-size: 0.9rem;
   }
 
@@ -321,12 +473,17 @@
   }
 
   @media (max-width: 1024px) {
+    .projects-section {
+      height: auto;
+      min-height: 100vh;
+    }
     .project-content {
       flex-direction: column;
       height: auto;
+      max-height: none;
       gap: 2rem;
-      overflow-y: auto;
-      padding-top: 4rem;
+      overflow-y: visible;
+      padding-top: 2rem;
     }
     .text-content {
       padding: 2rem;

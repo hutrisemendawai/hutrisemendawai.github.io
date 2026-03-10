@@ -38,21 +38,23 @@
     });
 
     // Skills reveal
-    gsap.fromTo(skillHeader, 
+    gsap.fromTo(
+      skillHeader,
       { opacity: 0, y: 30 },
       {
-        opacity: 1, 
-        y: 0, 
+        opacity: 1,
+        y: 0,
         duration: 0.8,
         scrollTrigger: {
           trigger: skillsContainer,
           start: "top 85%",
           toggleActions: "play none none none",
-        }
-      }
+        },
+      },
     );
 
-    gsap.fromTo(skillsContainer.children,
+    gsap.fromTo(
+      skillsContainer.children,
       { scale: 0, opacity: 0 },
       {
         scale: 1,
@@ -64,8 +66,8 @@
           trigger: skillsContainer,
           start: "top 85%",
           toggleActions: "play none none none",
-        }
-      }
+        },
+      },
     );
   });
 </script>
