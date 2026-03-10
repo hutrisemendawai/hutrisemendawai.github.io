@@ -1,7 +1,7 @@
 <script>
-  import { onMount, tick } from 'svelte';
-  import gsap from 'gsap';
-  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import { onMount, tick } from "svelte";
+  import gsap from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
 
   gsap.registerPlugin(ScrollTrigger);
 
@@ -11,8 +11,12 @@
   let skillsContainer;
 
   const skills = [
-    "Java (Spring-Boot)", "Dart (Flutter)", "Svelte", 
-    "Pocketbase", "PostgreSQL", "MySQL"
+    "Java (Spring-Boot)",
+    "Dart (Flutter)",
+    "Svelte",
+    "Pocketbase",
+    "PostgreSQL",
+    "MySQL",
   ];
 
   onMount(async () => {
@@ -24,13 +28,13 @@
         trigger: aboutContainer,
         start: "top 80%",
         end: "top 20%",
-        toggleActions: "play none none reverse"
+        toggleActions: "play none none reverse",
       },
       y: 50,
       opacity: 0,
       duration: 1,
       stagger: 0.2,
-      ease: "power3.out"
+      ease: "power3.out",
     });
 
     // Skills reveal
@@ -38,34 +42,49 @@
       scrollTrigger: {
         trigger: skillsContainer,
         start: "top 85%",
-        toggleActions: "play none none reverse"
-      }
+        toggleActions: "play none none reverse",
+      },
     });
 
-    tl.from(skillHeader, { opacity: 0, y: 30, duration: 0.8 })
-      .from(skillsContainer.children, {
+    tl.from(skillHeader, { opacity: 0, y: 30, duration: 0.8 }).from(
+      skillsContainer.children,
+      {
         scale: 0,
         opacity: 0,
         duration: 0.5,
         stagger: 0.1,
-        ease: "back.out(1.7)"
-      }, "-=0.4");
+        ease: "back.out(1.7)",
+      },
+      "-=0.4",
+    );
   });
 </script>
 
 <section bind:this={aboutContainer} id="about" class="about-section">
   <div class="glass-panel content-container">
     <h2><span class="neon-text">/</span> About Me</h2>
-    
+
     <div bind:this={textElements} class="bio">
       <p>
-        As a passionate <strong>Software Engineer</strong> and <strong>ERP Specialist</strong>, I thrive at the intersection of robust backend architecture and captivating user experiences. Currently developing scalable solutions at <strong>Charoen Pokphand Indonesia</strong> while pursuing my Master's in Informatics at <strong>UPH</strong>.
+        As a passionate <strong>Software Engineer</strong> and
+        <strong>ERP Specialist</strong>, I thrive at the intersection of robust
+        backend architecture and captivating user experiences. Currently
+        developing scalable solutions at
+        <strong>Charoen Pokphand Indonesia</strong>
+        while pursuing my Master's in Informatics at <strong>UPH</strong>.
       </p>
       <p>
-        I specialize in crafting comprehensive enterprise systems using Java, PostgreSQL, JasperReports, and iDempiere ERP. Beyond the backend, I bring ideas to life across platforms—building fluid, offline-first Android applications with Flutter and Dart, and engineering highly interactive, animated front-end web experiences using Svelte and GSAP. 
+        I specialize in crafting comprehensive enterprise systems using Java,
+        PostgreSQL, JasperReports, and iDempiere ERP. Beyond the backend, I
+        bring ideas to life across platforms—building fluid, offline-first
+        Android applications with Flutter and Dart, and engineering highly
+        interactive, animated front-end web experiences using Svelte and GSAP.
       </p>
       <p>
-        Whether I'm optimizing complex business logic or designing seamless, dynamic interfaces, I am driven by a commitment to continuous learning, collaborative problem-solving, and delivering impactful technological innovations.
+        Whether I'm optimizing complex business logic or designing seamless,
+        dynamic interfaces, I am driven by a commitment to continuous learning,
+        collaborative problem-solving, and delivering impactful technological
+        innovations.
       </p>
     </div>
 
@@ -87,7 +106,7 @@
     opacity: 1; /* override global for specific ScrollTrigger */
     transform: none;
   }
-  
+
   .content-container {
     max-width: 900px;
     width: 100%;
@@ -116,7 +135,7 @@
     color: var(--text-main);
     margin-bottom: 3rem;
   }
-  
+
   .bio strong {
     color: var(--starlight);
     font-weight: 600;
@@ -139,7 +158,7 @@
     background: rgba(157, 78, 221, 0.1);
     border: 1px solid var(--nebula-purple);
     border-radius: 20px;
-    font-family: 'Space Mono', monospace;
+    font-family: "Space Mono", monospace;
     font-size: 0.9rem;
     color: var(--starlight);
     transition: all 0.3s ease;
