@@ -80,6 +80,29 @@
 
     // ===== ANIMATED SKILL PILLS =====
     const pillElements = skillsContainer.querySelectorAll(".skill-pill");
+
+    // Pre-compute random float values so they're stable across renders
+    const floatParams = Array.from(pillElements).map((_, i) => ({
+      y: -5 + Math.random() * 10,
+      x: (Math.random() - 0.5) * 6,
+      duration: 2 + Math.random() * 2,
+      delay: i * 0.15,
+    }));
+
+    const startFloating = () => {
+      pillElements.forEach((pill, i) => {
+        gsap.to(pill, {
+          y: floatParams[i].y,
+          x: floatParams[i].x,
+          duration: floatParams[i].duration,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
+          delay: floatParams[i].delay,
+        });
+      });
+    };
+
     gsap.fromTo(pillElements, {
       scale: 0,
       opacity: 0,
@@ -91,24 +114,12 @@
       duration: 0.6,
       stagger: 0.1,
       ease: "back.out(2)",
+      onComplete: startFloating,
       scrollTrigger: {
         trigger: skillsContainer,
         start: "top 85%",
         toggleActions: "play none none none",
       },
-    });
-
-    // ===== FLOATING SKILL PILLS =====
-    pillElements.forEach((pill, i) => {
-      gsap.to(pill, {
-        y: -5 + Math.random() * 10,
-        x: (Math.random() - 0.5) * 6,
-        duration: 2 + Math.random() * 2,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-        delay: i * 0.2,
-      });
     });
 
     // ===== SKILL PILL HOVER GLOW (via mouse events) =====
