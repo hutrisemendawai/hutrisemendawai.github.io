@@ -1,7 +1,7 @@
 <script>
-  import { onMount } from 'svelte';
-  import gsap from 'gsap';
-  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import { onMount } from "svelte";
+  import gsap from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
 
   gsap.registerPlugin(ScrollTrigger);
 
@@ -48,23 +48,27 @@
 
     const warpLines = warpContainer.querySelectorAll(".warp-line");
 
-    gsap.fromTo(warpLines, {
-      left: "-20%",
-      width: "0%",
-      opacity: 0,
-    }, {
-      left: "120%",
-      width: () => `${20 + Math.random() * 40}%`,
-      opacity: () => 0.3 + Math.random() * 0.4,
-      duration: () => 0.5 + Math.random() * 0.5,
-      stagger: 0.04,
-      ease: "power2.in",
-      scrollTrigger: {
-        trigger: footerContainer,
-        start: "top 90%",
-        toggleActions: "play none none reverse",
+    gsap.fromTo(
+      warpLines,
+      {
+        left: "-20%",
+        width: "0%",
+        opacity: 0,
       },
-    });
+      {
+        left: "120%",
+        width: () => `${20 + Math.random() * 40}%`,
+        opacity: () => 0.3 + Math.random() * 0.4,
+        duration: () => 0.5 + Math.random() * 0.5,
+        stagger: 0.04,
+        ease: "power2.in",
+        scrollTrigger: {
+          trigger: footerContainer,
+          start: "top 90%",
+          toggleActions: "play none none reverse",
+        },
+      },
+    );
 
     // ===== FOOTER CONTENT REVEAL =====
     gsap.from(brandRef, {
@@ -83,7 +87,8 @@
 
     // ===== BRAND HEARTBEAT GLOW =====
     gsap.to(brandRef, {
-      textShadow: "0 0 20px rgba(0, 243, 255, 0.6), 0 0 40px rgba(0, 243, 255, 0.3)",
+      textShadow:
+        "0 0 20px rgba(0, 243, 255, 0.6), 0 0 40px rgba(0, 243, 255, 0.3)",
       duration: 1.5,
       repeat: -1,
       yoyo: true,
@@ -92,25 +97,29 @@
 
     // ===== SOCIAL LINKS STAGGER =====
     const linkElements = linksRef.querySelectorAll("a");
-    gsap.fromTo(linkElements, {
-      y: 30,
-      opacity: 0,
-    }, {
-      scrollTrigger: {
-        trigger: footerContainer,
-        start: "top 85%",
-        toggleActions: "play none none none",
+    gsap.fromTo(
+      linkElements,
+      {
+        y: 30,
+        opacity: 0,
       },
-      y: 0,
-      opacity: 1,
-      stagger: 0.15,
-      duration: 0.8,
-      ease: "back.out(1.5)",
-      delay: 0.5,
-    });
+      {
+        scrollTrigger: {
+          trigger: footerContainer,
+          start: "top 85%",
+          toggleActions: "play none none none",
+        },
+        y: 0,
+        opacity: 1,
+        stagger: 0.15,
+        duration: 0.8,
+        ease: "back.out(1.5)",
+        delay: 0.5,
+      },
+    );
 
     // ===== LINK HOVER GLOW =====
-    linkElements.forEach(link => {
+    linkElements.forEach((link) => {
       link.addEventListener("mouseenter", () => {
         gsap.to(link, {
           scale: 1.1,
@@ -155,17 +164,27 @@
     </div>
 
     <div class="links" bind:this={linksRef}>
-      <a href="https://linkedin.com/in/ahmadhutrisemendawai" target="_blank" rel="noopener noreferrer" class="social-link">
+      <a
+        href="https://www.linkedin.com/in/hutrisemendawai/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="social-link"
+      >
         <span class="link-icon">💼</span>
         <span class="link-text">LinkedIn</span>
         <span class="link-glow"></span>
       </a>
-      <a href="https://github.com/ahmadhutrisemendawai" target="_blank" rel="noopener noreferrer" class="social-link">
+      <a
+        href="https://github.com/hutrisemendawai"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="social-link"
+      >
         <span class="link-icon">💻</span>
         <span class="link-text">GitHub</span>
         <span class="link-glow"></span>
       </a>
-      <a href="mailto:contact@example.com" class="social-link">
+      <a href="mailto:hutrisemendawai.gg@gmail.com" class="social-link">
         <span class="link-icon">✉️</span>
         <span class="link-text">Email</span>
         <span class="link-glow"></span>
@@ -230,9 +249,14 @@
   }
 
   .brand h3 {
-    font-family: 'Space Mono', monospace;
+    font-family: "Space Mono", monospace;
     font-size: 1.8rem;
-    background: linear-gradient(90deg, var(--starlight), var(--neon-blue), var(--nebula-purple));
+    background: linear-gradient(
+      90deg,
+      var(--starlight),
+      var(--neon-blue),
+      var(--nebula-purple)
+    );
     background-size: 200% auto;
     -webkit-background-clip: text;
     background-clip: text;
@@ -252,7 +276,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    font-family: 'Space Mono', monospace;
+    font-family: "Space Mono", monospace;
     font-size: 1rem;
     color: var(--text-muted);
     text-transform: uppercase;
@@ -282,7 +306,11 @@
     width: 120%;
     height: 120%;
     transform: translate(-50%, -50%);
-    background: radial-gradient(circle, rgba(0, 243, 255, 0.08) 0%, transparent 60%);
+    background: radial-gradient(
+      circle,
+      rgba(0, 243, 255, 0.08) 0%,
+      transparent 60%
+    );
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;
@@ -311,7 +339,7 @@
     border: 2px solid var(--nebula-purple);
     border-radius: 50px;
     color: var(--starlight);
-    font-family: 'Space Mono', monospace;
+    font-family: "Space Mono", monospace;
     font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -323,7 +351,7 @@
   }
 
   .rocket-btn::before {
-    content: '';
+    content: "";
     position: absolute;
     bottom: 0;
     left: 0;
