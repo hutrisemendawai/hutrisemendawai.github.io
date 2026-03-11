@@ -8,6 +8,7 @@
   let projectsContainer;
   let horizontalScrollArea;
   let titleRef;
+  let progressBar;
   let currentProject = 0;
   let sections = [];
 
@@ -64,10 +65,49 @@
     },
   ];
 
+  // Magnetic hover function for images
+  function handleImageMouseMove(e) {
+    const img = e.currentTarget;
+    const rect = img.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    const moveX = ((x - centerX) / centerX) * 10;
+    const moveY = ((y - centerY) / centerY) * 10;
+
+    gsap.to(img, {
+      x: moveX,
+      y: moveY,
+      rotateX: -moveY * 0.5,
+      rotateY: moveX * 0.5,
+      duration: 0.3,
+      ease: "power2.out",
+      transformPerspective: 600,
+    });
+
+    // Spotlight effect
+    img.style.setProperty("--img-spot-x", `${x}px`);
+    img.style.setProperty("--img-spot-y", `${y}px`);
+  }
+
+  function handleImageMouseLeave(e) {
+    const img = e.currentTarget;
+    gsap.to(img, {
+      x: 0,
+      y: 0,
+      rotateX: 0,
+      rotateY: 0,
+      duration: 0.6,
+      ease: "elastic.out(1, 0.5)",
+    });
+  }
+
   onMount(async () => {
     await tick();
 
-    // Title reveal
+    // ===== TITLE REVEAL =====
     gsap.from(titleRef, {
       scrollTrigger: {
         trigger: projectsContainer,
@@ -80,7 +120,7 @@
       ease: "power3.out",
     });
 
-    // Horizontal Scroll Setup
+    // ===== HORIZONTAL SCROLL SETUP =====
     sections = gsap.utils.toArray(".project-panel");
     let moveRatio = 0.6;
 
@@ -99,6 +139,10 @@
           if (currentProject !== newProject) {
             currentProject = newProject;
           }
+          // Update project progress bar
+          if (progressBar) {
+            gsap.set(progressBar, { scaleX: self.progress });
+          }
         },
       },
     });
@@ -107,9 +151,9 @@
       xPercent: -50,
       ease: "none",
       duration: moveRatio,
-    }).to({}, { duration: 1 - moveRatio }); // Hold at the end for footer spacing
+    }).to({}, { duration: 1 - moveRatio });
 
-    // Image staggering inside panels
+    // ===== IMAGE STAGGERING =====
     sections.forEach((panel) => {
       let images = gsap.utils.toArray(panel.querySelectorAll(".mockup-img"));
       gsap.from(images, {
@@ -122,9 +166,27 @@
         y: 100,
         opacity: 0,
         rotation: 5,
-        stagger: 0.15,
-        duration: 1,
+        scale: 0.9,
+        stagger: 0.12,
+        duration: 0.8,
         ease: "back.out(1.5)",
+      });
+
+      // ===== TECH TAGS FLY IN =====
+      let techTags = gsap.utils.toArray(panel.querySelectorAll(".tech-tag"));
+      gsap.from(techTags, {
+        scrollTrigger: {
+          trigger: panel,
+          start: "left center",
+          containerAnimation: tl,
+          toggleActions: "play none none reverse",
+        },
+        x: -30,
+        opacity: 0,
+        stagger: 0.06,
+        duration: 0.5,
+        ease: "back.out(1.5)",
+        delay: 0.3,
       });
     });
   });
@@ -140,7 +202,7 @@
             class="nav-btn {currentProject === i ? 'active' : ''}"
             on:click={() => jumpToProject(i)}
           >
-            0{i + 1}
+            <span class="nav-num">0{i + 1}</span>
           </button>
           {#if i < projects.length - 1}
             <span class="nav-divider"></span>
@@ -149,6 +211,10 @@
       </div>
     </div>
     <p class="section-desc">Scroll to explore my universe of applications.</p>
+    <!-- Progress bar for project scroll -->
+    <div class="project-progress-track">
+      <div class="project-progress-bar" bind:this={progressBar}></div>
+    </div>
   </div>
 
   <div class="horizontal-scroll-container" bind:this={horizontalScrollArea}>
@@ -156,7 +222,7 @@
       {#each projects as project}
         <div class="project-panel">
           <div class="project-content">
-            <div class="text-content glass-panel">
+            <div class="text-content neon-border-card">
               <h3>{project.title}</h3>
               <h4>{project.subtitle}</h4>
               <span class="date">{project.date}</span>
@@ -171,7 +237,14 @@
             <div class="images-content">
               <div class="image-grid grid-{Math.min(project.images.length, 5)}">
                 {#each project.images.slice(0, 5) as img, i}
-                  <div class="mockup-img img-{i + 1}">
+                  <div
+                    class="mockup-img img-{i + 1}"
+                    on:mousemove={handleImageMouseMove}
+                    on:mouseleave={handleImageMouseLeave}
+                    role="img"
+                    aria-label="Screenshot {i + 1}"
+                  >
+                    <div class="img-spotlight"></div>
                     <div class="placeholder-content">
                       <span class="icon">🚀</span>
                       <span>Screenshot {i + 1}</span>
@@ -197,7 +270,7 @@
     overflow: hidden;
     opacity: 1;
     transform: none;
-    padding-top: 5rem; /* Ensure space below navbar/top edge */
+    padding-top: 5rem;
   }
 
   .title-container {
@@ -226,6 +299,13 @@
     margin-bottom: 0;
   }
 
+  .neon-text {
+    color: var(--neon-blue);
+    text-shadow: 0 0 15px rgba(0, 243, 255, 0.6);
+    animation: glowPulse 3s ease-in-out infinite;
+  }
+
+  /* ===== PROJECT NAV (Uiverse.io inspired pill) ===== */
   .project-nav {
     display: flex;
     align-items: center;
@@ -234,6 +314,12 @@
     padding: 8px 20px;
     border-radius: 30px;
     border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+    transition: border-color 0.3s ease;
+  }
+
+  .project-nav:hover {
+    border-color: rgba(0, 243, 255, 0.2);
   }
 
   .nav-btn {
@@ -243,8 +329,10 @@
     font-family: "Space Mono", monospace;
     font-size: 1.2rem;
     cursor: pointer;
-    transition: all 0.3s ease;
-    padding: 5px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    padding: 5px 10px;
+    border-radius: 8px;
+    position: relative;
   }
 
   .nav-btn.active {
@@ -252,28 +340,47 @@
     text-shadow: 0 0 10px rgba(0, 243, 255, 0.6);
     font-weight: 700;
     transform: scale(1.1);
+    background: rgba(0, 243, 255, 0.08);
   }
 
   .nav-btn:hover:not(.active) {
     color: var(--starlight);
+    background: rgba(255, 255, 255, 0.03);
   }
 
   .nav-divider {
     width: 30px;
     height: 2px;
     background: var(--glass-border);
-  }
-
-  .neon-text {
-    color: var(--neon-blue);
-    text-shadow: 0 0 15px rgba(0, 243, 255, 0.6);
+    transition: background 0.3s ease;
   }
 
   .section-desc {
     font-family: "Space Mono", monospace;
     color: var(--text-muted);
     font-size: 1.1rem;
-    margin-bottom: 2rem; /* Add space below description */
+    margin-bottom: 1rem;
+  }
+
+  /* ===== PROJECT PROGRESS BAR ===== */
+  .project-progress-track {
+    width: 100%;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .project-progress-bar {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--neon-blue), var(--nebula-purple), var(--aurora-green));
+    background-size: 200% auto;
+    animation: auroraShift 4s ease infinite;
+    transform-origin: left;
+    transform: scaleX(0);
+    border-radius: 2px;
+    box-shadow: 0 0 8px var(--neon-blue);
   }
 
   .horizontal-scroll-container {
@@ -288,7 +395,7 @@
 
   .projects-track {
     display: flex;
-    width: 200vw; /* 2 panels = 200vw */
+    width: 200vw;
     height: 100%;
     align-items: center;
   }
@@ -299,7 +406,7 @@
     height: 100%;
     padding: 0 2rem;
     display: flex;
-    align-items: flex-start; /* Align closer to the top now that header is separated */
+    align-items: flex-start;
     justify-content: center;
   }
 
@@ -319,12 +426,10 @@
     flex-direction: column;
     justify-content: flex-start;
     padding: 1rem 3rem 2rem 3rem;
-    border-color: rgba(0, 243, 255, 0.2);
     z-index: 10;
     overflow-y: auto;
   }
 
-  /* Custom Scrollbar for Text Content */
   .text-content::-webkit-scrollbar {
     width: 6px;
   }
@@ -361,6 +466,7 @@
     border-radius: 20px;
     margin-bottom: 1.5rem;
     width: fit-content;
+    text-shadow: 0 0 6px rgba(255, 214, 10, 0.3);
   }
 
   .text-content p {
@@ -379,11 +485,22 @@
   .tech-tag {
     font-family: "Space Mono", monospace;
     font-size: 0.8rem;
-    padding: 6px 14px;
+    padding: 6px 16px;
     border: 1px solid var(--nebula-purple);
-    border-radius: 4px;
-    background: rgba(157, 78, 221, 0.1);
+    border-radius: 20px;
+    background: rgba(157, 78, 221, 0.08);
     color: #fff;
+    transition: all 0.3s ease;
+    cursor: default;
+    will-change: transform;
+  }
+
+  .tech-tag:hover {
+    background: rgba(157, 78, 221, 0.25);
+    border-color: var(--neon-blue);
+    box-shadow: 0 0 12px rgba(0, 243, 255, 0.3);
+    transform: translateY(-2px) scale(1.05);
+    color: var(--neon-blue);
   }
 
   .images-content {
@@ -413,29 +530,16 @@
     grid-template-rows: repeat(2, 1fr);
   }
 
-  .grid-5 .img-1 {
-    grid-column: 1 / 4;
-    grid-row: 1;
-  }
-  .grid-5 .img-2 {
-    grid-column: 4 / 7;
-    grid-row: 1;
-  }
-  .grid-5 .img-3 {
-    grid-column: 1 / 3;
-    grid-row: 2;
-  }
-  .grid-5 .img-4 {
-    grid-column: 3 / 5;
-    grid-row: 2;
-  }
-  .grid-5 .img-5 {
-    grid-column: 5 / 7;
-    grid-row: 2;
-  }
+  .grid-5 .img-1 { grid-column: 1 / 4; grid-row: 1; }
+  .grid-5 .img-2 { grid-column: 4 / 7; grid-row: 1; }
+  .grid-5 .img-3 { grid-column: 1 / 3; grid-row: 2; }
+  .grid-5 .img-4 { grid-column: 3 / 5; grid-row: 2; }
+  .grid-5 .img-5 { grid-column: 5 / 7; grid-row: 2; }
 
+  /* ===== MAGNETIC IMAGE CARDS ===== */
   .mockup-img {
-    background: linear-gradient(135deg, #1b1b2f, #050510);
+    position: relative;
+    background: linear-gradient(135deg, #1b1b2f, #0a0a1a);
     border: 1px solid var(--glass-border);
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
@@ -443,18 +547,33 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition:
-      transform 0.3s ease,
-      box-shadow 0.3s ease,
-      border-color 0.3s ease;
     cursor: crosshair;
+    will-change: transform;
+    transform-style: preserve-3d;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
   }
 
   .mockup-img:hover {
-    transform: scale(1.05) translateZ(20px);
-    box-shadow: 0 15px 40px rgba(0, 243, 255, 0.2);
     border-color: var(--neon-blue);
+    box-shadow:
+      0 15px 40px rgba(0, 243, 255, 0.2),
+      0 0 30px rgba(0, 243, 255, 0.08);
     z-index: 10;
+  }
+
+  .img-spotlight {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(
+      200px circle at var(--img-spot-x, -100px) var(--img-spot-y, -100px),
+      rgba(0, 243, 255, 0.12),
+      transparent 60%
+    );
+    pointer-events: none;
+    z-index: 1;
   }
 
   .placeholder-content {
@@ -465,11 +584,14 @@
     color: var(--text-muted);
     font-family: "Space Mono", monospace;
     font-size: 0.9rem;
+    position: relative;
+    z-index: 2;
   }
 
   .placeholder-content .icon {
     font-size: 2rem;
     opacity: 0.5;
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.2));
   }
 
   @media (max-width: 1024px) {

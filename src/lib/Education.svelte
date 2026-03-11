@@ -8,6 +8,7 @@
   let eduContainer;
   let eduCards;
   let certCards;
+  let sectionTitle;
 
   const education = [
     {
@@ -41,51 +42,127 @@
     },
   ];
 
+  function handleCardMouseMove(e) {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    const rotateX = ((y - centerY) / centerY) * -8;
+    const rotateY = ((x - centerX) / centerX) * 8;
+
+    // 3D tilt
+    gsap.to(card, {
+      rotateX,
+      rotateY,
+      duration: 0.3,
+      ease: "power2.out",
+      transformPerspective: 800,
+    });
+
+    // Spotlight cursor effect
+    card.style.setProperty("--spotlight-x", `${x}px`);
+    card.style.setProperty("--spotlight-y", `${y}px`);
+  }
+
+  function handleCardMouseLeave(e) {
+    const card = e.currentTarget;
+    gsap.to(card, {
+      rotateX: 0,
+      rotateY: 0,
+      duration: 0.6,
+      ease: "elastic.out(1, 0.5)",
+    });
+  }
+
   onMount(() => {
-    // Education cards stagger
-    gsap.from(eduCards.children, {
+    // ===== SECTION TITLE =====
+    gsap.from(sectionTitle, {
       scrollTrigger: {
         trigger: eduContainer,
         start: "top 75%",
         toggleActions: "play none none reverse",
       },
-      y: 60,
+      y: 50,
       opacity: 0,
-      duration: 0.8,
-      stagger: 0.2,
-      ease: "power2.out",
+      duration: 1,
+      ease: "power3.out",
     });
 
-    // Cert cards stagger
-    gsap.from(certCards.children, {
+    // ===== EDUCATION CARDS - Bouncy Stagger =====
+    const eduCardEls = eduCards.querySelectorAll(".edu-card");
+    gsap.from(eduCardEls, {
+      scrollTrigger: {
+        trigger: eduContainer,
+        start: "top 75%",
+        toggleActions: "play none none reverse",
+      },
+      y: 80,
+      opacity: 0,
+      rotateX: -20,
+      duration: 1,
+      stagger: 0.25,
+      ease: "back.out(1.7)",
+      transformPerspective: 800,
+    });
+
+    // ===== FLOATING ICONS =====
+    const icons = eduContainer.querySelectorAll(".icon");
+    icons.forEach((icon, i) => {
+      gsap.to(icon, {
+        y: -8,
+        rotation: 5,
+        duration: 2 + Math.random(),
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+        delay: i * 0.3,
+      });
+    });
+
+    // ===== CERT CARDS - Scale + Bounce =====
+    const certCardEls = certCards.querySelectorAll(".cert-card");
+    gsap.from(certCardEls, {
       scrollTrigger: {
         trigger: certCards,
         start: "top 85%",
         toggleActions: "play none none reverse",
       },
-      scale: 0.9,
-      y: 40,
+      scale: 0.8,
+      y: 60,
       opacity: 0,
-      duration: 0.8,
+      rotateY: -10,
+      duration: 0.9,
       stagger: 0.2,
-      ease: "back.out(1.2)",
+      ease: "back.out(1.5)",
+      transformPerspective: 800,
     });
   });
 </script>
 
 <section bind:this={eduContainer} id="education" class="edu-section">
   <div class="content-wrapper">
-    <h2><span class="neon-text">/</span> Education & Certifications</h2>
+    <h2 bind:this={sectionTitle}><span class="neon-text">/</span> Education & Certifications</h2>
 
     <div class="subtitle"><h3>Academic Journey</h3></div>
     <div bind:this={eduCards} class="cards-grid">
       {#each education as edu}
-        <div class="glass-panel edu-card {edu.highlight ? 'highlight' : ''}">
-          <div class="icon">🎓</div>
-          <h3>{edu.school}</h3>
-          <h4>{edu.degree}</h4>
-          <span class="period">{edu.period}</span>
-          <p>{edu.details}</p>
+        <div
+          class="edu-card {edu.highlight ? 'highlight' : ''}"
+          on:mousemove={handleCardMouseMove}
+          on:mouseleave={handleCardMouseLeave}
+          role="article"
+        >
+          <div class="card-spotlight"></div>
+          <div class="card-inner">
+            <div class="icon">🎓</div>
+            <h3>{edu.school}</h3>
+            <h4>{edu.degree}</h4>
+            <span class="period">{edu.period}</span>
+            <p>{edu.details}</p>
+          </div>
         </div>
       {/each}
     </div>
@@ -93,12 +170,20 @@
     <div class="subtitle cert-subtitle"><h3>Licenses & Certifications</h3></div>
     <div bind:this={certCards} class="cards-grid cert-grid">
       {#each certifications as cert}
-        <div class="glass-panel cert-card">
-          <div class="icon">📜</div>
-          <h3>{cert.name}</h3>
-          <h4>{cert.issuer}</h4>
-          <span class="period">Issued {cert.date}</span>
-          <p class="cert-id" title="Credential ID">ID: {cert.id}</p>
+        <div
+          class="cert-card"
+          on:mousemove={handleCardMouseMove}
+          on:mouseleave={handleCardMouseLeave}
+          role="article"
+        >
+          <div class="card-spotlight"></div>
+          <div class="card-inner">
+            <div class="icon">📜</div>
+            <h3>{cert.name}</h3>
+            <h4>{cert.issuer}</h4>
+            <span class="period">Issued {cert.date}</span>
+            <p class="cert-id" title="Credential ID">ID: {cert.id}</p>
+          </div>
         </div>
       {/each}
     </div>
@@ -108,7 +193,7 @@
 <style>
   .edu-section {
     padding-top: 100px;
-    opacity: 1; /* override global for specific ScrollTrigger */
+    opacity: 1;
     transform: none;
   }
 
@@ -131,6 +216,7 @@
   .neon-text {
     color: var(--neon-blue);
     text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+    animation: glowPulse 3s ease-in-out infinite;
   }
 
   .subtitle {
@@ -154,20 +240,51 @@
     gap: 2rem;
   }
 
+  /* ===== 3D TILT CARDS WITH SPOTLIGHT ===== */
   .edu-card,
   .cert-card {
     position: relative;
     overflow: hidden;
-    transition:
-      transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-      box-shadow 0.4s ease;
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    will-change: transform;
+    transform-style: preserve-3d;
+    cursor: default;
+    transition: border-color 0.4s ease, box-shadow 0.4s ease;
   }
 
   .edu-card:hover,
   .cert-card:hover {
-    transform: translateY(-10px) scale(1.02);
-    box-shadow: 0 15px 35px rgba(0, 243, 255, 0.15);
     border-color: rgba(0, 243, 255, 0.3);
+    box-shadow:
+      0 15px 35px rgba(0, 243, 255, 0.15),
+      0 0 30px rgba(0, 243, 255, 0.05);
+  }
+
+  /* Spotlight cursor follower on card surface */
+  .card-spotlight {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(
+      300px circle at var(--spotlight-x, -100px) var(--spotlight-y, -100px),
+      rgba(0, 243, 255, 0.08),
+      transparent 60%
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .card-inner {
+    position: relative;
+    z-index: 2;
   }
 
   .edu-card.highlight {
@@ -180,7 +297,9 @@
   }
 
   .edu-card.highlight:hover {
-    box-shadow: 0 15px 40px rgba(157, 78, 221, 0.25);
+    box-shadow:
+      0 15px 40px rgba(157, 78, 221, 0.25),
+      0 0 40px rgba(157, 78, 221, 0.1);
     border-color: rgba(157, 78, 221, 0.6);
   }
 
@@ -188,6 +307,8 @@
     font-size: 2.5rem;
     margin-bottom: 1rem;
     filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+    display: inline-block;
+    will-change: transform;
   }
 
   .edu-card h3,
@@ -207,11 +328,15 @@
   }
 
   .period {
-    display: block;
+    display: inline-block;
     font-family: "Space Mono", monospace;
     font-size: 0.85rem;
     color: var(--star-gold);
     margin-bottom: 1rem;
+    padding: 3px 10px;
+    background: rgba(255, 214, 10, 0.08);
+    border-radius: 12px;
+    text-shadow: 0 0 6px rgba(255, 214, 10, 0.3);
   }
 
   p {
@@ -230,5 +355,20 @@
     display: inline-block;
     margin-top: 0.5rem;
     border: 1px solid var(--glass-border);
+    transition: all 0.3s ease;
+  }
+
+  .cert-id:hover {
+    border-color: var(--neon-blue);
+    color: var(--neon-blue);
+  }
+
+  @media (max-width: 768px) {
+    h2 {
+      font-size: 2rem;
+    }
+    .cards-grid {
+      grid-template-columns: 1fr;
+    }
   }
 </style>

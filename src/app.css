@@ -6,10 +6,13 @@
   --neon-blue: #00f3ff;
   --nebula-purple: #9d4edd;
   --star-gold: #ffd60a;
+  --aurora-green: #00ff88;
+  --comet-orange: #ff6b35;
   --text-main: #e0e0e0;
   --text-muted: #8a8a9d;
   --glass-bg: rgba(255, 255, 255, 0.03);
   --glass-border: rgba(255, 255, 255, 0.1);
+  --gradient-neon: linear-gradient(135deg, var(--neon-blue), var(--nebula-purple), var(--aurora-green));
 }
 
 * {
@@ -44,7 +47,34 @@ a:hover {
   text-shadow: 0 0 8px var(--neon-blue);
 }
 
-/* Starfield Background Layer */
+/* ===== SCROLL PROGRESS BAR ===== */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 3px;
+  background: var(--gradient-neon);
+  z-index: 9999;
+  transition: none;
+  box-shadow: 0 0 10px var(--neon-blue), 0 0 20px rgba(0, 243, 255, 0.3);
+}
+
+/* ===== CURSOR GLOW FOLLOWER ===== */
+.cursor-glow {
+  position: fixed;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 243, 255, 0.06) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  will-change: transform;
+  mix-blend-mode: screen;
+}
+
+/* ===== STARFIELD BACKGROUND ===== */
 .starfield {
   position: fixed;
   top: 0;
@@ -71,7 +101,82 @@ a:hover {
   100% { opacity: 0.2; transform: scale(0.8); }
 }
 
-/* Glassmorphism Utility */
+/* ===== SHOOTING STARS ===== */
+.shooting-star {
+  position: fixed;
+  width: 100px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--neon-blue), transparent);
+  border-radius: 50%;
+  filter: drop-shadow(0 0 6px var(--neon-blue));
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ===== NEON BORDER CARD (Uiverse.io inspired) ===== */
+.neon-border-card {
+  position: relative;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  padding: 2rem;
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  transition: border-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+.neon-border-card:hover {
+  border-color: var(--neon-blue);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 15px rgba(0, 243, 255, 0.15),
+    0 0 30px rgba(0, 243, 255, 0.08),
+    inset 0 0 15px rgba(0, 243, 255, 0.03);
+}
+
+@property --neon-border-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes neonBorderRotate {
+  from { --neon-border-angle: 0deg; }
+  to { --neon-border-angle: 360deg; }
+}
+
+/* ===== GLOW TEXT UTILITY ===== */
+.glow-text {
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+  0%, 100% { text-shadow: 0 0 5px var(--neon-blue), 0 0 10px rgba(0, 243, 255, 0.3); }
+  50% { text-shadow: 0 0 15px var(--neon-blue), 0 0 30px rgba(0, 243, 255, 0.5), 0 0 45px rgba(0, 243, 255, 0.2); }
+}
+
+/* ===== NEON PULSE BORDER ===== */
+@keyframes neonPulse {
+  0%, 100% { box-shadow: 0 0 5px rgba(0, 243, 255, 0.2), 0 0 10px rgba(0, 243, 255, 0.1); }
+  50% { box-shadow: 0 0 15px rgba(0, 243, 255, 0.4), 0 0 30px rgba(0, 243, 255, 0.2), 0 0 45px rgba(0, 243, 255, 0.1); }
+}
+
+/* ===== AURORA GRADIENT SHIFT ===== */
+@keyframes auroraShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ===== FLOAT ANIMATION ===== */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* ===== GLASSMORPHISM UTILITY ===== */
 .glass-panel {
   background: var(--glass-bg);
   backdrop-filter: blur(12px);
@@ -82,7 +187,7 @@ a:hover {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
-/* Content wrapper */
+/* ===== CONTENT WRAPPER ===== */
 main {
   position: relative;
   z-index: 1;
@@ -91,7 +196,7 @@ main {
   padding: 0 2rem;
 }
 
-/* Section styling */
+/* ===== SECTION STYLING ===== */
 section {
   min-height: 100vh;
   display: flex;
@@ -102,7 +207,7 @@ section {
   transform: translateY(50px);
 }
 
-/* Scrollbar styling */
+/* ===== SCROLLBAR ===== */
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -115,4 +220,62 @@ section {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--neon-blue);
+}
+
+/* ===== RIPPLE EFFECT (Uiverse.io inspired) ===== */
+.ripple-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple-effect .ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(0, 243, 255, 0.3);
+  transform: scale(0);
+  animation: rippleAnim 0.6s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes rippleAnim {
+  to { transform: scale(4); opacity: 0; }
+}
+
+/* ===== WARP SPEED LINES ===== */
+.warp-line {
+  position: absolute;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ===== TOOLTIP GLOW ===== */
+.tooltip-glow {
+  position: relative;
+}
+
+.tooltip-glow::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: rgba(5, 5, 16, 0.95);
+  border: 1px solid var(--neon-blue);
+  color: var(--neon-blue);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-family: 'Space Mono', monospace;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+}
+
+.tooltip-glow:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }

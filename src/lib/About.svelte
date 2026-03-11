@@ -6,77 +6,136 @@
   gsap.registerPlugin(ScrollTrigger);
 
   let aboutContainer;
-  let textElements;
+  let sectionTitle;
+  let bioContainer;
   let skillHeader;
   let skillsContainer;
+  let glassPanel;
 
   const skills = [
-    "Java (Spring-Boot)",
-    "Dart (Flutter)",
-    "Svelte",
-    "Pocketbase",
-    "PostgreSQL",
-    "MySQL",
+    { name: "Java (Spring-Boot)", icon: "☕" },
+    { name: "Dart (Flutter)", icon: "🎯" },
+    { name: "Svelte", icon: "🔥" },
+    { name: "Pocketbase", icon: "📦" },
+    { name: "PostgreSQL", icon: "🐘" },
+    { name: "MySQL", icon: "🗄️" },
   ];
 
   onMount(async () => {
     await tick();
 
-    // Text reveal
-    gsap.from(textElements.children, {
+    // ===== SECTION TITLE REVEAL =====
+    gsap.from(sectionTitle, {
+      scrollTrigger: {
+        trigger: aboutContainer,
+        start: "top 80%",
+        toggleActions: "play none none reverse",
+      },
+      x: -80,
+      opacity: 0,
+      duration: 1,
+      ease: "power3.out",
+    });
+
+    // ===== BIO TEXT REVEAL - Paragraph stagger =====
+    const paragraphs = bioContainer.querySelectorAll("p");
+    gsap.from(paragraphs, {
       scrollTrigger: {
         trigger: aboutContainer,
         start: "top 80%",
         end: "top 20%",
         toggleActions: "play none none reverse",
       },
-      y: 50,
+      y: 40,
       opacity: 0,
-      duration: 1,
-      stagger: 0.2,
+      duration: 0.8,
+      stagger: 0.25,
       ease: "power3.out",
     });
 
-    // Skills reveal
-    gsap.fromTo(
-      skillHeader,
-      { opacity: 0, y: 30 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        scrollTrigger: {
-          trigger: skillsContainer,
-          start: "top 85%",
-          toggleActions: "play none none none",
-        },
+    // ===== GLASS PANEL NEON BORDER ANIMATION =====
+    gsap.fromTo(glassPanel, {
+      "--panel-glow": 0,
+    }, {
+      "--panel-glow": 1,
+      duration: 1.5,
+      scrollTrigger: {
+        trigger: glassPanel,
+        start: "top 75%",
+        toggleActions: "play none none reverse",
       },
-    );
+    });
 
-    gsap.fromTo(
-      skillsContainer.children,
-      { scale: 0, opacity: 0 },
-      {
-        scale: 1,
-        opacity: 1,
-        duration: 0.5,
-        stagger: 0.1,
-        ease: "back.out(1.7)",
-        scrollTrigger: {
-          trigger: skillsContainer,
-          start: "top 85%",
-          toggleActions: "play none none none",
-        },
+    // ===== SKILLS HEADER =====
+    gsap.from(skillHeader, {
+      opacity: 0,
+      y: 30,
+      duration: 0.8,
+      scrollTrigger: {
+        trigger: skillsContainer,
+        start: "top 85%",
+        toggleActions: "play none none none",
       },
-    );
+    });
+
+    // ===== ANIMATED SKILL PILLS =====
+    const pillElements = skillsContainer.querySelectorAll(".skill-pill");
+    gsap.fromTo(pillElements, {
+      scale: 0,
+      opacity: 0,
+      rotation: -15,
+    }, {
+      scale: 1,
+      opacity: 1,
+      rotation: 0,
+      duration: 0.6,
+      stagger: 0.1,
+      ease: "back.out(2)",
+      scrollTrigger: {
+        trigger: skillsContainer,
+        start: "top 85%",
+        toggleActions: "play none none none",
+      },
+    });
+
+    // ===== FLOATING SKILL PILLS =====
+    pillElements.forEach((pill, i) => {
+      gsap.to(pill, {
+        y: -5 + Math.random() * 10,
+        x: (Math.random() - 0.5) * 6,
+        duration: 2 + Math.random() * 2,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+        delay: i * 0.2,
+      });
+    });
+
+    // ===== SKILL PILL HOVER GLOW (via mouse events) =====
+    pillElements.forEach(pill => {
+      pill.addEventListener("mouseenter", () => {
+        gsap.to(pill, {
+          scale: 1.1,
+          duration: 0.3,
+          ease: "power2.out",
+        });
+      });
+      pill.addEventListener("mouseleave", () => {
+        gsap.to(pill, {
+          scale: 1,
+          duration: 0.3,
+          ease: "power2.out",
+        });
+      });
+    });
   });
 </script>
 
 <section bind:this={aboutContainer} id="about" class="about-section">
-  <div class="glass-panel content-container">
-    <h2><span class="neon-text">/</span> About Me</h2>
+  <div class="neon-border-card content-container" bind:this={glassPanel}>
+    <h2 bind:this={sectionTitle}><span class="neon-text">/</span> About Me</h2>
 
-    <div bind:this={textElements} class="bio">
+    <div bind:this={bioContainer} class="bio">
       <p>
         As a passionate <strong>Software Engineer</strong> and
         <strong>ERP Specialist</strong>, I thrive at the intersection of robust
@@ -104,7 +163,10 @@
       <h3 bind:this={skillHeader}>Core Technologies</h3>
       <div bind:this={skillsContainer} class="skills-grid">
         {#each skills as skill}
-          <div class="skill-pill">{skill}</div>
+          <div class="skill-pill">
+            <span class="skill-icon">{skill.icon}</span>
+            <span class="skill-name">{skill.name}</span>
+          </div>
         {/each}
       </div>
     </div>
@@ -115,7 +177,7 @@
   .about-section {
     padding-top: 100px;
     align-items: center;
-    opacity: 1; /* override global for specific ScrollTrigger */
+    opacity: 1;
     transform: none;
   }
 
@@ -136,6 +198,7 @@
   .neon-text {
     color: var(--neon-blue);
     text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+    animation: glowPulse 3s ease-in-out infinite;
   }
 
   .bio {
@@ -148,9 +211,20 @@
     margin-bottom: 3rem;
   }
 
-  .bio strong {
+  .bio :global(.word-wrap) {
+    display: inline-block;
+    overflow: hidden;
+  }
+
+  .bio :global(.word) {
+    display: inline-block;
+    will-change: transform, opacity;
+  }
+
+  .bio :global(strong) {
     color: var(--starlight);
     font-weight: 600;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
   }
 
   h3 {
@@ -162,25 +236,67 @@
   .skills-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 14px;
   }
 
   .skill-pill {
-    padding: 8px 16px;
-    background: rgba(157, 78, 221, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: rgba(157, 78, 221, 0.08);
     border: 1px solid var(--nebula-purple);
-    border-radius: 20px;
+    border-radius: 50px;
     font-family: "Space Mono", monospace;
     font-size: 0.9rem;
     color: var(--starlight);
-    transition: all 0.3s ease;
     cursor: default;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+    will-change: transform;
+  }
+
+  .skill-pill::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+  }
+
+  .skill-pill:hover::before {
+    left: 100%;
   }
 
   .skill-pill:hover {
-    background: rgba(157, 78, 221, 0.3);
+    background: rgba(157, 78, 221, 0.25);
     border-color: var(--neon-blue);
-    box-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
-    transform: translateY(-2px);
+    box-shadow:
+      0 0 15px rgba(0, 243, 255, 0.4),
+      0 0 30px rgba(0, 243, 255, 0.15),
+      inset 0 0 10px rgba(0, 243, 255, 0.05);
+    transform: translateY(-3px);
+  }
+
+  .skill-icon {
+    font-size: 1.1rem;
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
+  }
+
+  @media (max-width: 768px) {
+    h2 {
+      font-size: 2rem;
+    }
+    .skills-grid {
+      gap: 10px;
+    }
+    .skill-pill {
+      padding: 8px 14px;
+      font-size: 0.8rem;
+    }
   }
 </style>
