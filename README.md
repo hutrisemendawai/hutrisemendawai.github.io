@@ -27,36 +27,50 @@ Welcome, space explorer! You've discovered **HUTRI-SPACEPLANET**, a digital fron
 ### 📡 Planetary Survey Systems
 
 The planet operates on advanced technology:
-- **Svelte** - A reactive framework for building interactive experiences
+- **Svelte 5** - A reactive framework for building interactive experiences
+- **GSAP (GreenSock Animation Platform)** - Powering the cinematic animations and scroll-triggered transitions
 - **Vite** - A lightning-fast build engine powering the planet's infrastructure
+
+### 🛰️ Advanced Mission Features
+
+HUTRI-SPACEPLANET has been upgraded with state-of-the-art systems:
+
+- **🌌 Dynamic Atmosphere**: Parallax starfields, shooting stars, and ambient nebula particles.
+- **✨ Animated Storytelling**: Character-by-character text typing and staggered paragraph reveals.
+- **🛡️ Interdimensional Shielding**: Redesigned UI with glassmorphism and neon-border cards.
+- **🎮 Immersive Interaction**: 
+  - **Magnetic Hover**: Images and elements that follow your cursor with 3D tilt.
+  - **Spotlight Systems**: Cursor-following light effects on cards and images.
+  - **Uiverse.io Components**: Premium animated buttons and social link pills.
+- **🚀 Tactical Navigation**: 
+  - **Scroll Progress Trackers**: Real-time visual feedback of your descent/ascent.
+  - **Rocket Launch System**: Quick return-to-surface (top) with launch animations.
 
 ### 🔬 Expedition Objectives
 
 Explore this world by venturing into the source code:
 
-- **`src/lib/Hero.svelte`** - Your entry point to the planet's atmosphere
-- **`src/lib/About.svelte`** - Decode the planet's origin story
-- **`src/lib/Experience.svelte`** - Navigate through the timeline of discoveries
-- **`src/lib/Education.svelte`** - Access the knowledge archives
-- **`src/lib/Projects.svelte`** - Investigate local civilization achievements
-- **`src/lib/Footer.svelte`** - Find communication frequencies at the planet's edge
+- **`src/lib/Hero.svelte`** - Cinematic entry with parallax planet and typing effects.
+- **`src/lib/About.svelte`** - Interactive bio with floating skill modules.
+- **`src/lib/Experience.svelte`** - 3D timeline fly-ins and pulsing data nodes.
+- **`src/lib/Education.svelte`** - Knowledge archives with 3D tilt interaction.
+- **`src/lib/Projects.svelte`** - Achievement showcase with magnetic image tracking.
+- **`src/lib/Footer.svelte`** - Warp-speed exit transitions and communication links.
 
 ### 🌟 Recommended Navigation Tools
 
 Set up your spacecraft's controls:
 - [VS Code](https://code.visualstudio.com/) - Your command center
+- [GSAP Docs](https://gsap.com/docs/v3/) - Navigation charts for the animation engine
 - [Svelte Extension](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode) - Enhanced sensors for Svelte source detection
 
-### 🪐 Alternative Pathways
-
-If you require a more comprehensive planetary infrastructure, consider upgrading to [SvelteKit](https://github.com/sveltejs/kit#readme)—a fuller operating system with built-in routing, serverless deployment capabilities, and extended resource support.
-
-### 🔧 Why This Configuration?
+### 🪐 Planetary Operations
 
 This lean setup provides essential exploration tools without unnecessary overhead:
-- ✅ Minimal dependencies—focus on what matters
-- ✅ Hot Module Replacement (HMR)—instant feedback as you modify the landscape
-- ✅ Modern JavaScript tooling—optimized for speed and efficiency
+- ✅ **Advanced GSAP Orchestration** — Complex timelines and ScrollTriggers
+- ✅ **Responsive Planetary Surface** — Optimized for all viewport dimensions
+- ✅ **Modern UI/UX** — Blending aesthetics from uiverse.io with custom space-theming
+
 
 ### 💡 Pro Tips for Deep Space Exploration
 
