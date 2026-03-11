@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import gsap from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import rocketIcon from '../assets/rocketicon.png';
 
   gsap.registerPlugin(ScrollTrigger);
 
@@ -159,7 +160,7 @@
 
   <div class="footer-content">
     <div class="brand" bind:this={brandRef}>
-      <span class="icon">🚀</span>
+      <img src={rocketIcon} alt="rocket" class="icon" width="32" height="32" loading="lazy" decoding="async" />
       <h3>Hutri-SpacePlanet</h3>
     </div>
 
@@ -192,7 +193,7 @@
     </div>
 
     <button class="rocket-btn" bind:this={rocketBtn} on:click={scrollToTop}>
-      <span class="rocket-icon">🚀</span>
+      <img src={rocketIcon} alt="rocket" class="rocket-icon" width="28" height="28" loading="lazy" decoding="async" />
       <span class="rocket-text">Back to Launch</span>
       <span class="rocket-trail"></span>
     </button>
@@ -244,7 +245,9 @@
   }
 
   .brand .icon {
-    font-size: 2.5rem;
+    display: block;
+    object-fit: contain;
+    flex-shrink: 0;
     animation: float 3s ease-in-out infinite;
   }
 
@@ -375,7 +378,9 @@
   }
 
   .rocket-icon {
-    font-size: 1.3rem;
+    display: block;
+    object-fit: contain;
+    flex-shrink: 0;
     transition: transform 0.3s ease;
   }
 

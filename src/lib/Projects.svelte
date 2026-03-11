@@ -2,6 +2,7 @@
   import { onMount, tick } from "svelte";
   import gsap from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import rocketIcon from '../assets/rocketicon.png';
 
   gsap.registerPlugin(ScrollTrigger);
 
@@ -246,7 +247,7 @@
                   >
                     <div class="img-spotlight"></div>
                     <div class="placeholder-content">
-                      <span class="icon">🚀</span>
+                      <img src={rocketIcon} alt="rocket" class="icon" width="40" height="40" loading="lazy" decoding="async" />
                       <span>Screenshot {i + 1}</span>
                     </div>
                   </div>

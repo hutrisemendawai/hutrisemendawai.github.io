@@ -1,6 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import gsap from "gsap";
+  import rocketIcon from '../assets/rocketicon.png';
 
   let heroContainer;
   let titleChars;
@@ -147,7 +148,7 @@
     <h2 bind:this={subtitle}>He/Him | Java Programmer - ERP</h2>
 
     <button class="cta-btn ripple-effect" bind:this={ctaBtn}>
-      <span class="cta-icon">🚀</span>
+      <img src={rocketIcon} alt="rocket" class="cta-icon" width="24" height="24" loading="eager" decoding="async" />
       <span class="cta-text">Explore My Universe</span>
       <span class="cta-glow"></span>
     </button>
@@ -337,7 +338,8 @@
   }
 
   .cta-icon {
-    font-size: 1.3rem;
+    display: block;
+    object-fit: contain;
     transition: transform 0.3s ease;
   }
 
