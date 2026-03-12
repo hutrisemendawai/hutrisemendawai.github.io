@@ -163,6 +163,8 @@
     background: #020308;
     overflow: hidden;
     z-index: 10;
+    opacity: 1;
+    transform: none;
   }
 
   .projects-title {
