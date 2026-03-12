@@ -74,46 +74,6 @@ a:hover {
   mix-blend-mode: screen;
 }
 
-/* ===== STARFIELD BACKGROUND ===== */
-.starfield {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: -1;
-  pointer-events: none;
-  background: radial-gradient(circle at center, #1b1b2f 0%, #050510 100%);
-  overflow: hidden;
-}
-
-.star {
-  position: absolute;
-  background-color: var(--starlight);
-  border-radius: 50%;
-  box-shadow: 0 0 4px var(--starlight);
-  animation: twinkle linear infinite;
-}
-
-@keyframes twinkle {
-  0% { opacity: 0.2; transform: scale(0.8); }
-  50% { opacity: 1; transform: scale(1.2); }
-  100% { opacity: 0.2; transform: scale(0.8); }
-}
-
-/* ===== SHOOTING STARS ===== */
-.shooting-star {
-  position: fixed;
-  width: 100px;
-  height: 2px;
-  background: linear-gradient(90deg, var(--neon-blue), transparent);
-  border-radius: 50%;
-  filter: drop-shadow(0 0 6px var(--neon-blue));
-  opacity: 0;
-  pointer-events: none;
-  z-index: 0;
-}
-
 /* ===== NEON BORDER CARD (Uiverse.io inspired) ===== */
 .neon-border-card {
   position: relative;
