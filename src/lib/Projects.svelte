@@ -9,103 +9,99 @@
   let wrapperRef;
   let sectionRef;
   let planetRef;
+  let currentIndex = 0;
 
-  const projects = [
-    {
+  const projects = [{
       title: "Data Collection for Fishery Activities",
       subtitle: "- New Generation -",
       date: "Dec 2025 – Present",
-      desc: "Developed an offline-first Android application for collecting fishery activity data. Built with Flutter, the app allows users to input data without an internet connection and automatically synchronizes with a PocketBase backend once online. Designed the administrative web dashboard using Laravel.",
+      desc: "Developed an offline-first Android application for collecting fishery activity data. Built with Flutter, the app allows users to input data without an internet connection and automatically synchronizes with a PocketBase backend once online. Designed the admin web dashboard using Laravel.",
       tech: ["Flutter", "PHP", "Laravel", "PocketBase", "Android", "Offline-First"],
-      images: [
-        "/images/placeholder1.jpg",
-        "/images/placeholder2.jpg",
-        "/images/placeholder3.jpg",
-        "/images/placeholder4.jpg",
-      ],
+      images: ["/images/placeholder1.jpg", "/images/placeholder2.jpg", "/images/placeholder3.jpg"],
     },
     {
       title: "Asset360",
       subtitle: "Asset Management Information System",
       date: "Completed",
-      desc: "Asset360 is a web-based asset management system designed to streamline asset tracking and lifecycle management. Offers comprehensive features including real-time status monitoring, assignment tracking, and unique QR code generation for fast identification. Built for scalability, security, and ease of use.",
+      desc: "Asset360 is a web-based asset management system designed to streamline asset tracking and lifecycle management. Features real-time status monitoring, assignment tracking, and QR code generation for fast identification. Built for scalability, security, and ease of use.",
       tech: ["Spring Boot", "Java", "PostgreSQL", "QR Integration", "Web Dashboard"],
-      images: [
-        "/images/placeholder5.jpg",
-        "/images/placeholder6.jpg",
-        "/images/placeholder7.jpg",
-        "/images/placeholder8.jpg",
-        "/images/placeholder9.jpg",
-      ],
+      images: ["/images/placeholder5.jpg", "/images/placeholder6.jpg", "/images/placeholder7.jpg"],
     },
   ];
 
   onMount(() => {
-    const slides = Array.from(sectionRef.querySelectorAll('.project-slide'));
-    let currentIndex = 0;
-
-    // Set initial slide state via gsap to avoid transform cache conflicts
-    slides.forEach((slide, i) => {
-      gsap.set(slide, {
-        opacity: i === 0 ? 1 : 0,
-        y: i === 0 ? 0 : 60,
-        pointerEvents: i === 0 ? 'auto' : 'none',
-      });
-    });
-
-    function goTo(index) {
-      if (index === currentIndex) return;
-      const outSlide = slides[currentIndex];
-      const inSlide = slides[index];
-      const dir = index > currentIndex ? 1 : -1;
-
-      gsap.killTweensOf(outSlide);
-      gsap.killTweensOf(inSlide);
-
-      gsap.to(outSlide, { opacity: 0, y: -60 * dir, duration: 0.35, ease: 'power2.in', onComplete: () => { gsap.set(outSlide, { pointerEvents: 'none' }); } });
-      gsap.fromTo(inSlide, { opacity: 0, y: 60 * dir }, { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out', onStart: () => { gsap.set(inSlide, { pointerEvents: 'auto' }); } });
-      currentIndex = index;
-    }
-
-    // Rotate planet while scrolling through the wrapper
     const planetTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: wrapperRef,
-        start: 'top top',
-        end: 'bottom bottom',
-        scrub: 1,
-      }
+      scrollTrigger: { trigger: wrapperRef, start: 'top top', end: 'bottom bottom', scrub: 1 },
     });
     planetTl.to(planetRef, { rotation: 180, ease: 'none' });
 
-    // Switch slides based on scroll position within wrapper
     const switchSt = ScrollTrigger.create({
       trigger: wrapperRef,
       start: 'top top',
       end: 'bottom bottom',
-      scrub: false,
       onUpdate: (self) => {
-        const newIndex = Math.min(
-          projects.length - 1,
-          Math.floor(self.progress * projects.length)
-        );
-        goTo(newIndex);
-      }
+        currentIndex = Math.min(projects.length - 1, Math.floor(self.progress * projects.length));
+      },
     });
 
-    return () => {
-      planetTl.kill();
-      switchSt.kill();
-    };
+    return () => { planetTl.kill(); switchSt.kill(); };
   });
 </script>
 
-<!-- Tall wrapper enables scrolling; sticky section stays in view -->
 <div class="projects-wrapper" bind:this={wrapperRef}>
-  <section class="planet-projects-section" bind:this={sectionRef}>
-    <div class="projects-title">
-      <h2><span class="neon-text">/</span> Featured Projects</h2>
-      <p class="section-desc">Scroll to explore my universe of applications.</p>
+  <section class="projects-section" bind:this={sectionRef}>
+
+    <div class="section-header">
+      <h2><span class="slash">/</span> Featured Projects</h2>
+      <p class="section-sub">Scroll to explore my universe of applications.</p>
+    </div>
+
+    <div class="slides-area">
+      {#each projects as project, index}
+        <div class="project-slide" class:active={index === currentIndex}>
+
+          <div class="project-info">
+            <span class="proj-num">0{index + 1}</span>
+            <h3>{project.title}</h3>
+            <h4>{project.subtitle}</h4>
+            <span class="date-badge">{project.date}</span>
+            <p class="desc">{project.desc}</p>
+            <div class="tech-stack">
+              {#each project.tech as tag}
+                <span class="tech-tag">{tag}</span>
+              {/each}
+            </div>
+          </div>
+
+          <div class="project-visuals">
+            <div class="card card-main">
+              <div class="card-inner">
+                <img src={rocketIcon} alt="" class="card-icon" />
+                <span>Screenshot 1</span>
+              </div>
+            </div>
+            <div class="card card-top">
+              <div class="card-inner">
+                <img src={rocketIcon} alt="" class="card-icon" />
+                <span>Screenshot 2</span>
+              </div>
+            </div>
+            <div class="card card-btm">
+              <div class="card-inner">
+                <img src={rocketIcon} alt="" class="card-icon" />
+                <span>Screenshot 3</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      {/each}
+    </div>
+
+    <div class="nav-dots">
+      {#each projects as _, i}
+        <span class="nav-dot" class:active={i === currentIndex}></span>
+      {/each}
     </div>
 
     <div class="planet-container">
@@ -120,47 +116,18 @@
       </div>
     </div>
 
-    <div class="projects-container">
-      {#each projects as project, index}
-        <div class="project-slide">
-          <div class="project-info">
-            <span class="project-number">0{index + 1}</span>
-            <h3>{project.title}</h3>
-            <h4>{project.subtitle}</h4>
-            <span class="date">{project.date}</span>
-            <p class="desc">{project.desc}</p>
-            <div class="tech-stack">
-              {#each project.tech as t}
-                <span class="tech-tag">{t}</span>
-              {/each}
-            </div>
-          </div>
-
-          <div class="project-visuals">
-            {#each project.images.slice(0, 4) as img, i}
-              <div class="mockup-img img-{i + 1}">
-                <div class="placeholder-content">
-                  <img src={rocketIcon} alt="rocket" class="icon" />
-                  <span>Screenshot {i + 1}</span>
-                </div>
-              </div>
-            {/each}
-          </div>
-        </div>
-      {/each}
-    </div>
   </section>
 </div>
 
 <style>
-  /* ===== WRAPPER — tall so there's scroll room ===== */
+  /* ===== WRAPPER ===== */
   .projects-wrapper {
     position: relative;
-    height: 300vh; /* 100vh per project + 100vh hold */
+    height: 300vh;
   }
 
-  /* ===== STICKY SECTION — stays in view while wrapper scrolls ===== */
-  .planet-projects-section {
+  /* ===== STICKY SECTION ===== */
+  .projects-section {
     position: sticky;
     top: 0;
     width: 100%;
@@ -168,39 +135,242 @@
     background: #020308;
     overflow: hidden;
     z-index: 10;
-    opacity: 1;
-    transform: none;
   }
 
-  .projects-title {
+  /* ===== HEADER ===== */
+  .section-header {
     position: absolute;
-    top: 6vh;
+    top: 0;
     left: 0;
     width: 100%;
+    padding: 3.5vh 0 0;
     text-align: center;
     z-index: 20;
   }
 
-  .projects-title h2 {
-    font-size: 3rem;
+  .section-header h2 {
+    font-size: 2.6rem;
+    color: #fff;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 15px;
-    margin-bottom: 0.5rem;
-    color: #fff;
+    gap: 12px;
+    margin: 0 0 0.35rem;
   }
 
-  .neon-text {
-    color: var(--neon-blue);
+  .slash {
+    color: var(--neon-blue, #00f3ff);
     text-shadow: 0 0 15px rgba(0, 243, 255, 0.6);
   }
 
-  .section-desc {
+  .section-sub {
     font-family: 'Space Mono', monospace;
     color: var(--text-muted, #8b92ba);
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     margin: 0;
+  }
+
+  /* ===== SLIDES AREA ===== */
+  .slides-area {
+    position: absolute;
+    top: 17vh;
+    left: 0;
+    width: 100%;
+    height: 55vh;
+    z-index: 10;
+  }
+
+  .project-slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    gap: 3vw;
+    padding: 0 6vw;
+    box-sizing: border-box;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    pointer-events: none;
+  }
+
+  .project-slide.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  /* ===== PROJECT INFO ===== */
+  .project-info {
+    flex: 0 0 46%;
+    position: relative;
+  }
+
+  .proj-num {
+    position: absolute;
+    top: -1rem;
+    left: -0.5rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 5.5rem;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.025);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+    z-index: -1;
+  }
+
+  .project-info h3 {
+    font-size: 2rem;
+    color: #fff;
+    line-height: 1.25;
+    margin: 0 0 0.35rem;
+  }
+
+  .project-info h4 {
+    font-size: 1rem;
+    color: var(--neon-blue, #00f3ff);
+    font-weight: 400;
+    margin: 0 0 0.8rem;
+  }
+
+  .date-badge {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--star-gold, #ffd60a);
+    background: rgba(255, 214, 10, 0.1);
+    border-radius: 20px;
+    padding: 4px 14px;
+    margin-bottom: 0.9rem;
+    text-shadow: 0 0 6px rgba(255, 214, 10, 0.3);
+  }
+
+  .desc {
+    font-size: 0.9rem;
+    line-height: 1.75;
+    color: var(--text-main, #d1d5eb);
+    margin: 0 0 0.9rem;
+  }
+
+  .tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+
+  .tech-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    padding: 4px 12px;
+    border: 1px solid var(--nebula-purple, #9d4edd);
+    border-radius: 20px;
+    background: rgba(157, 78, 221, 0.08);
+    color: #fff;
+  }
+
+  /* ===== PROJECT VISUALS ===== */
+  .project-visuals {
+    flex: 0 0 48%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card {
+    position: absolute;
+    background: linear-gradient(135deg, rgba(27, 27, 47, 0.85), rgba(10, 10, 26, 0.95));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(8px);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .card:hover {
+    border-color: var(--neon-blue, #00f3ff);
+    box-shadow: 0 0 25px rgba(0, 243, 255, 0.25);
+  }
+
+  /* Main card — centered, dominant */
+  .card-main {
+    width: 62%;
+    height: 56%;
+    top: 50%;
+    left: 28%;
+    transform: translate(-50%, -50%) rotate(-2deg);
+    z-index: 3;
+  }
+
+  /* Top-right secondary */
+  .card-top {
+    width: 42%;
+    height: 36%;
+    top: 5%;
+    right: 1%;
+    transform: rotate(4deg);
+    z-index: 4;
+    border-color: rgba(157, 78, 221, 0.4);
+  }
+
+  /* Bottom-left tertiary */
+  .card-btm {
+    width: 40%;
+    height: 34%;
+    bottom: 6%;
+    left: 1%;
+    transform: rotate(-5deg);
+    z-index: 2;
+    border-color: rgba(0, 243, 255, 0.3);
+  }
+
+  .card-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+    color: var(--text-muted, #8b92ba);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+  }
+
+  .card-icon {
+    width: 30px;
+    height: 30px;
+    opacity: 0.55;
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.2));
+  }
+
+  /* ===== NAV DOTS (right side) ===== */
+  .nav-dots {
+    position: absolute;
+    right: 2vw;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 20;
+  }
+
+  .nav-dot {
+    display: block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+  }
+
+  .nav-dot.active {
+    background: var(--neon-blue, #00f3ff);
+    border-color: var(--neon-blue, #00f3ff);
+    box-shadow: 0 0 8px rgba(0, 243, 255, 0.6);
+    transform: scale(1.3);
   }
 
   /* ===== PLANET ===== */
@@ -295,177 +465,26 @@
   .dec-2 { top: 8%; right: 25%; width: 40px; height: 3px; transform: rotate(-20deg); background: var(--nebula-purple); box-shadow: 0 0 15px var(--nebula-purple); }
   .dec-3 { top: 1%; left: 55%; width: 6px; height: 6px; border-radius: 50%; }
 
-  /* ===== SLIDES ===== */
-  .projects-container {
-    position: absolute;
-    top: 20vh;
-    left: 0;
-    width: 100%;
-    height: 60vh;
-    z-index: 10;
-  }
-
-  .project-slide {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    padding: 2vh 8vw 0;
-    box-sizing: border-box;
-    perspective: 1200px;
-  }
-
-  /* ===== INFO ===== */
-  .project-info {
-    flex: 0 0 45%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    color: var(--text-main, #d1d5eb);
-    z-index: 10;
-    position: relative;
-  }
-
-  .project-number {
-    position: absolute;
-    top: -30%;
-    left: -5%;
-    font-family: 'Space Mono', monospace;
-    font-size: 8rem;
-    font-weight: 800;
-    color: rgba(255, 255, 255, 0.02);
-    pointer-events: none;
-    z-index: -1;
-    line-height: 1;
-  }
-
-  .project-info h3 {
-    font-size: 2.8rem;
-    color: var(--starlight, #fff);
-    line-height: 1.2;
-    margin-bottom: 0.5rem;
-  }
-
-  .project-info h4 {
-    font-size: 1.2rem;
-    color: var(--neon-blue);
-    margin-bottom: 1.5rem;
-    font-weight: 400;
-  }
-
-  .date {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.9rem;
-    color: var(--star-gold, #ffd60a);
-    display: inline-block;
-    padding: 6px 16px;
-    background: rgba(255, 214, 10, 0.1);
-    border-radius: 20px;
-    margin-bottom: 2rem;
-    width: fit-content;
-    text-shadow: 0 0 6px rgba(255, 214, 10, 0.3);
-  }
-
-  .desc {
-    font-size: 1.1rem;
-    line-height: 1.8;
-    margin-bottom: 2rem;
-    color: var(--text-main, #d1d5eb);
-  }
-
-  .tech-stack {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .tech-tag {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.85rem;
-    padding: 6px 16px;
-    border: 1px solid var(--nebula-purple);
-    border-radius: 20px;
-    background: rgba(157, 78, 221, 0.08);
-    color: #fff;
-    transition: all 0.3s ease;
-  }
-
-  /* ===== VISUALS ===== */
-  .project-visuals {
-    flex: 0 0 45%;
-    height: 100%;
-    position: relative;
-    transform-style: preserve-3d;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .mockup-img {
-    position: absolute;
-    background: linear-gradient(135deg, rgba(27, 27, 47, 0.8), rgba(10, 10, 26, 0.9));
-    border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
-    border-radius: 16px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(10px);
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: crosshair;
-  }
-
-  .mockup-img:hover {
-    border-color: var(--neon-blue);
-    box-shadow: 0 0 30px rgba(0, 243, 255, 0.3);
-    filter: brightness(1.2);
-  }
-
-  .img-1 { width: 70%; height: 60%; z-index: 4; transform: translateZ(50px) rotateY(-15deg); }
-  .img-2 { width: 50%; height: 40%; top: 10%; right: -5%; z-index: 3; transform: translateZ(-20px) rotateY(-5deg); border-color: rgba(157, 78, 221, 0.5); }
-  .img-3 { width: 45%; height: 35%; bottom: 5%; left: 0%; z-index: 5; transform: translateZ(100px) rotateY(-20deg); }
-  .img-4 { width: 35%; height: 30%; top: 10%; left: 5%; z-index: 2; transform: translateZ(-60px) rotateY(10deg); }
-
-  .placeholder-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    color: var(--text-muted, #8b92ba);
-    font-family: 'Space Mono', monospace;
-  }
-
-  .placeholder-content .icon {
-    width: 40px;
-    height: 40px;
-    opacity: 0.6;
-    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.2));
-  }
-
+  /* ===== RESPONSIVE ===== */
   @media (max-width: 1024px) {
-    .projects-wrapper {
-      height: 400vh;
-    }
+    .projects-wrapper { height: 400vh; }
+
+    .slides-area { top: 15vh; height: 60vh; }
+
     .project-slide {
       flex-direction: column;
-      padding: 0 4vw;
-      justify-content: center;
-      gap: 2rem;
+      padding: 1vh 5vw 0;
+      gap: 1.5vh;
+      justify-content: flex-start;
     }
-    .project-info {
-      flex: 0 0 auto;
-      text-align: center;
-      align-items: center;
-    }
+
+    .project-info { flex: 0 0 auto; text-align: center; }
+    .project-info h3 { font-size: 1.6rem; }
+    .desc { font-size: 0.85rem; }
     .tech-stack { justify-content: center; }
-    .project-visuals { flex: 0 0 40%; width: 100%; }
+    .proj-num { display: none; }
+
+    .project-visuals { flex: 0 0 auto; width: 100%; height: 25vh; }
     .planet-horizon { width: 200vw; height: 200vw; margin-left: -100vw; }
-    .project-number { display: none; }
-    .project-info h3 { font-size: 2.2rem; }
-    .desc { font-size: 1rem; }
   }
 </style>
