@@ -44,11 +44,13 @@
     const slides = Array.from(sectionRef.querySelectorAll('.project-slide'));
     let currentIndex = 0;
 
-    // Hide all slides except the first using direct style
+    // Set initial slide state via gsap to avoid transform cache conflicts
     slides.forEach((slide, i) => {
-      slide.style.opacity = i === 0 ? '1' : '0';
-      slide.style.pointerEvents = i === 0 ? 'auto' : 'none';
-      slide.style.transform = i === 0 ? 'translateY(0px)' : 'translateY(60px)';
+      gsap.set(slide, {
+        opacity: i === 0 ? 1 : 0,
+        y: i === 0 ? 0 : 60,
+        pointerEvents: i === 0 ? 'auto' : 'none',
+      });
     });
 
     function goTo(index) {
@@ -57,8 +59,11 @@
       const inSlide = slides[index];
       const dir = index > currentIndex ? 1 : -1;
 
-      gsap.to(outSlide, { opacity: 0, y: -60 * dir, duration: 0.35, ease: 'power2.in', onComplete: () => { outSlide.style.pointerEvents = 'none'; } });
-      gsap.fromTo(inSlide, { opacity: 0, y: 60 * dir }, { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out', onStart: () => { inSlide.style.pointerEvents = 'auto'; } });
+      gsap.killTweensOf(outSlide);
+      gsap.killTweensOf(inSlide);
+
+      gsap.to(outSlide, { opacity: 0, y: -60 * dir, duration: 0.35, ease: 'power2.in', onComplete: () => { gsap.set(outSlide, { pointerEvents: 'none' }); } });
+      gsap.fromTo(inSlide, { opacity: 0, y: 60 * dir }, { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out', onStart: () => { gsap.set(inSlide, { pointerEvents: 'auto' }); } });
       currentIndex = index;
     }
 
@@ -307,9 +312,9 @@
     width: 100%;
     height: 100%;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
-    padding: 0 8vw;
+    padding: 2vh 8vw 0;
     box-sizing: border-box;
     perspective: 1200px;
   }
