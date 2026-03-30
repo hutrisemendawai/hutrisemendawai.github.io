@@ -124,6 +124,8 @@
   .projects-wrapper {
     position: relative;
     height: 300vh;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
   }
 
   /* ===== STICKY SECTION ===== */
@@ -137,6 +139,8 @@
     z-index: 10;
     opacity: 1;
     transform: none;
+    display: block;
+    padding: 0;
   }
 
   /* ===== HEADER ===== */
