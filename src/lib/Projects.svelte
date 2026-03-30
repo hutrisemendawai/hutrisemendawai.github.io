@@ -2,8 +2,6 @@
   import { onMount } from "svelte";
   import gsap from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
-  import rocketIcon from '../assets/rocketicon.png';
-
   gsap.registerPlugin(ScrollTrigger);
 
   let sectionRef;
@@ -90,22 +88,13 @@
 
           <div class="project-visuals">
             <div class="card card-main">
-              <div class="card-inner">
-                <img src={rocketIcon} alt="" class="card-icon" />
-                <span>Screenshot 1</span>
-              </div>
+              <img src={project.images[0]} alt="{project.title} screenshot 1" class="card-img" />
             </div>
             <div class="card card-top">
-              <div class="card-inner">
-                <img src={rocketIcon} alt="" class="card-icon" />
-                <span>Screenshot 2</span>
-              </div>
+              <img src={project.images[1]} alt="{project.title} screenshot 2" class="card-img" />
             </div>
             <div class="card card-btm">
-              <div class="card-inner">
-                <img src={rocketIcon} alt="" class="card-icon" />
-                <span>Screenshot 3</span>
-              </div>
+              <img src={project.images[2]} alt="{project.title} screenshot 3" class="card-img" />
             </div>
           </div>
 
@@ -280,9 +269,7 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 14px;
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    overflow: hidden;
     backdrop-filter: blur(8px);
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
   }
@@ -290,6 +277,13 @@
   .card:hover {
     border-color: var(--neon-blue, #00f3ff);
     box-shadow: 0 0 25px rgba(0, 243, 255, 0.25);
+  }
+
+  .card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
   }
 
   /* Main card — centered, dominant */
@@ -322,23 +316,6 @@
     transform: rotate(-5deg);
     z-index: 2;
     border-color: rgba(0, 243, 255, 0.3);
-  }
-
-  .card-inner {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 7px;
-    color: var(--text-muted, #8b92ba);
-    font-family: 'Space Mono', monospace;
-    font-size: 0.75rem;
-  }
-
-  .card-icon {
-    width: 30px;
-    height: 30px;
-    opacity: 0.55;
-    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.2));
   }
 
   /* ===== PLANET ===== */
