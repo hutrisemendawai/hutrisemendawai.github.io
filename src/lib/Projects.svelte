@@ -138,6 +138,7 @@
 
   /* ===== SECTION ===== */
   .projects-section {
+    position: relative;
     width: 100%;
     background: #020308;
     overflow: hidden;
@@ -151,6 +152,7 @@
 
   /* ===== HEADER ===== */
   .section-header {
+    position: relative;
     padding: 4rem 0 3rem;
     text-align: center;
     z-index: 20;
@@ -341,21 +343,21 @@
     filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.2));
   }
 
-  /* ===== PLANET ===== */
+  /* ===== PLANET (background) ===== */
   .planet-container {
-    position: relative;
-    margin-top: 4rem;
+    position: absolute;
+    bottom: 0;
     left: 0;
     width: 100%;
-    height: 40vh;
+    height: 100%;
     pointer-events: none;
-    z-index: 5;
+    z-index: 1;
     overflow: hidden;
   }
 
   .planet-horizon {
     position: absolute;
-    top: 0;
+    bottom: -60vw;
     left: 50%;
     width: 150vw;
     height: 150vw;
@@ -450,6 +452,6 @@
     .proj-num { display: none; }
 
     .project-visuals { flex: 0 0 auto; width: 100%; height: 260px; }
-    .planet-horizon { width: 200vw; height: 200vw; margin-left: -100vw; }
+    .planet-horizon { width: 200vw; height: 200vw; margin-left: -100vw; bottom: -90vw; }
   }
 </style>
