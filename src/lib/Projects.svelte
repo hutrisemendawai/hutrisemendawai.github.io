@@ -6,10 +6,8 @@
 
   gsap.registerPlugin(ScrollTrigger);
 
-  let wrapperRef;
   let sectionRef;
   let planetRef;
-  let currentIndex = 0;
 
   const projects = [{
       title: "Data Collection for Fishery Activities",
@@ -30,35 +28,40 @@
   ];
 
   onMount(() => {
+    const triggers = [];
+
     const planetTl = gsap.timeline({
-      scrollTrigger: { trigger: wrapperRef, start: 'top top', end: 'bottom bottom', scrub: 1 },
+      scrollTrigger: { trigger: sectionRef, start: 'top bottom', end: 'bottom top', scrub: 1 },
     });
-    planetTl.to(planetRef, { rotation: 180, ease: 'none' });
+    planetTl.to(planetRef, { rotation: 90, ease: 'none' });
+    triggers.push(planetTl.scrollTrigger);
 
-    const switchSt = ScrollTrigger.create({
-      trigger: wrapperRef,
-      start: 'top top',
-      end: 'bottom bottom',
-      onUpdate: (self) => {
-        currentIndex = Math.min(projects.length - 1, Math.floor(self.progress * projects.length));
-      },
+    gsap.utils.toArray('.project-slide').forEach((slide) => {
+      gsap.set(slide, { opacity: 0, y: 40 });
+      const st = ScrollTrigger.create({
+        trigger: slide,
+        start: 'top 85%',
+        toggleActions: 'play none none none',
+        onEnter: () => gsap.to(slide, { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }),
+      });
+      triggers.push(st);
     });
 
-    return () => { planetTl.kill(); switchSt.kill(); };
+    return () => triggers.forEach(t => t.kill());
   });
 </script>
 
-<div class="projects-wrapper" bind:this={wrapperRef}>
-  <section class="projects-section" bind:this={sectionRef}>
+<div class="projects-wrapper" bind:this={sectionRef}>
+  <section class="projects-section">
 
     <div class="section-header">
       <h2><span class="slash">/</span> Featured Projects</h2>
-      <p class="section-sub">Scroll to explore my universe of applications.</p>
+      <p class="section-sub">Exploring my universe of applications.</p>
     </div>
 
     <div class="slides-area">
       {#each projects as project, index}
-        <div class="project-slide" class:active={index === currentIndex}>
+        <div class="project-slide">
 
           <div class="project-info">
             <span class="proj-num">0{index + 1}</span>
@@ -98,12 +101,6 @@
       {/each}
     </div>
 
-    <div class="nav-dots">
-      {#each projects as _, i}
-        <span class="nav-dot" class:active={i === currentIndex}></span>
-      {/each}
-    </div>
-
     <div class="planet-container">
       <div class="planet-horizon" bind:this={planetRef}>
         <div class="planet-glow"></div>
@@ -123,33 +120,26 @@
   /* ===== WRAPPER ===== */
   .projects-wrapper {
     position: relative;
-    height: 300vh;
     width: 100vw;
     margin-left: calc(-50vw + 50%);
   }
 
-  /* ===== STICKY SECTION ===== */
+  /* ===== SECTION ===== */
   .projects-section {
-    position: sticky;
-    top: 0;
     width: 100%;
-    height: 100vh;
     background: #020308;
     overflow: hidden;
     z-index: 10;
     opacity: 1;
     transform: none;
     display: block;
-    padding: 0;
+    padding: 0 0 20vh;
+    min-height: auto;
   }
 
   /* ===== HEADER ===== */
   .section-header {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    padding: 3.5vh 0 0;
+    padding: 4rem 0 3rem;
     text-align: center;
     z-index: 20;
   }
@@ -178,32 +168,21 @@
 
   /* ===== SLIDES AREA ===== */
   .slides-area {
-    position: absolute;
-    top: 17vh;
-    left: 0;
-    width: 100%;
-    height: 55vh;
+    display: flex;
+    flex-direction: column;
+    gap: 5rem;
+    padding: 0 6vw;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
     z-index: 10;
   }
 
   .project-slide {
-    position: absolute;
-    inset: 0;
     display: flex;
     align-items: center;
     gap: 3vw;
-    padding: 0 6vw;
     box-sizing: border-box;
-    opacity: 0;
-    transform: translateY(24px);
-    transition: opacity 0.4s ease, transform 0.4s ease;
-    pointer-events: none;
-  }
-
-  .project-slide.active {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
   }
 
   /* ===== PROJECT INFO ===== */
@@ -278,7 +257,7 @@
   /* ===== PROJECT VISUALS ===== */
   .project-visuals {
     flex: 0 0 48%;
-    height: 100%;
+    height: 340px;
     position: relative;
     overflow: hidden;
   }
@@ -350,44 +329,16 @@
     filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.2));
   }
 
-  /* ===== NAV DOTS (right side) ===== */
-  .nav-dots {
-    position: absolute;
-    right: 2vw;
-    top: 50%;
-    transform: translateY(-50%);
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    z-index: 20;
-  }
-
-  .nav-dot {
-    display: block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    transition: all 0.3s ease;
-  }
-
-  .nav-dot.active {
-    background: var(--neon-blue, #00f3ff);
-    border-color: var(--neon-blue, #00f3ff);
-    box-shadow: 0 0 8px rgba(0, 243, 255, 0.6);
-    transform: scale(1.3);
-  }
-
   /* ===== PLANET ===== */
   .planet-container {
-    position: absolute;
-    bottom: -15vh;
+    position: relative;
+    margin-top: 4rem;
     left: 0;
     width: 100%;
     height: 40vh;
     pointer-events: none;
     z-index: 5;
+    overflow: hidden;
   }
 
   .planet-horizon {
@@ -473,15 +424,11 @@
 
   /* ===== RESPONSIVE ===== */
   @media (max-width: 1024px) {
-    .projects-wrapper { height: 400vh; }
-
-    .slides-area { top: 15vh; height: 60vh; }
+    .slides-area { gap: 3.5rem; padding: 0 5vw; }
 
     .project-slide {
       flex-direction: column;
-      padding: 1vh 5vw 0;
-      gap: 1.5vh;
-      justify-content: flex-start;
+      gap: 1.5rem;
     }
 
     .project-info { flex: 0 0 auto; text-align: center; }
@@ -490,7 +437,7 @@
     .tech-stack { justify-content: center; }
     .proj-num { display: none; }
 
-    .project-visuals { flex: 0 0 auto; width: 100%; height: 25vh; }
+    .project-visuals { flex: 0 0 auto; width: 100%; height: 260px; }
     .planet-horizon { width: 200vw; height: 200vw; margin-left: -100vw; }
   }
 </style>
