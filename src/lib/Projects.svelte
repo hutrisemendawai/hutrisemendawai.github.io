@@ -36,18 +36,30 @@
     planetTl.to(planetRef, { rotation: 90, ease: 'none' });
     triggers.push(planetTl.scrollTrigger);
 
+    const tweens = [];
     gsap.utils.toArray('.project-slide').forEach((slide) => {
-      gsap.set(slide, { opacity: 0, y: 40 });
-      const st = ScrollTrigger.create({
-        trigger: slide,
-        start: 'top 85%',
-        toggleActions: 'play none none none',
-        onEnter: () => gsap.to(slide, { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }),
-      });
-      triggers.push(st);
+      const tween = gsap.fromTo(
+        slide,
+        { opacity: 0, y: 40 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: slide,
+            start: 'top 85%',
+            toggleActions: 'play none none none',
+          },
+        },
+      );
+      tweens.push(tween);
     });
 
-    return () => triggers.forEach(t => t.kill());
+    return () => {
+      triggers.forEach(t => t.kill());
+      tweens.forEach(t => t.kill());
+    };
   });
 </script>
 
@@ -259,7 +271,7 @@
     flex: 0 0 48%;
     height: 340px;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
   }
 
   .card {
@@ -285,7 +297,7 @@
     width: 62%;
     height: 56%;
     top: 50%;
-    left: 28%;
+    left: 50%;
     transform: translate(-50%, -50%) rotate(-2deg);
     z-index: 3;
   }
