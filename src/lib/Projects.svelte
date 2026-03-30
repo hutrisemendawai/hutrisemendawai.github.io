@@ -87,15 +87,21 @@
           </div>
 
           <div class="project-visuals">
-            <div class="card card-main">
-              <img src={project.images[0]} alt="{project.title} screenshot 1" class="card-img" />
-            </div>
-            <div class="card card-top">
-              <img src={project.images[1]} alt="{project.title} screenshot 2" class="card-img" />
-            </div>
-            <div class="card card-btm">
-              <img src={project.images[2]} alt="{project.title} screenshot 3" class="card-img" />
-            </div>
+            {#if project.images && project.images.length > 0}
+              <div class="card card-main">
+                <img src={project.images[0]} alt="{project.title} screenshot 1" class="card-img" />
+              </div>
+            {/if}
+            {#if project.images && project.images.length > 1}
+              <div class="card card-top">
+                <img src={project.images[1]} alt="{project.title} screenshot 2" class="card-img" />
+              </div>
+            {/if}
+            {#if project.images && project.images.length > 2}
+              <div class="card card-btm">
+                <img src={project.images[2]} alt="{project.title} screenshot 3" class="card-img" />
+              </div>
+            {/if}
           </div>
 
         </div>
