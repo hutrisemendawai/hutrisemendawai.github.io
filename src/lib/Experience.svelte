@@ -131,7 +131,8 @@
 
 <section bind:this={expContainer} id="experience" class="exp-section">
   <div class="header-container" bind:this={sectionTitle}>
-    <h2><span class="neon-text">/</span> Experience</h2>
+    <span class="section-label">Career path</span>
+    <h2>Experience</h2>
   </div>
 
   <div class="timeline-container">
@@ -182,15 +183,7 @@
 
   h2 {
     font-size: 2.5rem;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .neon-text {
-    color: var(--neon-blue);
-    text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
-    animation: glowPulse 3s ease-in-out infinite;
+    letter-spacing: -1px;
   }
 
   .timeline-container {
@@ -205,16 +198,16 @@
     left: 50%;
     top: 0;
     bottom: 0;
-    width: 4px;
+    width: 2px;
     background: linear-gradient(
       to bottom,
-      var(--neon-blue),
-      var(--nebula-purple),
-      var(--aurora-green)
+      rgba(0, 212, 255, 0.4),
+      rgba(139, 92, 246, 0.3),
+      rgba(16, 185, 129, 0.2)
     );
     transform: translateX(-50%);
     border-radius: 2px;
-    box-shadow: 0 0 20px var(--neon-blue), 0 0 40px rgba(0, 243, 255, 0.2);
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.1);
   }
 
   .timeline-items {
@@ -245,12 +238,12 @@
   .timeline-node {
     position: absolute;
     top: 20px;
-    width: 20px;
-    height: 20px;
+    width: 14px;
+    height: 14px;
     background-color: var(--neon-blue);
-    border: 4px solid var(--space-black);
+    border: 3px solid var(--space-black);
     border-radius: 50%;
-    box-shadow: 0 0 15px var(--neon-blue);
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
     z-index: 1;
     will-change: box-shadow;
   }
@@ -285,10 +278,12 @@
     padding: 2rem;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     will-change: transform;
+    background: rgba(15, 15, 35, 0.6);
+    border-radius: 20px;
   }
 
   .exp-card:hover {
-    transform: translateY(-8px) scale(1.02);
+    transform: translateY(-4px);
   }
 
   .card-header {
@@ -346,21 +341,21 @@
 
   .skill-tag {
     font-family: "Space Mono", monospace;
-    font-size: 0.75rem;
-    padding: 5px 12px;
+    font-size: 0.72rem;
+    padding: 4px 12px;
     border: 1px solid var(--glass-border);
     border-radius: 20px;
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-muted);
     transition: all 0.3s ease;
+    letter-spacing: 0.3px;
   }
 
   .skill-tag:hover {
-    background: rgba(0, 243, 255, 0.1);
-    border-color: var(--neon-blue);
+    background: rgba(0, 212, 255, 0.08);
+    border-color: rgba(0, 212, 255, 0.3);
     color: var(--neon-blue);
-    box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
-    transform: translateY(-2px);
+    transform: translateY(-1px);
   }
 
   @media (max-width: 768px) {

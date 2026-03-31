@@ -170,7 +170,11 @@
         <span class="hero-char">{char}</span>
       {/each}
     </h1>
-    <h2 bind:this={subtitle}>He/Him | Java Programmer - ERP</h2>
+    <h2 bind:this={subtitle}>
+      <span class="role-badge">Software Engineer</span>
+      <span class="separator">·</span>
+      Java Programmer — ERP Specialist
+    </h2>
 
     <button class="cta-btn ripple-effect" bind:this={ctaBtn}>
       <img src={rocketIcon} alt="rocket" class="cta-icon" width="24" height="24" loading="eager" decoding="async" />
@@ -211,12 +215,13 @@
   }
 
   h1 {
-    font-size: 4rem;
-    margin-bottom: 0.5rem;
+    font-size: 3.5rem;
+    margin-bottom: 0.75rem;
     color: var(--starlight);
-    letter-spacing: -1px;
+    letter-spacing: -1.5px;
     perspective: 500px;
-    text-shadow: 0 0 30px rgba(0, 243, 255, 0.4), 0 0 60px rgba(157, 78, 221, 0.2);
+    font-weight: 700;
+    text-shadow: 0 0 40px rgba(0, 212, 255, 0.2);
   }
 
   .hero-char {
@@ -300,10 +305,33 @@
   }
 
   h2 {
-    font-size: 1.5rem;
+    font-size: 1.1rem;
     color: var(--text-muted);
     font-weight: 400;
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .role-badge {
+    display: inline-block;
+    padding: 4px 14px;
+    background: rgba(0, 212, 255, 0.08);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 50px;
+    color: var(--neon-blue);
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+
+  .separator {
+    color: rgba(255, 255, 255, 0.15);
+    font-size: 1.2rem;
   }
 
   /* ===== CTA BUTTON (Uiverse.io inspired) ===== */
@@ -312,23 +340,23 @@
     display: inline-flex;
     align-items: center;
     gap: 12px;
-    padding: 16px 36px;
-    min-width: 280px;
-    min-height: 56px;
+    padding: 14px 32px;
+    min-width: 260px;
+    min-height: 52px;
     font-family: 'Space Mono', monospace;
-    font-size: 1rem;
+    font-size: 0.88rem;
     color: var(--starlight);
-    background: rgba(0, 243, 255, 0.05);
-    border: 2px solid var(--neon-blue);
+    background: rgba(0, 212, 255, 0.06);
+    border: 1px solid rgba(0, 212, 255, 0.3);
     border-radius: 50px;
     cursor: pointer;
     overflow: hidden;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 1.5px;
     z-index: 1;
     justify-content: center;
-    box-shadow: 0 0 15px rgba(0, 243, 255, 0.15);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.08);
   }
 
   .cta-btn::before {
@@ -338,7 +366,7 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.15), transparent);
+    background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.1), transparent);
     transition: left 0.5s ease;
     z-index: -1;
   }
@@ -348,13 +376,12 @@
   }
 
   .cta-btn:hover {
-    background: rgba(0, 243, 255, 0.1);
-    border-color: var(--aurora-green);
+    background: rgba(0, 212, 255, 0.1);
+    border-color: var(--neon-blue);
     box-shadow:
-      0 0 20px rgba(0, 243, 255, 0.3),
-      0 0 40px rgba(0, 243, 255, 0.1),
-      inset 0 0 20px rgba(0, 243, 255, 0.05);
-    transform: translateY(-3px);
+      0 0 25px rgba(0, 212, 255, 0.15),
+      0 0 50px rgba(0, 212, 255, 0.05);
+    transform: translateY(-2px);
   }
 
   .cta-btn:active {

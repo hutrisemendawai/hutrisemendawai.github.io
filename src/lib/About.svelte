@@ -22,6 +22,13 @@
     { name: "MySQL", icon: "🗄️" },
   ];
 
+  const stats = [
+    { value: "2+", label: "Years Experience" },
+    { value: "6+", label: "Technologies" },
+    { value: "2+", label: "Projects Delivered" },
+    { value: "3.97", label: "GPA" },
+  ];
+
   onMount(async () => {
     await tick();
 
@@ -150,7 +157,8 @@
   </div>
 
   <div class="neon-border-card content-container" bind:this={glassPanel}>
-    <h2 bind:this={sectionTitle}><span class="neon-text">/</span> About Me</h2>
+    <span class="section-label">Get to know me</span>
+    <h2 bind:this={sectionTitle}>About Me</h2>
 
     <div bind:this={bioContainer} class="bio">
       <p>
@@ -174,6 +182,15 @@
         collaborative problem-solving, and delivering impactful technological
         innovations.
       </p>
+    </div>
+
+    <div class="stats-row">
+      {#each stats as stat}
+        <div class="stat-item">
+          <span class="stat-value">{stat.value}</span>
+          <span class="stat-label">{stat.label}</span>
+        </div>
+      {/each}
     </div>
 
     <div class="skills-section">
@@ -214,25 +231,17 @@
   h2 {
     font-size: 2.5rem;
     margin-bottom: 2rem;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .neon-text {
-    color: var(--neon-blue);
-    text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
-    animation: glowPulse 3s ease-in-out infinite;
+    letter-spacing: -1px;
   }
 
   .bio {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
-    font-size: 1.1rem;
-    line-height: 1.7;
+    gap: 1.25rem;
+    font-size: 1.05rem;
+    line-height: 1.8;
     color: var(--text-main);
-    margin-bottom: 3rem;
+    margin-bottom: 2.5rem;
   }
 
   .bio :global(.word-wrap) {
@@ -252,9 +261,44 @@
   }
 
   h3 {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     margin-bottom: 1.5rem;
-    color: var(--star-gold);
+    color: var(--starlight);
+    font-weight: 600;
+  }
+
+  /* ===== STATS ROW ===== */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--glass-border);
+    border-bottom: 1px solid var(--glass-border);
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .stat-value {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--neon-blue);
+    letter-spacing: -1px;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
   }
 
   .skills-grid {
@@ -268,11 +312,11 @@
     align-items: center;
     gap: 8px;
     padding: 10px 20px;
-    background: rgba(157, 78, 221, 0.08);
-    border: 1px solid var(--nebula-purple);
+    background: rgba(139, 92, 246, 0.06);
+    border: 1px solid rgba(139, 92, 246, 0.2);
     border-radius: 50px;
     font-family: "Space Mono", monospace;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: var(--starlight);
     cursor: default;
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -297,13 +341,12 @@
   }
 
   .skill-pill:hover {
-    background: rgba(157, 78, 221, 0.25);
+    background: rgba(139, 92, 246, 0.15);
     border-color: var(--neon-blue);
     box-shadow:
-      0 0 15px rgba(0, 243, 255, 0.4),
-      0 0 30px rgba(0, 243, 255, 0.15),
-      inset 0 0 10px rgba(0, 243, 255, 0.05);
-    transform: translateY(-3px);
+      0 0 15px rgba(0, 212, 255, 0.2),
+      0 0 30px rgba(0, 212, 255, 0.08);
+    transform: translateY(-2px);
   }
 
   .skill-icon {
@@ -321,6 +364,13 @@
     .skill-pill {
       padding: 8px 14px;
       font-size: 0.8rem;
+    }
+    .stats-row {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    .stat-value {
+      font-size: 1.4rem;
     }
   }
 </style>

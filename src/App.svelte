@@ -4,6 +4,7 @@
   import { ScrollTrigger } from "gsap/ScrollTrigger";
   import "./app.css";
 
+  import Navbar from "./lib/Navbar.svelte";
   import Hero from "./lib/Hero.svelte";
   import About from "./lib/About.svelte";
   import Experience from "./lib/Experience.svelte";
@@ -42,6 +43,7 @@
 <div class="scroll-progress" bind:this={scrollProgress}></div>
 <div class="cursor-glow" bind:this={cursorGlow}></div>
 <ParticleBackground />
+<Navbar />
 
 <main>
   <Hero />

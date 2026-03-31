@@ -82,7 +82,8 @@
     </div>
 
     <div class="section-header">
-      <h2><span class="slash">/</span> Featured Projects</h2>
+      <span class="section-label">Portfolio</span>
+      <h2>Featured Projects</h2>
       <p class="section-sub">Exploring my universe of applications.</p>
       <!-- Feature 5: Kinetic Typography (wave variant) -->
       <div class="kinetic-projects-label">
@@ -180,18 +181,10 @@
   }
 
   .section-header h2 {
-    font-size: 2.6rem;
+    font-size: 2.5rem;
     color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 12px;
     margin: 0 0 0.35rem;
-  }
-
-  .slash {
-    color: var(--neon-blue, #00f3ff);
-    text-shadow: 0 0 15px rgba(0, 243, 255, 0.6);
+    letter-spacing: -1px;
   }
 
   .section-sub {
@@ -286,12 +279,13 @@
 
   .tech-tag {
     font-family: 'Space Mono', monospace;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     padding: 4px 12px;
-    border: 1px solid var(--nebula-purple, #9d4edd);
+    border: 1px solid rgba(139, 92, 246, 0.2);
     border-radius: 20px;
-    background: rgba(157, 78, 221, 0.08);
-    color: #fff;
+    background: rgba(139, 92, 246, 0.06);
+    color: var(--text-muted);
+    letter-spacing: 0.3px;
   }
 
   /* ===== PROJECT VISUALS ===== */
@@ -304,10 +298,10 @@
 
   .card {
     position: absolute;
-    background: linear-gradient(135deg, rgba(27, 27, 47, 0.85), rgba(10, 10, 26, 0.95));
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 14px;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+    background: linear-gradient(135deg, rgba(20, 20, 45, 0.9), rgba(10, 10, 26, 0.95));
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -316,8 +310,8 @@
   }
 
   .card:hover {
-    border-color: var(--neon-blue, #00f3ff);
-    box-shadow: 0 0 25px rgba(0, 243, 255, 0.25);
+    border-color: rgba(0, 212, 255, 0.25);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.1);
   }
 
   /* Main card — centered, dominant */
