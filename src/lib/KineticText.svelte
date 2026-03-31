@@ -9,6 +9,8 @@
   export let text = "Explore The Universe";
   /** @type {string} */
   export let variant = "wave"; // "wave" | "path" | "scatter"
+  /** @type {string} */
+  export let motionPath = "M 0,30 Q 150,-20 300,30 T 600,30";
 
   let containerEl;
   let chars = [];
@@ -68,7 +70,7 @@
       // Path animation using CSS offset-path
       charEls.forEach((char, i) => {
         const offsetStart = (i / charEls.length) * 100;
-        char.style.offsetPath = `path('M 0,30 Q 150,-20 300,30 T 600,30')`;
+        char.style.offsetPath = `path('${motionPath}')`;
         char.style.offsetRotate = "0deg";
         char.style.offsetDistance = `${offsetStart}%`;
       });

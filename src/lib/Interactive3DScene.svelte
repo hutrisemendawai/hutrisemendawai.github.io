@@ -7,6 +7,7 @@
   let rotateY = 30;
   let autoRotate = true;
   let animId;
+  let autoTimer;
 
   function handleMouseMove(e) {
     if (!sceneEl) return;
@@ -22,8 +23,8 @@
     autoRotate = false;
 
     // Resume auto-rotate after inactivity
-    clearTimeout(sceneEl._autoTimer);
-    sceneEl._autoTimer = setTimeout(() => {
+    clearTimeout(autoTimer);
+    autoTimer = setTimeout(() => {
       autoRotate = true;
     }, 3000);
   }

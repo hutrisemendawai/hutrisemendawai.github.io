@@ -230,7 +230,7 @@
     <ellipse cx="60" cy="48" rx="20" ry="22" fill="url(#helmetGlow)" />
   </svg>
 
-  <p class="mascot-label">
+  <p class="mascot-label" aria-live="polite">
     {#if mouthState === "surprised"}
       Whoa! 👋
     {:else if mouthState === "happy"}
@@ -283,8 +283,8 @@
   }
 
   @keyframes antennaPulse {
-    0%, 100% { opacity: 0.6; r: 3; }
-    50% { opacity: 1; r: 4; }
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.33); }
   }
 
   /* Chest panel lights */
