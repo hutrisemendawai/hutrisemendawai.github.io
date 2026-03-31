@@ -227,7 +227,6 @@
       inset -50px -50px 100px rgba(0, 0, 0, 0.8);
     filter: blur(2px);
     opacity: 0.7;
-    animation: rotatePlanet 100s linear infinite;
     position: relative;
     will-change: transform;
   }
@@ -242,11 +241,6 @@
     border-radius: 50%;
     border: 2px solid rgba(157, 78, 221, 0.15);
     box-shadow: 0 0 20px rgba(157, 78, 221, 0.1);
-  }
-
-  @keyframes rotatePlanet {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
   }
 
   .asteroids {
