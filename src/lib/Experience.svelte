@@ -89,7 +89,7 @@
         boxShadow: "0 0 5px var(--neon-blue)",
       }, {
         scale: 1,
-        boxShadow: "0 0 25px var(--neon-blue), 0 0 50px rgba(0, 243, 255, 0.3)",
+        boxShadow: "0 0 25px var(--neon-blue), 0 0 50px rgba(0, 212, 255, 0.3)",
         duration: 0.6,
         ease: "back.out(2)",
         scrollTrigger: {
@@ -101,7 +101,7 @@
 
       // Node continuous pulse after appearing
       gsap.to(node, {
-        boxShadow: "0 0 35px var(--neon-blue), 0 0 60px rgba(0, 243, 255, 0.4)",
+        boxShadow: "0 0 35px var(--neon-blue), 0 0 60px rgba(0, 212, 255, 0.4)",
         duration: 1.5,
         repeat: -1,
         yoyo: true,
@@ -151,7 +151,7 @@
             </div>
             <div class="meta">
               <span class="date">{exp.date}</span>
-              <span class="location"> • {exp.location}</span>
+              <span class="location"> · {exp.location}</span>
             </div>
             <p>{exp.description}</p>
             <div class="skills-list">
@@ -255,7 +255,7 @@
     transform: translate(-50%, -50%);
     width: 30px;
     height: 30px;
-    border: 1px solid rgba(0, 243, 255, 0.3);
+    border: 1px solid rgba(0, 212, 255, 0.3);
     border-radius: 50%;
     animation: nodeRingPulse 2s ease-out infinite;
   }
@@ -313,7 +313,6 @@
 
   .date {
     color: var(--star-gold);
-    text-shadow: 0 0 8px rgba(255, 214, 10, 0.3);
   }
 
   p {
@@ -394,11 +393,11 @@
     @keyframes sda-timeline-draw {
       from {
         clip-path: inset(0 0 100% 0);
-        box-shadow: 0 0 5px var(--neon-blue), 0 0 10px rgba(0, 243, 255, 0.1);
+        box-shadow: 0 0 5px var(--neon-blue), 0 0 10px rgba(0, 212, 255, 0.1);
       }
       to {
         clip-path: inset(0 0 0% 0);
-        box-shadow: 0 0 30px var(--neon-blue), 0 0 60px rgba(0, 243, 255, 0.3);
+        box-shadow: 0 0 30px var(--neon-blue), 0 0 60px rgba(0, 212, 255, 0.3);
       }
     }
 

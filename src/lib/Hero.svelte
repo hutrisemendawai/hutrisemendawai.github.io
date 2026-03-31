@@ -190,7 +190,7 @@
           <div class="wheel"></div>
         </div>
       </div>
-      <p>Scroll to explore Hutri-SpacePlanet</p>
+      <p>Scroll to explore</p>
     </div>
   </div>
 
@@ -252,16 +252,16 @@
     border-radius: 50%;
     background: radial-gradient(
       circle at 30% 30%,
-      #9d4edd,
+      #8b5cf6,
       #3c096c 40%,
       #050510 80%
     );
     box-shadow:
-      0 0 120px rgba(157, 78, 221, 0.4),
-      0 0 60px rgba(0, 243, 255, 0.1),
+      0 0 80px rgba(139, 92, 246, 0.25),
+      0 0 40px rgba(0, 212, 255, 0.06),
       inset -50px -50px 100px rgba(0, 0, 0, 0.8);
     filter: blur(2px);
-    opacity: 0.7;
+    opacity: 0.5;
     position: relative;
     will-change: transform;
   }
@@ -274,8 +274,8 @@
     width: 130%;
     height: 130%;
     border-radius: 50%;
-    border: 2px solid rgba(157, 78, 221, 0.15);
-    box-shadow: 0 0 20px rgba(157, 78, 221, 0.1);
+    border: 2px solid rgba(139, 92, 246, 0.15);
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.1);
   }
 
   .asteroids {
@@ -405,7 +405,7 @@
     width: 200%;
     height: 200%;
     transform: translate(-50%, -50%);
-    background: radial-gradient(circle, rgba(0, 243, 255, 0.05) 0%, transparent 60%);
+    background: radial-gradient(circle, rgba(0, 212, 255, 0.05) 0%, transparent 60%);
     pointer-events: none;
     animation: ctaGlowPulse 3s ease-in-out infinite;
   }
@@ -430,11 +430,10 @@
 
   .scroll-indicator p {
     font-family: "Space Mono", monospace;
-    font-size: 0.85rem;
-    color: var(--neon-blue);
+    font-size: 0.7rem;
+    color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 2px;
-    animation: glowPulse 3s ease-in-out infinite;
+    letter-spacing: 3px;
   }
 
   .mouse-wrapper {
@@ -448,7 +447,7 @@
     position: absolute;
     width: 50px;
     height: 70px;
-    border: 1px solid rgba(0, 243, 255, 0.3);
+    border: 1px solid rgba(0, 212, 255, 0.3);
     border-radius: 25px;
   }
 
@@ -458,7 +457,7 @@
     border: 2px solid var(--neon-blue);
     border-radius: 15px;
     position: relative;
-    box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
   }
 
   .wheel {

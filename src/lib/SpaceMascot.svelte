@@ -83,7 +83,7 @@
     <!-- Helmet glow -->
     <defs>
       <radialGradient id="helmetGlow" cx="50%" cy="30%" r="60%">
-        <stop offset="0%" stop-color="rgba(0, 243, 255, 0.15)" />
+        <stop offset="0%" stop-color="rgba(0, 212, 255, 0.15)" />
         <stop offset="100%" stop-color="transparent" />
       </radialGradient>
       <radialGradient id="visorGrad" cx="40%" cy="35%" r="55%">
@@ -111,10 +111,10 @@
       />
       
       <!-- Chest panel -->
-      <rect x="50" y="85" width="20" height="15" rx="3" fill="#1a1a3a" stroke="var(--neon-blue, #00f3ff)" stroke-width="0.8" opacity="0.8" />
+      <rect x="50" y="85" width="20" height="15" rx="3" fill="#1a1a3a" stroke="var(--neon-blue, #00d4ff)" stroke-width="0.8" opacity="0.8" />
       <circle cx="55" cy="90" r="2" fill="var(--aurora-green, #00ff88)" class="blink-light" />
       <circle cx="62" cy="90" r="2" fill="var(--star-gold, #ffd60a)" class="blink-light-2" />
-      <rect x="53" y="94" width="14" height="3" rx="1" fill="var(--neon-blue, #00f3ff)" opacity="0.4" />
+      <rect x="53" y="94" width="14" height="3" rx="1" fill="var(--neon-blue, #00d4ff)" opacity="0.4" />
 
       <!-- Arms -->
       <g class="left-arm {isWaving ? 'wave-anim' : ''}">
@@ -166,7 +166,7 @@
       <ellipse cx="60" cy="48" rx="26" ry="28" fill="#d8d8e8" stroke="#b8b8c8" stroke-width="1.5" />
       
       <!-- Visor -->
-      <ellipse cx="60" cy="48" rx="20" ry="22" fill="url(#visorGrad)" stroke="var(--neon-blue, #00f3ff)" stroke-width="1" filter="url(#neonGlow)" />
+      <ellipse cx="60" cy="48" rx="20" ry="22" fill="url(#visorGrad)" stroke="var(--neon-blue, #00d4ff)" stroke-width="1" filter="url(#neonGlow)" />
       
       <!-- Helmet reflection -->
       <ellipse cx="52" cy="38" rx="8" ry="4" fill="rgba(255,255,255,0.08)" transform="rotate(-15 52 38)" />
@@ -181,7 +181,7 @@
           cx={52 + leftPupil.x}
           cy={46 + leftPupil.y}
           r="3"
-          fill="var(--neon-blue, #00f3ff)"
+          fill="var(--neon-blue, #00d4ff)"
           filter="url(#neonGlow)"
         />
         <circle
@@ -200,7 +200,7 @@
           cx={68 + rightPupil.x}
           cy={46 + rightPupil.y}
           r="3"
-          fill="var(--neon-blue, #00f3ff)"
+          fill="var(--neon-blue, #00d4ff)"
           filter="url(#neonGlow)"
         />
         <circle
@@ -214,16 +214,16 @@
 
       <!-- Mouth -->
       {#if mouthState === "idle"}
-        <line x1="55" y1="58" x2="65" y2="58" stroke="var(--neon-blue, #00f3ff)" stroke-width="1.5" stroke-linecap="round" opacity="0.6" />
+        <line x1="55" y1="58" x2="65" y2="58" stroke="var(--neon-blue, #00d4ff)" stroke-width="1.5" stroke-linecap="round" opacity="0.6" />
       {:else if mouthState === "happy"}
         <path d="M54 56 Q60 62 66 56" fill="none" stroke="var(--aurora-green, #00ff88)" stroke-width="1.5" stroke-linecap="round" />
       {:else if mouthState === "surprised"}
-        <ellipse cx="60" cy="58" rx="4" ry="5" fill="#0d1b2a" stroke="var(--neon-blue, #00f3ff)" stroke-width="1" />
+        <ellipse cx="60" cy="58" rx="4" ry="5" fill="#0d1b2a" stroke="var(--neon-blue, #00d4ff)" stroke-width="1" />
       {/if}
 
       <!-- Antenna -->
       <line x1="60" y1="20" x2="60" y2="10" stroke="#b8b8c8" stroke-width="1.5" />
-      <circle cx="60" cy="8" r="3" fill="var(--neon-blue, #00f3ff)" class="antenna-glow" filter="url(#neonGlow)" />
+      <circle cx="60" cy="8" r="3" fill="var(--neon-blue, #00d4ff)" class="antenna-glow" filter="url(#neonGlow)" />
     </g>
 
     <!-- Helmet glow overlay -->
@@ -259,14 +259,14 @@
   .mascot-svg {
     width: 100px;
     height: 130px;
-    filter: drop-shadow(0 0 15px rgba(0, 243, 255, 0.2));
+    filter: drop-shadow(0 0 15px rgba(0, 212, 255, 0.2));
   }
 
   .mascot-label {
     font-family: 'Space Mono', monospace;
     font-size: 0.75rem;
-    color: var(--neon-blue, #00f3ff);
-    text-shadow: 0 0 8px rgba(0, 243, 255, 0.4);
+    color: var(--neon-blue, #00d4ff);
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.4);
     text-align: center;
     opacity: 0.8;
     transition: opacity 0.3s ease;

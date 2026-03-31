@@ -247,7 +247,7 @@
 
   .project-info h4 {
     font-size: 1rem;
-    color: var(--neon-blue, #00f3ff);
+    color: var(--neon-blue, #00d4ff);
     font-weight: 400;
     margin: 0 0 0.8rem;
   }
@@ -332,7 +332,7 @@
     right: 1%;
     transform: rotate(4deg);
     z-index: 4;
-    border-color: rgba(157, 78, 221, 0.4);
+    border-color: rgba(139, 92, 246, 0.4);
   }
 
   /* Bottom-left tertiary */
@@ -343,7 +343,7 @@
     left: 1%;
     transform: rotate(-5deg);
     z-index: 2;
-    border-color: rgba(0, 243, 255, 0.3);
+    border-color: rgba(0, 212, 255, 0.3);
   }
 
   .card-inner {
@@ -375,10 +375,10 @@
     z-index: 2;
     background: radial-gradient(circle at 50% 10%, #060913 0%, #010206 60%);
     box-shadow:
-      inset 0 15px 50px rgba(0, 243, 255, 0.15),
+      inset 0 15px 50px rgba(0, 212, 255, 0.15),
       inset 0 -100px 100px #000,
-      0 0 120px rgba(0, 243, 255, 0.08);
-    border-top: 2px solid rgba(0, 243, 255, 0.35);
+      0 0 120px rgba(0, 212, 255, 0.08);
+    border-top: 2px solid rgba(0, 212, 255, 0.35);
     overflow: hidden;
     transform-origin: center center;
     opacity: 0.7;
@@ -391,7 +391,7 @@
     transform: translateX(-50%);
     width: 60%;
     height: 80px;
-    background: radial-gradient(ellipse at center, rgba(0, 243, 255, 0.45) 0%, transparent 70%);
+    background: radial-gradient(ellipse at center, rgba(0, 212, 255, 0.45) 0%, transparent 70%);
     filter: blur(25px);
     z-index: 1;
   }
@@ -418,7 +418,7 @@
     height: 98%;
     transform: translate(-50%, -50%);
     border-radius: 50%;
-    border: 1px dashed rgba(0, 243, 255, 0.2);
+    border: 1px dashed rgba(0, 212, 255, 0.2);
     z-index: 3;
   }
 
@@ -430,9 +430,9 @@
     height: 94%;
     transform: translate(-50%, -50%);
     border-radius: 50%;
-    border: 2px solid rgba(157, 78, 221, 0.08);
-    border-top: 2px solid rgba(157, 78, 221, 0.35);
-    border-bottom: 2px solid rgba(157, 78, 221, 0.35);
+    border: 2px solid rgba(139, 92, 246, 0.08);
+    border-top: 2px solid rgba(139, 92, 246, 0.35);
+    border-bottom: 2px solid rgba(139, 92, 246, 0.35);
     z-index: 4;
   }
 

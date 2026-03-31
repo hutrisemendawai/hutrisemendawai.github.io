@@ -190,7 +190,7 @@
     background: var(--neon-blue);
     border-radius: 1px;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 0 8px rgba(0, 243, 255, 0.4);
+    box-shadow: 0 0 8px rgba(0, 212, 255, 0.4);
   }
 
   .nav-link.active .link-indicator {
@@ -204,8 +204,8 @@
     font-family: 'Space Mono', monospace;
     font-size: 0.8rem;
     color: var(--neon-blue);
-    background: rgba(0, 243, 255, 0.06);
-    border: 1px solid rgba(0, 243, 255, 0.3);
+    background: rgba(0, 212, 255, 0.06);
+    border: 1px solid rgba(0, 212, 255, 0.3);
     border-radius: 50px;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -214,9 +214,9 @@
   }
 
   .nav-cta:hover {
-    background: rgba(0, 243, 255, 0.12);
+    background: rgba(0, 212, 255, 0.12);
     border-color: var(--neon-blue);
-    box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
     transform: translateY(-1px);
   }
 

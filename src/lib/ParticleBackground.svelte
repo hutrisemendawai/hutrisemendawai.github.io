@@ -9,7 +9,7 @@
   let mouse = { x: -1000, y: -1000, radius: 150 };
   let lastScrollY;
 
-  const colors = ['#ffffff', '#00f3ff', '#9d4edd', '#ffd60a', '#00ff88'];
+  const colors = ['#ffffff', '#00d4ff', '#8b5cf6', '#f59e0b', '#10b981'];
 
   class Particle {
     constructor() {

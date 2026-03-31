@@ -151,8 +151,8 @@
     font-weight: 700;
     color: var(--starlight, #ffffff);
     text-shadow:
-      0 0 10px rgba(0, 243, 255, 0.4),
-      0 0 30px rgba(0, 243, 255, 0.15);
+      0 0 10px rgba(0, 212, 255, 0.4),
+      0 0 30px rgba(0, 212, 255, 0.15);
     will-change: transform, opacity;
     transform-style: preserve-3d;
     cursor: default;
@@ -161,11 +161,11 @@
   }
 
   .kinetic-char:hover {
-    color: var(--neon-blue, #00f3ff);
+    color: var(--neon-blue, #00d4ff);
     text-shadow:
-      0 0 20px rgba(0, 243, 255, 0.8),
-      0 0 40px rgba(0, 243, 255, 0.4),
-      0 0 60px rgba(0, 243, 255, 0.2);
+      0 0 20px rgba(0, 212, 255, 0.8),
+      0 0 40px rgba(0, 212, 255, 0.4),
+      0 0 60px rgba(0, 212, 255, 0.2);
   }
 
   .kinetic-char.space {

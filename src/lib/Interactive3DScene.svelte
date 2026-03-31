@@ -152,11 +152,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid rgba(0, 243, 255, 0.3);
+    border: 1px solid rgba(0, 212, 255, 0.3);
     background: rgba(5, 5, 16, 0.7);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
-    box-shadow: inset 0 0 20px rgba(0, 243, 255, 0.05);
+    box-shadow: inset 0 0 20px rgba(0, 212, 255, 0.05);
   }
 
   .front  { transform: translateZ(40px); }
@@ -181,9 +181,9 @@
   .face-label {
     font-family: 'Space Mono', monospace;
     font-size: 0.55rem;
-    color: var(--neon-blue, #00f3ff);
+    color: var(--neon-blue, #00d4ff);
     letter-spacing: 2px;
-    text-shadow: 0 0 6px rgba(0, 243, 255, 0.5);
+    text-shadow: 0 0 6px rgba(0, 212, 255, 0.5);
   }
 
   /* Inner core glow */
@@ -194,7 +194,7 @@
     width: 30px;
     height: 30px;
     transform: translate(-50%, -50%);
-    background: radial-gradient(circle, rgba(0, 243, 255, 0.3) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(0, 212, 255, 0.3) 0%, transparent 70%);
     border-radius: 50%;
     animation: coreGlow 2s ease-in-out infinite;
   }
@@ -207,7 +207,7 @@
   /* Orbital rings */
   .orbit {
     position: absolute;
-    border: 1px solid rgba(0, 243, 255, 0.1);
+    border: 1px solid rgba(0, 212, 255, 0.1);
     border-radius: 50%;
     pointer-events: none;
   }
@@ -216,14 +216,14 @@
     width: 160px;
     height: 160px;
     animation: orbitSpin 8s linear infinite;
-    border-top-color: rgba(0, 243, 255, 0.3);
+    border-top-color: rgba(0, 212, 255, 0.3);
   }
 
   .orbit-2 {
     width: 180px;
     height: 180px;
     animation: orbitSpin 12s linear infinite reverse;
-    border-right-color: rgba(157, 78, 221, 0.3);
+    border-right-color: rgba(139, 92, 246, 0.3);
     transform: rotateX(60deg);
   }
 
@@ -238,14 +238,14 @@
     width: 4px;
     height: 4px;
     border-radius: 50%;
-    background: var(--neon-blue, #00f3ff);
-    box-shadow: 0 0 8px var(--neon-blue, #00f3ff);
+    background: var(--neon-blue, #00d4ff);
+    box-shadow: 0 0 8px var(--neon-blue, #00d4ff);
     animation: particleOrbit 6s linear infinite;
   }
 
   .p1 { animation-duration: 5s; animation-delay: 0s; }
   .p2 { animation-duration: 7s; animation-delay: -2s; }
-  .p3 { animation-duration: 4s; animation-delay: -1s; background: var(--nebula-purple, #9d4edd); box-shadow: 0 0 8px var(--nebula-purple, #9d4edd); }
+  .p3 { animation-duration: 4s; animation-delay: -1s; background: var(--nebula-purple, #8b5cf6); box-shadow: 0 0 8px var(--nebula-purple, #8b5cf6); }
   .p4 { animation-duration: 6s; animation-delay: -3s; background: var(--star-gold, #ffd60a); box-shadow: 0 0 8px var(--star-gold, #ffd60a); }
 
   @keyframes particleOrbit {

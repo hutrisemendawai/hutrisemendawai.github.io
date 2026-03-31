@@ -96,7 +96,7 @@
     // ===== BRAND HEARTBEAT GLOW =====
     gsap.to(brandRef, {
       textShadow:
-        "0 0 20px rgba(0, 243, 255, 0.6), 0 0 40px rgba(0, 243, 255, 0.3)",
+        "0 0 20px rgba(0, 212, 255, 0.6), 0 0 40px rgba(0, 212, 255, 0.3)",
       duration: 1.5,
       repeat: -1,
       yoyo: true,
@@ -319,7 +319,7 @@
     transform: translate(-50%, -50%);
     background: radial-gradient(
       circle,
-      rgba(0, 243, 255, 0.08) 0%,
+      rgba(0, 212, 255, 0.08) 0%,
       transparent 60%
     );
     opacity: 0;
@@ -368,7 +368,7 @@
     left: 0;
     width: 100%;
     height: 0%;
-    background: linear-gradient(to top, rgba(157, 78, 221, 0.2), transparent);
+    background: linear-gradient(to top, rgba(139, 92, 246, 0.2), transparent);
     transition: height 0.4s ease;
     z-index: -1;
   }

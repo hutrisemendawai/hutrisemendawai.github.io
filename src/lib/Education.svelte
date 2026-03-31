@@ -267,7 +267,7 @@
     height: 100%;
     background: radial-gradient(
       300px circle at var(--spotlight-x, -100px) var(--spotlight-y, -100px),
-      rgba(0, 243, 255, 0.08),
+      rgba(0, 212, 255, 0.08),
       transparent 60%
     );
     pointer-events: none;
