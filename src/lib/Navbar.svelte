@@ -163,7 +163,7 @@
     background: none;
     border: none;
     color: var(--text-muted);
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 0.88rem;
     font-weight: 500;
     padding: 8px 16px;

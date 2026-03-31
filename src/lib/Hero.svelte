@@ -314,7 +314,6 @@
     gap: 10px;
     flex-wrap: wrap;
     justify-content: center;
-    font-family: 'Inter', sans-serif;
   }
 
   .role-badge {

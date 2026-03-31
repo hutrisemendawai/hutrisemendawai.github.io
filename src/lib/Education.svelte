@@ -315,7 +315,7 @@
     font-size: 1rem;
     color: var(--neon-blue);
     margin-bottom: 1rem;
-    font-family: "Outfit", sans-serif;
+    font-family: "Inter", sans-serif;
     font-weight: 400;
   }
 
