@@ -64,7 +64,7 @@
 </script>
 
 <div class="projects-wrapper" bind:this={sectionRef}>
-  <section class="projects-section">
+  <section class="projects-section" id="projects">
 
     <div class="section-header">
       <h2><span class="slash">/</span> Featured Projects</h2>
@@ -139,7 +139,7 @@
   /* ===== SECTION ===== */
   .projects-section {
     width: 100%;
-    background: #020308;
+    background: var(--space-black);
     overflow: hidden;
     z-index: 10;
     opacity: 1;
@@ -147,13 +147,30 @@
     display: block;
     padding: 0 0 20vh;
     min-height: auto;
+    position: relative;
+  }
+
+  /* Gradient fade at top for smooth entry from previous section.
+     Use rgba with actual --space-black value to avoid grey midpoint
+     when interpolating to transparent. */
+  .projects-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background: linear-gradient(to bottom, #050510, rgba(5, 5, 16, 0));
+    pointer-events: none;
+    z-index: 1;
   }
 
   /* ===== HEADER ===== */
   .section-header {
-    padding: 4rem 0 3rem;
+    padding: 5rem 0 3rem;
     text-align: center;
     z-index: 20;
+    position: relative;
   }
 
   .section-header h2 {
@@ -214,7 +231,7 @@
     line-height: 1;
     pointer-events: none;
     user-select: none;
-    z-index: -1;
+    z-index: 0;
   }
 
   .project-info h3 {
@@ -451,5 +468,35 @@
 
     .project-visuals { flex: 0 0 auto; width: 100%; height: 260px; }
     .planet-horizon { width: 200vw; height: 200vw; margin-left: -100vw; }
+  }
+
+  /* Alternating layout on desktop */
+  @media (min-width: 1025px) {
+    .project-slide:nth-child(even) {
+      flex-direction: row-reverse;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .slides-area { gap: 3rem; padding: 0 4vw; }
+
+    .section-header h2 { font-size: 2rem; }
+    .section-sub { font-size: 0.85rem; }
+
+    .project-info h3 { font-size: 1.4rem; }
+    .project-info h4 { font-size: 0.9rem; }
+    .desc { font-size: 0.8rem; line-height: 1.65; }
+
+    .date-badge { font-size: 0.72rem; }
+    .tech-tag { font-size: 0.7rem; padding: 3px 10px; }
+
+    .project-visuals { height: 220px; }
+
+    .card-main { width: 60%; height: 54%; }
+    .card-top { width: 40%; height: 34%; }
+    .card-btm { width: 38%; height: 32%; }
+
+    .planet-container { height: 30vh; }
+    .planet-horizon { width: 220vw; height: 220vw; margin-left: -110vw; }
   }
 </style>
