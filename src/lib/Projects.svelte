@@ -10,6 +10,34 @@
   let sectionRef;
   let planetRef;
 
+  // Lightbox state
+  let lightboxOpen = $state(false);
+  let lightboxSrc = $state('');
+  let lightboxAlt = $state('');
+
+  function openLightbox(src, alt) {
+    lightboxSrc = src;
+    lightboxAlt = alt;
+    lightboxOpen = true;
+  }
+
+  function closeLightbox() {
+    lightboxOpen = false;
+  }
+
+  function handleOverlayClick(e) {
+    // Close when clicking the overlay itself (not children)
+    if (e.target === e.currentTarget) {
+      closeLightbox();
+    }
+  }
+
+  function handleKeydown(e) {
+    if (e.key === 'Escape' && lightboxOpen) {
+      closeLightbox();
+    }
+  }
+
   const projects = [{
       title: "Data Collection for Fishery Activities",
       subtitle: "- New Generation -",
@@ -122,15 +150,21 @@
 
           <div class="project-visuals">
             {#if project.images[0]?.startsWith('http')}
-              <div class="card card-main">
-                <img src={project.images[0]} alt="{project.title} screenshot 1" class="card-screenshot" />
-              </div>
-              <div class="card card-top">
-                <img src={project.images[1]} alt="{project.title} screenshot 2" class="card-screenshot" />
-              </div>
-              <div class="card card-btm">
-                <img src={project.images[2]} alt="{project.title} screenshot 3" class="card-screenshot" />
-              </div>
+              {#if project.images[0]}
+                <button class="card card-main card-clickable" type="button" onclick={() => openLightbox(project.images[0], `${project.title} screenshot 1`)}>
+                  <img src={project.images[0]} alt="{project.title} screenshot 1" class="card-screenshot" />
+                </button>
+              {/if}
+              {#if project.images[1]}
+                <button class="card card-top card-clickable" type="button" onclick={() => openLightbox(project.images[1], `${project.title} screenshot 2`)}>
+                  <img src={project.images[1]} alt="{project.title} screenshot 2" class="card-screenshot" />
+                </button>
+              {/if}
+              {#if project.images[2]}
+                <button class="card card-btm card-clickable" type="button" onclick={() => openLightbox(project.images[2], `${project.title} screenshot 3`)}>
+                  <img src={project.images[2]} alt="{project.title} screenshot 3" class="card-screenshot" />
+                </button>
+              {/if}
             {:else}
               <div class="card card-main">
                 <div class="card-inner">
@@ -159,6 +193,20 @@
 
   </section>
 </div>
+
+<!-- Lightbox Modal -->
+<svelte:window onkeydown={handleKeydown} />
+{#if lightboxOpen}
+  <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+  <!-- svelte-ignore a11y_interactive_supports_focus -->
+  <!-- svelte-ignore a11y_click_events_have_key_events -->
+  <div class="lightbox-overlay" role="dialog" aria-modal="true" aria-label="Screenshot detail view" tabindex="-1" onclick={handleOverlayClick}>
+    <button class="lightbox-close" type="button" onclick={closeLightbox} aria-label="Close">✕</button>
+    <div class="lightbox-content">
+      <img src={lightboxSrc} alt={lightboxAlt} class="lightbox-image" />
+    </div>
+  </div>
+{/if}
 
 <style>
   /* ===== WRAPPER ===== */
@@ -404,14 +452,14 @@
     height: 120vw;
     border-radius: 50%;
     pointer-events: none;
-    z-index: 2;
+    z-index: 1;
     background: radial-gradient(circle at 50% 10%, #060913 0%, #010206 60%);
     box-shadow:
       inset 0 15px 50px rgba(0, 212, 255, 0.15),
       inset 0 -100px 100px #000,
       0 0 120px rgba(0, 212, 255, 0.08);
     border-top: 2px solid rgba(0, 212, 255, 0.35);
-    overflow: hidden;
+    overflow: visible;
     transform-origin: center center;
     opacity: 0.7;
   }
@@ -451,7 +499,7 @@
     transform: translate(-50%, -50%);
     border-radius: 50%;
     border: 1px dashed rgba(0, 212, 255, 0.2);
-    z-index: 3;
+    z-index: 1;
   }
 
   .planet-ring-2 {
@@ -465,7 +513,7 @@
     border: 2px solid rgba(139, 92, 246, 0.08);
     border-top: 2px solid rgba(139, 92, 246, 0.35);
     border-bottom: 2px solid rgba(139, 92, 246, 0.35);
-    z-index: 4;
+    z-index: 1;
   }
 
   .planet-decorator {
@@ -473,7 +521,7 @@
     background: var(--neon-blue);
     box-shadow: 0 0 15px var(--neon-blue);
     border-radius: 10px;
-    z-index: 5;
+    z-index: 2;
   }
   .dec-1 { top: 5%; left: 30%; width: 80px; height: 3px; transform: rotate(15deg); }
   .dec-2 { top: 8%; right: 25%; width: 40px; height: 3px; transform: rotate(-20deg); background: var(--nebula-purple); box-shadow: 0 0 15px var(--nebula-purple); }
@@ -565,6 +613,109 @@
     @keyframes sda-planet-rotate {
       from { transform: translateX(-50%) rotate(0deg); }
       to { transform: translateX(-50%) rotate(30deg); }
+    }
+  }
+
+  /* ===== CLICKABLE CARDS ===== */
+  .card-clickable {
+    cursor: pointer;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .card-clickable:hover {
+    transform: scale(1.05);
+    border-color: rgba(0, 212, 255, 0.4);
+    box-shadow: 0 0 24px rgba(0, 212, 255, 0.2), 0 12px 30px rgba(0, 0, 0, 0.5);
+  }
+
+  .card-clickable.card-main:hover {
+    transform: translate(-50%, -50%) rotate(-2deg) scale(1.05);
+  }
+
+  .card-clickable:active {
+    transform: scale(0.97);
+  }
+
+  .card-clickable.card-main:active {
+    transform: translate(-50%, -50%) rotate(-2deg) scale(0.97);
+  }
+
+  /* ===== LIGHTBOX ===== */
+  .lightbox-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    animation: lightbox-fade-in 0.3s ease forwards;
+    cursor: pointer;
+  }
+
+  .lightbox-content {
+    position: relative;
+    max-width: 90vw;
+    max-height: 85vh;
+    animation: lightbox-zoom-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    cursor: default;
+  }
+
+  .lightbox-image {
+    display: block;
+    max-width: 100%;
+    max-height: 85vh;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0, 212, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    object-fit: contain;
+  }
+
+  .lightbox-close {
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(5, 5, 16, 0.8);
+    color: #fff;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    z-index: 10001;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
+  .lightbox-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(0, 212, 255, 0.5);
+    transform: rotate(90deg);
+  }
+
+  @keyframes lightbox-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes lightbox-zoom-in {
+    from {
+      opacity: 0;
+      transform: scale(0.85);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
     }
   }
 </style>
