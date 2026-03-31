@@ -141,13 +141,14 @@
     position: relative;
     width: 100vw;
     margin-left: calc(-50vw + 50%);
+    overflow: hidden;
   }
 
   /* ===== SECTION ===== */
   .projects-section {
     width: 100%;
     background: var(--space-black);
-    overflow: hidden;
+    overflow: visible;
     z-index: 10;
     opacity: 1;
     transform: none;

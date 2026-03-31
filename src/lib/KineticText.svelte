@@ -42,11 +42,11 @@
           rotateX: 0,
           scale: 1,
           stagger: {
-            each: 0.03,
+            each: 0.04,
             from: "start",
           },
-          duration: 0.8,
-          ease: "back.out(1.7)",
+          duration: 1,
+          ease: "back.out(1.2)",
           scrollTrigger: {
             trigger: containerEl,
             start: "top 85%",
@@ -58,12 +58,12 @@
       // Continuous wave after reveal
       charEls.forEach((char, i) => {
         gsap.to(char, {
-          y: -8,
-          duration: 0.6,
+          y: -5,
+          duration: 1.8,
           repeat: -1,
           yoyo: true,
           ease: "sine.inOut",
-          delay: i * 0.05,
+          delay: i * 0.08,
         });
       });
     } else if (variant === "path") {
