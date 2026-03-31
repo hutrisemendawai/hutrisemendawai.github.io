@@ -96,7 +96,7 @@
     // ===== BRAND HEARTBEAT GLOW =====
     gsap.to(brandRef, {
       textShadow:
-        "0 0 20px rgba(0, 243, 255, 0.6), 0 0 40px rgba(0, 243, 255, 0.3)",
+        "0 0 20px rgba(0, 212, 255, 0.6), 0 0 40px rgba(0, 212, 255, 0.3)",
       duration: 1.5,
       repeat: -1,
       yoyo: true,
@@ -217,7 +217,7 @@
     position: relative;
     border-top: 1px solid var(--glass-border);
     margin-top: 100px;
-    background: linear-gradient(to top, var(--space-black), transparent);
+    background: linear-gradient(to top, rgba(5, 5, 16, 0.95), transparent);
     overflow: hidden;
   }
 
@@ -281,13 +281,13 @@
     justify-content: center;
   }
 
-  /* ===== SOCIAL LINKS (Uiverse.io inspired) ===== */
+  /* ===== SOCIAL LINKS (refined) ===== */
   .social-link {
     display: flex;
     align-items: center;
     gap: 8px;
     font-family: "Space Mono", monospace;
-    font-size: 1rem;
+    font-size: 0.88rem;
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -298,15 +298,16 @@
     position: relative;
     overflow: hidden;
     text-decoration: none;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     will-change: transform;
   }
 
   .social-link:hover {
     color: var(--neon-blue);
-    border-color: var(--neon-blue);
-    background: rgba(0, 243, 255, 0.05);
-    text-shadow: 0 0 8px var(--neon-blue);
+    border-color: rgba(0, 212, 255, 0.3);
+    background: rgba(0, 212, 255, 0.05);
+    text-shadow: none;
+    transform: translateY(-2px);
   }
 
   .link-glow {
@@ -318,7 +319,7 @@
     transform: translate(-50%, -50%);
     background: radial-gradient(
       circle,
-      rgba(0, 243, 255, 0.08) 0%,
+      rgba(0, 212, 255, 0.08) 0%,
       transparent 60%
     );
     opacity: 0;
@@ -344,15 +345,15 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 14px 28px;
+    padding: 12px 24px;
     background: transparent;
-    border: 2px solid var(--nebula-purple);
+    border: 1px solid rgba(139, 92, 246, 0.3);
     border-radius: 50px;
     color: var(--starlight);
     font-family: "Space Mono", monospace;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
     text-transform: uppercase;
@@ -367,7 +368,7 @@
     left: 0;
     width: 100%;
     height: 0%;
-    background: linear-gradient(to top, rgba(157, 78, 221, 0.2), transparent);
+    background: linear-gradient(to top, rgba(139, 92, 246, 0.2), transparent);
     transition: height 0.4s ease;
     z-index: -1;
   }
@@ -377,11 +378,10 @@
   }
 
   .rocket-btn:hover {
-    border-color: var(--neon-blue);
+    border-color: rgba(0, 212, 255, 0.4);
     box-shadow:
-      0 0 20px rgba(157, 78, 221, 0.3),
-      0 0 40px rgba(157, 78, 221, 0.1);
-    transform: translateY(-5px);
+      0 0 15px rgba(139, 92, 246, 0.15);
+    transform: translateY(-3px);
   }
 
   .rocket-icon {

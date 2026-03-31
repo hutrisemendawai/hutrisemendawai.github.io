@@ -144,7 +144,8 @@
 
 <section bind:this={eduContainer} id="education" class="edu-section">
   <div class="content-wrapper">
-    <h2 bind:this={sectionTitle}><span class="neon-text">/</span> Education & Certifications</h2>
+    <span class="section-label">Academic background</span>
+    <h2 bind:this={sectionTitle}>Education & Certifications</h2>
 
     <div class="subtitle"><h3>Academic Journey</h3></div>
     <div bind:this={eduCards} class="cards-grid">
@@ -207,16 +208,7 @@
     font-size: 2.5rem;
     margin-bottom: 3rem;
     text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .neon-text {
-    color: var(--neon-blue);
-    text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
-    animation: glowPulse 3s ease-in-out infinite;
+    letter-spacing: -1px;
   }
 
   .subtitle {
@@ -245,13 +237,13 @@
   .cert-card {
     position: relative;
     overflow: hidden;
-    background: var(--glass-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(15, 15, 35, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--glass-border);
-    border-radius: 16px;
+    border-radius: 20px;
     padding: 2rem;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     will-change: transform;
     transform-style: preserve-3d;
     cursor: default;
@@ -260,10 +252,10 @@
 
   .edu-card:hover,
   .cert-card:hover {
-    border-color: rgba(0, 243, 255, 0.3);
+    border-color: rgba(0, 212, 255, 0.2);
     box-shadow:
-      0 15px 35px rgba(0, 243, 255, 0.15),
-      0 0 30px rgba(0, 243, 255, 0.05);
+      0 15px 35px rgba(0, 212, 255, 0.08),
+      0 0 20px rgba(0, 212, 255, 0.03);
   }
 
   /* Spotlight cursor follower on card surface */
@@ -275,7 +267,7 @@
     height: 100%;
     background: radial-gradient(
       300px circle at var(--spotlight-x, -100px) var(--spotlight-y, -100px),
-      rgba(0, 243, 255, 0.08),
+      rgba(0, 212, 255, 0.08),
       transparent 60%
     );
     pointer-events: none;
@@ -290,17 +282,17 @@
   .edu-card.highlight {
     background: linear-gradient(
       135deg,
-      rgba(157, 78, 221, 0.1),
-      rgba(0, 243, 255, 0.05)
+      rgba(139, 92, 246, 0.08),
+      rgba(0, 212, 255, 0.04)
     );
-    border-color: rgba(157, 78, 221, 0.3);
+    border-color: rgba(139, 92, 246, 0.2);
   }
 
   .edu-card.highlight:hover {
     box-shadow:
-      0 15px 40px rgba(157, 78, 221, 0.25),
-      0 0 40px rgba(157, 78, 221, 0.1);
-    border-color: rgba(157, 78, 221, 0.6);
+      0 15px 40px rgba(139, 92, 246, 0.12),
+      0 0 30px rgba(139, 92, 246, 0.05);
+    border-color: rgba(139, 92, 246, 0.35);
   }
 
   .icon {
@@ -323,7 +315,7 @@
     font-size: 1rem;
     color: var(--neon-blue);
     margin-bottom: 1rem;
-    font-family: "Outfit", sans-serif;
+    font-family: "Inter", sans-serif;
     font-weight: 400;
   }
 
