@@ -499,8 +499,8 @@
   /* ===== Interactive 3D Scene position ===== */
   .hero-3d-scene {
     position: absolute;
-    top: 10%;
-    right: 2%;
+    bottom: 12%;
+    right: 5%;
     z-index: 1;
     opacity: 0.8;
     pointer-events: none;
