@@ -2,6 +2,8 @@
   import { onMount } from "svelte";
   import gsap from "gsap";
   import rocketIcon from '../assets/rocketicon.png';
+  import SpaceMascot from './SpaceMascot.svelte';
+  import Interactive3DScene from './Interactive3DScene.svelte';
 
   let heroContainer;
   let titleChars;
@@ -10,6 +12,24 @@
   let ctaBtn;
   let scrollIndicator;
   let asteroidsContainer;
+
+  /**
+   * Navigate to a section with View Transitions API support.
+   * Falls back to smooth scroll when the API is not available.
+   * @param {string} targetId
+   */
+  function navigateWithViewTransition(targetId) {
+    const target = document.getElementById(targetId);
+    if (!target) return;
+
+    if (document.startViewTransition) {
+      document.startViewTransition(() => {
+        target.scrollIntoView({ behavior: "smooth" });
+      });
+    } else {
+      target.scrollIntoView({ behavior: "smooth" });
+    }
+  }
 
   onMount(() => {
     // ===== HERO ENTRY TIMELINE =====
@@ -98,7 +118,7 @@
       });
     }
 
-    // ===== CTA BUTTON RIPPLE =====
+    // ===== CTA BUTTON RIPPLE + VIEW TRANSITION =====
     ctaBtn.addEventListener("click", (e) => {
       const ripple = document.createElement("span");
       ripple.classList.add("ripple");
@@ -109,8 +129,8 @@
       ctaBtn.appendChild(ripple);
       setTimeout(() => ripple.remove(), 600);
 
-      // Smooth scroll to about section
-      document.getElementById("about")?.scrollIntoView({ behavior: "smooth" });
+      // Use View Transitions API for smooth navigation
+      navigateWithViewTransition("about");
     });
 
     // ===== SCROLL INDICATOR PULSE RINGS =====
@@ -139,6 +159,11 @@
     <div class="asteroids" bind:this={asteroidsContainer}></div>
   </div>
 
+  <!-- Interactive 3D Scene (Feature 3: WebGL/3D) -->
+  <div class="hero-3d-scene">
+    <Interactive3DScene />
+  </div>
+
   <div class="content">
     <h1 bind:this={titleChars}>
       {#each nameChars as { char }, i}
@@ -163,6 +188,11 @@
       </div>
       <p>Scroll to explore Hutri-SpacePlanet</p>
     </div>
+  </div>
+
+  <!-- State Machine Mascot (Feature 4: Micro-Animations) -->
+  <div class="hero-mascot">
+    <SpaceMascot />
   </div>
 </section>
 
@@ -432,6 +462,70 @@
     .cta-btn {
       padding: 12px 24px;
       font-size: 0.85rem;
+    }
+    .hero-3d-scene {
+      display: none;
+    }
+    .hero-mascot {
+      display: none;
+    }
+  }
+
+  /* ===== Interactive 3D Scene position ===== */
+  .hero-3d-scene {
+    position: absolute;
+    top: 15%;
+    right: 5%;
+    z-index: 3;
+    opacity: 0.8;
+    animation: scene3dFloat 6s ease-in-out infinite;
+  }
+
+  @keyframes scene3dFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+
+  /* ===== Space Mascot position ===== */
+  .hero-mascot {
+    position: absolute;
+    bottom: 12%;
+    left: 5%;
+    z-index: 3;
+    opacity: 0.9;
+  }
+
+  /* ===== View Transition Names ===== */
+  .planet {
+    view-transition-name: hero-planet;
+  }
+
+  h1 {
+    view-transition-name: hero-title;
+  }
+
+  /* ===== Scroll-Driven: Hero parallax shift ===== */
+  @supports (animation-timeline: scroll()) {
+    .planet-wrapper {
+      animation: hero-planet-parallax linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0% 30%;
+    }
+
+    @keyframes hero-planet-parallax {
+      from { transform: translate(-50%, -50%) scale(1); }
+      to { transform: translate(-50%, -60%) scale(0.9); opacity: 0.3; }
+    }
+
+    .scroll-indicator {
+      animation: scroll-indicator-fade linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0% 10%;
+    }
+
+    @keyframes scroll-indicator-fade {
+      from { opacity: 0.7; transform: translateX(-50%) translateY(0); }
+      to { opacity: 0; transform: translateX(-50%) translateY(20px); }
     }
   }
 </style>

@@ -371,4 +371,25 @@
       grid-template-columns: 1fr;
     }
   }
+
+  /* ===== Scroll-Driven: Education card 3D entrance ===== */
+  @supports (animation-timeline: scroll()) {
+    .edu-card,
+    .cert-card {
+      animation: sda-edu-card-enter linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 80%;
+    }
+
+    @keyframes sda-edu-card-enter {
+      from {
+        opacity: 0;
+        transform: perspective(800px) rotateY(-15deg) translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: perspective(800px) rotateY(0deg) translateY(0);
+      }
+    }
+  }
 </style>

@@ -13,7 +13,7 @@
   let rocketBtn;
 
   function scrollToTop() {
-    // Rocket launch animation then scroll
+    // Rocket launch animation then scroll with View Transition
     gsap.to(rocketBtn, {
       y: -20,
       scale: 1.2,
@@ -26,7 +26,14 @@
           duration: 0.5,
           ease: "power2.in",
           onComplete: () => {
-            window.scrollTo({ top: 0, behavior: "smooth" });
+            // Use View Transitions API for smooth scroll-to-top
+            if (document.startViewTransition) {
+              document.startViewTransition(() => {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              });
+            } else {
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }
             // Reset rocket after scroll
             setTimeout(() => {
               gsap.set(rocketBtn, { y: 0, opacity: 1, scale: 1 });
@@ -419,6 +426,37 @@
     .social-link {
       padding: 10px 18px;
       font-size: 0.85rem;
+    }
+  }
+
+  /* ===== Scroll-Driven: Warp lines grow on scroll ===== */
+  @supports (animation-timeline: scroll()) {
+    .warp-container {
+      animation: sda-warp-reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 30% entry 100%;
+    }
+
+    @keyframes sda-warp-reveal {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .brand {
+      animation: sda-brand-enter linear both;
+      animation-timeline: view();
+      animation-range: entry 20% entry 70%;
+    }
+
+    @keyframes sda-brand-enter {
+      from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
   }
 </style>

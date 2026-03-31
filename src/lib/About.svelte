@@ -2,6 +2,7 @@
   import { onMount, tick } from "svelte";
   import gsap from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import KineticText from "./KineticText.svelte";
 
   gsap.registerPlugin(ScrollTrigger);
 
@@ -143,6 +144,11 @@
 </script>
 
 <section bind:this={aboutContainer} id="about" class="about-section">
+  <!-- Feature 5: Kinetic Typography (scatter variant) -->
+  <div class="kinetic-header">
+    <KineticText text="About Me" variant="scatter" />
+  </div>
+
   <div class="neon-border-card content-container" bind:this={glassPanel}>
     <h2 bind:this={sectionTitle}><span class="neon-text">/</span> About Me</h2>
 
@@ -190,6 +196,13 @@
     align-items: center;
     opacity: 1;
     transform: none;
+  }
+
+  .kinetic-header {
+    margin-bottom: 2rem;
+    width: 100%;
+    display: flex;
+    justify-content: center;
   }
 
   .content-container {

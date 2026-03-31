@@ -387,4 +387,43 @@
       justify-content: flex-start;
     }
   }
+
+  /* ===== Scroll-Driven: Timeline line grows with scroll ===== */
+  @supports (animation-timeline: scroll()) {
+    .timeline-line {
+      animation: sda-timeline-draw linear both;
+      animation-timeline: view();
+      animation-range: entry 0% exit 70%;
+    }
+
+    @keyframes sda-timeline-draw {
+      from {
+        clip-path: inset(0 0 100% 0);
+        box-shadow: 0 0 5px var(--neon-blue), 0 0 10px rgba(0, 243, 255, 0.1);
+      }
+      to {
+        clip-path: inset(0 0 0% 0);
+        box-shadow: 0 0 30px var(--neon-blue), 0 0 60px rgba(0, 243, 255, 0.3);
+      }
+    }
+
+    .exp-card {
+      animation: sda-exp-card-slide linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 80%;
+    }
+
+    @keyframes sda-exp-card-slide {
+      from {
+        opacity: 0;
+        transform: translateX(-30px);
+        filter: blur(2px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+        filter: blur(0);
+      }
+    }
+  }
 </style>

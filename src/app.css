@@ -239,3 +239,141 @@ section {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
+
+/* ============================================ */
+/* ===== 1. VIEW TRANSITIONS API          ===== */
+/* ============================================ */
+
+/* Assign view-transition-name to key elements for morphing between states */
+.scroll-progress {
+  view-transition-name: scroll-progress;
+}
+
+/* View Transition pseudo-element styling */
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation-duration: 0.4s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+::view-transition-old(root) {
+  animation: vt-fade-out 0.3s ease-out forwards;
+}
+
+::view-transition-new(root) {
+  animation: vt-fade-in 0.3s ease-in forwards;
+}
+
+::view-transition-old(hero-planet) {
+  animation: vt-shrink 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+::view-transition-new(hero-planet) {
+  animation: vt-grow 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes vt-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes vt-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes vt-shrink {
+  from { transform: scale(1); opacity: 1; }
+  to { transform: scale(0.8); opacity: 0; }
+}
+
+@keyframes vt-grow {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* ============================================ */
+/* ===== 2. CSS SCROLL-DRIVEN ANIMATIONS  ===== */
+/* ============================================ */
+
+/* Scroll-driven parallax for sections (native CSS, no JS) */
+@supports (animation-timeline: scroll()) {
+  /* Scroll-driven scale effect on sections */
+  section {
+    animation: sda-section-reveal linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 100%;
+  }
+
+  @keyframes sda-section-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(50px) scale(0.96);
+      filter: blur(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+  }
+
+  /* Scroll progress uses scroll() timeline */
+  .scroll-progress {
+    animation: sda-progress-grow linear both;
+    animation-timeline: scroll(root);
+  }
+
+  @keyframes sda-progress-grow {
+    from { width: 0%; }
+    to { width: 100%; }
+  }
+
+  /* Neon border cards reveal with scroll */
+  .neon-border-card {
+    animation: sda-card-enter linear both;
+    animation-timeline: view();
+    animation-range: entry 10% entry 80%;
+  }
+
+  @keyframes sda-card-enter {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+      border-color: transparent;
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+      border-color: var(--glass-border);
+    }
+  }
+
+  /* Glow text intensity driven by scroll position */
+  .glow-text {
+    animation: sda-glow-intensity linear both;
+    animation-timeline: view();
+    animation-range: contain 0% contain 50%;
+  }
+
+  @keyframes sda-glow-intensity {
+    from {
+      text-shadow: 0 0 0px var(--neon-blue), 0 0 0px rgba(0, 243, 255, 0);
+    }
+    to {
+      text-shadow: 0 0 20px var(--neon-blue), 0 0 40px rgba(0, 243, 255, 0.5), 0 0 60px rgba(0, 243, 255, 0.2);
+    }
+  }
+
+  /* Scroll-driven parallax background shift */
+  .glass-panel {
+    animation: sda-parallax-shift linear both;
+    animation-timeline: view();
+    animation-range: entry 0% exit 100%;
+  }
+
+  @keyframes sda-parallax-shift {
+    from { background-position: 0% 100%; }
+    to { background-position: 100% 0%; }
+  }
+}
