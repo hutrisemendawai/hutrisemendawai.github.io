@@ -33,7 +33,7 @@
     const planetTl = gsap.timeline({
       scrollTrigger: { trigger: sectionRef, start: 'top bottom', end: 'bottom top', scrub: 1 },
     });
-    planetTl.to(planetRef, { rotation: 60, xPercent: -50, scale: 1.08, ease: 'none' });
+    planetTl.to(planetRef, { rotation: 60, scale: 1.08, ease: 'none' });
     triggers.push(planetTl.scrollTrigger);
 
     // Set initial GSAP transform to include the centering offset
