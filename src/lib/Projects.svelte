@@ -3,6 +3,7 @@
   import gsap from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
   import rocketIcon from '../assets/rocketicon.png';
+  import KineticText from './KineticText.svelte';
 
   gsap.registerPlugin(ScrollTrigger);
 
@@ -83,6 +84,10 @@
     <div class="section-header">
       <h2><span class="slash">/</span> Featured Projects</h2>
       <p class="section-sub">Exploring my universe of applications.</p>
+      <!-- Feature 5: Kinetic Typography (wave variant) -->
+      <div class="kinetic-projects-label">
+        <KineticText text="BUILD · DEPLOY · INNOVATE" variant="wave" />
+      </div>
     </div>
 
     <div class="slides-area">
@@ -193,6 +198,11 @@
     color: var(--text-muted, #8b92ba);
     font-size: 0.95rem;
     margin: 0;
+  }
+
+  .kinetic-projects-label {
+    margin-top: 1rem;
+    opacity: 0.7;
   }
 
   /* ===== SLIDES AREA ===== */
@@ -496,6 +506,38 @@
       width: 180vw;
       height: 180vw;
       bottom: -30%;
+    }
+  }
+
+  /* ===== Scroll-Driven: Project cards parallax ===== */
+  @supports (animation-timeline: scroll()) {
+    .project-slide {
+      animation: sda-project-slide linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 80%;
+    }
+
+    @keyframes sda-project-slide {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+        filter: blur(3px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+      }
+    }
+
+    .planet-container {
+      animation: sda-planet-rotate linear both;
+      animation-timeline: scroll(root);
+    }
+
+    @keyframes sda-planet-rotate {
+      from { transform: translateX(-50%) rotate(0deg); }
+      to { transform: translateX(-50%) rotate(30deg); }
     }
   }
 </style>
