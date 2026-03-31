@@ -33,8 +33,11 @@
     const planetTl = gsap.timeline({
       scrollTrigger: { trigger: sectionRef, start: 'top bottom', end: 'bottom top', scrub: 1 },
     });
-    planetTl.to(planetRef, { rotation: 90, ease: 'none' });
+    planetTl.to(planetRef, { rotation: 60, xPercent: -50, scale: 1.08, ease: 'none' });
     triggers.push(planetTl.scrollTrigger);
+
+    // Set initial GSAP transform to include the centering offset
+    gsap.set(planetRef, { xPercent: -50 });
 
     const tweens = [];
     gsap.utils.toArray('.project-slide').forEach((slide) => {
@@ -65,6 +68,17 @@
 
 <div class="projects-wrapper" bind:this={sectionRef}>
   <section class="projects-section" id="projects">
+
+    <!-- Planet integrated as background decoration -->
+    <div class="planet-container" bind:this={planetRef}>
+      <div class="planet-glow"></div>
+      <div class="planet-surface"></div>
+      <div class="planet-ring-1"></div>
+      <div class="planet-ring-2"></div>
+      <div class="planet-decorator dec-1"></div>
+      <div class="planet-decorator dec-2"></div>
+      <div class="planet-decorator dec-3"></div>
+    </div>
 
     <div class="section-header">
       <h2><span class="slash">/</span> Featured Projects</h2>
@@ -113,18 +127,6 @@
       {/each}
     </div>
 
-    <div class="planet-container">
-      <div class="planet-horizon" bind:this={planetRef}>
-        <div class="planet-glow"></div>
-        <div class="planet-surface"></div>
-        <div class="planet-ring-1"></div>
-        <div class="planet-ring-2"></div>
-        <div class="planet-decorator dec-1"></div>
-        <div class="planet-decorator dec-2"></div>
-        <div class="planet-decorator dec-3"></div>
-      </div>
-    </div>
-
   </section>
 </div>
 
@@ -145,14 +147,12 @@
     opacity: 1;
     transform: none;
     display: block;
-    padding: 0 0 20vh;
+    padding: 0 0 6rem;
     min-height: auto;
     position: relative;
   }
 
-  /* Gradient fade at top for smooth entry from previous section.
-     Use rgba with actual --space-black value to avoid grey midpoint
-     when interpolating to transparent. */
+  /* Gradient fade at top for smooth entry from previous section. */
   .projects-section::before {
     content: '';
     position: absolute;
@@ -358,34 +358,25 @@
     filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.2));
   }
 
-  /* ===== PLANET ===== */
+  /* ===== PLANET — integrated background ===== */
   .planet-container {
-    position: relative;
-    margin-top: 4rem;
-    left: 0;
-    width: 100%;
-    height: 40vh;
-    pointer-events: none;
-    z-index: 5;
-    overflow: hidden;
-  }
-
-  .planet-horizon {
     position: absolute;
-    top: 0;
+    bottom: -30%;
     left: 50%;
-    width: 150vw;
-    height: 150vw;
-    margin-left: -75vw;
+    width: 120vw;
+    height: 120vw;
     border-radius: 50%;
+    pointer-events: none;
+    z-index: 2;
     background: radial-gradient(circle at 50% 10%, #060913 0%, #010206 60%);
     box-shadow:
-      inset 0 15px 50px rgba(0, 243, 255, 0.2),
+      inset 0 15px 50px rgba(0, 243, 255, 0.15),
       inset 0 -100px 100px #000,
-      0 0 80px rgba(0, 243, 255, 0.1);
-    border-top: 2px solid rgba(0, 243, 255, 0.4);
+      0 0 120px rgba(0, 243, 255, 0.08);
+    border-top: 2px solid rgba(0, 243, 255, 0.35);
     overflow: hidden;
     transform-origin: center center;
+    opacity: 0.7;
   }
 
   .planet-glow {
@@ -393,10 +384,10 @@
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 100%;
-    height: 100px;
-    background: radial-gradient(ellipse at center, rgba(0, 243, 255, 0.5) 0%, transparent 60%);
-    filter: blur(20px);
+    width: 60%;
+    height: 80px;
+    background: radial-gradient(ellipse at center, rgba(0, 243, 255, 0.45) 0%, transparent 70%);
+    filter: blur(25px);
     z-index: 1;
   }
 
@@ -406,8 +397,8 @@
     height: 100%;
     border-radius: 50%;
     background-image:
-      linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+      linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
     background-size: 4vw 4vw;
     mask-image: radial-gradient(circle at 50% 30%, black 10%, transparent 70%);
     -webkit-mask-image: radial-gradient(circle at 50% 30%, black 10%, transparent 70%);
@@ -422,7 +413,7 @@
     height: 98%;
     transform: translate(-50%, -50%);
     border-radius: 50%;
-    border: 1px dashed rgba(0, 243, 255, 0.3);
+    border: 1px dashed rgba(0, 243, 255, 0.2);
     z-index: 3;
   }
 
@@ -434,9 +425,9 @@
     height: 94%;
     transform: translate(-50%, -50%);
     border-radius: 50%;
-    border: 2px solid rgba(157, 78, 221, 0.1);
-    border-top: 2px solid rgba(157, 78, 221, 0.5);
-    border-bottom: 2px solid rgba(157, 78, 221, 0.5);
+    border: 2px solid rgba(157, 78, 221, 0.08);
+    border-top: 2px solid rgba(157, 78, 221, 0.35);
+    border-bottom: 2px solid rgba(157, 78, 221, 0.35);
     z-index: 4;
   }
 
@@ -467,7 +458,12 @@
     .proj-num { display: none; }
 
     .project-visuals { flex: 0 0 auto; width: 100%; height: 260px; }
-    .planet-horizon { width: 200vw; height: 200vw; margin-left: -100vw; }
+
+    .planet-container {
+      width: 160vw;
+      height: 160vw;
+      bottom: -35%;
+    }
   }
 
   /* Alternating layout on desktop */
@@ -496,7 +492,10 @@
     .card-top { width: 40%; height: 34%; }
     .card-btm { width: 38%; height: 32%; }
 
-    .planet-container { height: 30vh; }
-    .planet-horizon { width: 220vw; height: 220vw; margin-left: -110vw; }
+    .planet-container {
+      width: 180vw;
+      height: 180vw;
+      bottom: -30%;
+    }
   }
 </style>
