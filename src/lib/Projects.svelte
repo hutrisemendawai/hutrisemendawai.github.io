@@ -26,6 +26,18 @@
       tech: ["Spring Boot", "Java", "PostgreSQL", "QR Integration", "Web Dashboard"],
       images: ["/images/placeholder5.jpg", "/images/placeholder6.jpg", "/images/placeholder7.jpg"],
     },
+    {
+      title: "Nota360",
+      subtitle: "Sales Invoice Application",
+      date: "Mar 2026",
+      desc: "Nota360 is a web-based sales invoice application built for PT Karya Trita Sejahtera to simplify creating, storing, and printing professional sales receipts for food ingredient deliveries. Staff can quickly compose multi-item invoices, manage customer and product data, and export print-ready PDF files with company branding and electronic signatures.",
+      tech: ["Svelte 5", "Vite", "PocketBase", "jsPDF", "JavaScript", "PDF Export"],
+      images: [
+        "https://github.com/user-attachments/assets/6802acfa-7235-4983-a133-152c8bb5fadd",
+        "https://github.com/user-attachments/assets/2f1ddba7-b6e5-40ea-ad03-077b4d984b49",
+        "https://github.com/user-attachments/assets/897e19cb-85a5-44b4-b612-5d1712a1fe2d",
+      ],
+    },
   ];
 
   onMount(() => {
@@ -109,24 +121,36 @@
           </div>
 
           <div class="project-visuals">
-            <div class="card card-main">
-              <div class="card-inner">
-                <img src={rocketIcon} alt="" class="card-icon" />
-                <span>Screenshot 1</span>
+            {#if project.images[0]?.startsWith('http')}
+              <div class="card card-main">
+                <img src={project.images[0]} alt="{project.title} screenshot 1" class="card-screenshot" />
               </div>
-            </div>
-            <div class="card card-top">
-              <div class="card-inner">
-                <img src={rocketIcon} alt="" class="card-icon" />
-                <span>Screenshot 2</span>
+              <div class="card card-top">
+                <img src={project.images[1]} alt="{project.title} screenshot 2" class="card-screenshot" />
               </div>
-            </div>
-            <div class="card card-btm">
-              <div class="card-inner">
-                <img src={rocketIcon} alt="" class="card-icon" />
-                <span>Screenshot 3</span>
+              <div class="card card-btm">
+                <img src={project.images[2]} alt="{project.title} screenshot 3" class="card-screenshot" />
               </div>
-            </div>
+            {:else}
+              <div class="card card-main">
+                <div class="card-inner">
+                  <img src={rocketIcon} alt="" class="card-icon" />
+                  <span>Screenshot 1</span>
+                </div>
+              </div>
+              <div class="card card-top">
+                <div class="card-inner">
+                  <img src={rocketIcon} alt="" class="card-icon" />
+                  <span>Screenshot 2</span>
+                </div>
+              </div>
+              <div class="card card-btm">
+                <div class="card-inner">
+                  <img src={rocketIcon} alt="" class="card-icon" />
+                  <span>Screenshot 3</span>
+                </div>
+              </div>
+            {/if}
           </div>
 
         </div>
@@ -307,6 +331,7 @@
     justify-content: center;
     backdrop-filter: blur(8px);
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
   }
 
   .card:hover {
@@ -361,6 +386,13 @@
     height: 30px;
     opacity: 0.55;
     filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.2));
+  }
+
+  .card-screenshot {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 16px;
   }
 
   /* ===== PLANET — integrated background ===== */
