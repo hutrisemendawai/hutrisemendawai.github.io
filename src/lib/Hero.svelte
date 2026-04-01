@@ -8,6 +8,7 @@
   let heroContainer;
   let titleChars;
   let subtitle;
+  let hookLine;
   let planet;
   let ctaBtn;
   let scrollIndicator;
@@ -52,6 +53,17 @@
         ease: "back.out(1.7)",
       }, "-=1")
       .from(subtitle, { y: 30, opacity: 0, duration: 0.8 }, "-=0.4")
+      .fromTo(hookLine, {
+        y: 20,
+        opacity: 0,
+        clipPath: "inset(0 100% 0 0)",
+      }, {
+        y: 0,
+        opacity: 1,
+        clipPath: "inset(0 0% 0 0)",
+        duration: 1,
+        ease: "power3.out",
+      }, "-=0.3")
       .fromTo(ctaBtn, {
         y: 30,
         opacity: 0,
@@ -175,6 +187,12 @@
       <span class="separator">·</span>
       Java Programmer — ERP Specialist
     </h2>
+
+    <p class="hook-line" bind:this={hookLine}>
+      <span class="hook-accent" aria-hidden="true">&#9670;</span>
+      Crafting scalable systems &amp; digital experiences across the universe of code
+      <span class="hook-accent" aria-hidden="true">&#9670;</span>
+    </p>
 
     <button class="cta-btn ripple-effect" bind:this={ctaBtn}>
       <img src={rocketIcon} alt="rocket" class="cta-icon" width="24" height="24" loading="eager" decoding="async" />
@@ -333,6 +351,35 @@
     font-size: 1.2rem;
   }
 
+  /* ===== HOOK LINE ===== */
+  .hook-line {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    max-width: 520px;
+    line-height: 1.7;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding: 0 1rem;
+  }
+
+  .hook-accent {
+    display: inline-block;
+    color: var(--neon-blue);
+    font-size: 0.6rem;
+    vertical-align: middle;
+    margin: 0 6px;
+    opacity: 0.6;
+    animation: hookAccentPulse 3s ease-in-out infinite;
+  }
+
+  @keyframes hookAccentPulse {
+    0%, 100% { opacity: 0.4; text-shadow: 0 0 4px rgba(0, 212, 255, 0.2); }
+    50% { opacity: 0.9; text-shadow: 0 0 12px rgba(0, 212, 255, 0.5); }
+  }
+
   /* ===== CTA BUTTON (Uiverse.io inspired) ===== */
   .cta-btn {
     position: relative;
@@ -483,6 +530,11 @@
     }
     h2 {
       font-size: 1.2rem;
+    }
+    .hook-line {
+      font-size: 0.75rem;
+      max-width: 90%;
+      padding: 0 0.5rem;
     }
     .cta-btn {
       padding: 12px 24px;
