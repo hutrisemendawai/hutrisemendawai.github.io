@@ -9,11 +9,16 @@
 
   let sectionRef;
   let planetRef;
+  let carouselRef;
 
   // Lightbox state
   let lightboxOpen = $state(false);
   let lightboxSrc = $state('');
   let lightboxAlt = $state('');
+
+  // Carousel state
+  let currentIndex = $state(0);
+  let touchStartX = 0;
 
   function openLightbox(src, alt) {
     lightboxSrc = src;
@@ -32,9 +37,39 @@
     }
   }
 
+  function next() {
+    currentIndex = (currentIndex + 1) % projects.length;
+  }
+
+  function prev() {
+    currentIndex = (currentIndex - 1 + projects.length) % projects.length;
+  }
+
+  function goTo(index) {
+    currentIndex = index;
+  }
+
+  function handleTouchStart(e) {
+    if (!e.touches?.length) return;
+    touchStartX = e.touches[0].clientX;
+  }
+
+  function handleTouchEnd(e) {
+    if (!e.changedTouches?.length) return;
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) next();
+      else prev();
+    }
+  }
+
   function handleKeydown(e) {
     if (e.key === 'Escape' && lightboxOpen) {
       closeLightbox();
+    }
+    if (!lightboxOpen) {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); next(); }
     }
   }
 
@@ -80,29 +115,26 @@
     // Set initial GSAP transform to include the centering offset
     gsap.set(planetRef, { xPercent: -50 });
 
-    const tweens = [];
-    gsap.utils.toArray('.project-slide').forEach((slide) => {
-      const tween = gsap.fromTo(
-        slide,
-        { opacity: 0, y: 40 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.7,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: slide,
-            start: 'top 85%',
-            toggleActions: 'play none none none',
-          },
+    // Entry animation for the carousel as a whole
+    const entryTween = gsap.fromTo(
+      carouselRef,
+      { opacity: 0, y: 40 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.7,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: carouselRef,
+          start: 'top 85%',
+          toggleActions: 'play none none none',
         },
-      );
-      tweens.push(tween);
-    });
+      },
+    );
 
     return () => {
       triggers.forEach(t => t.kill());
-      tweens.forEach(t => t.kill());
+      entryTween.kill();
     };
   });
 </script>
@@ -131,64 +163,96 @@
       </div>
     </div>
 
-    <div class="slides-area">
-      {#each projects as project, index}
-        <div class="project-slide">
+    <div class="carousel-outer" bind:this={carouselRef}
+         role="region"
+         aria-label="Featured projects carousel"
+         ontouchstart={handleTouchStart}
+         ontouchend={handleTouchEnd}>
 
-          <div class="project-info">
-            <span class="proj-num">0{index + 1}</span>
-            <h3>{project.title}</h3>
-            <h4>{project.subtitle}</h4>
-            <span class="date-badge">{project.date}</span>
-            <p class="desc">{project.desc}</p>
-            <div class="tech-stack">
-              {#each project.tech as tag}
-                <span class="tech-tag">{tag}</span>
-              {/each}
+      <div class="carousel-viewport">
+        <div class="carousel-track" style="transform: translateX(calc(-100% * {currentIndex}))">
+          {#each projects as project, index}
+            <div class="project-slide">
+
+              <div class="project-info">
+                <span class="proj-num">0{index + 1}</span>
+                <h3>{project.title}</h3>
+                <h4>{project.subtitle}</h4>
+                <span class="date-badge">{project.date}</span>
+                <p class="desc">{project.desc}</p>
+                <div class="tech-stack">
+                  {#each project.tech as tag}
+                    <span class="tech-tag">{tag}</span>
+                  {/each}
+                </div>
+              </div>
+
+              <div class="project-visuals">
+                {#if project.images[0]?.startsWith('http')}
+                  {#if project.images[0]}
+                    <button class="card card-main card-clickable" type="button" onclick={() => openLightbox(project.images[0], `${project.title} screenshot 1`)}>
+                      <img src={project.images[0]} alt="{project.title} screenshot 1" class="card-screenshot" />
+                    </button>
+                  {/if}
+                  {#if project.images[1]}
+                    <button class="card card-top card-clickable" type="button" onclick={() => openLightbox(project.images[1], `${project.title} screenshot 2`)}>
+                      <img src={project.images[1]} alt="{project.title} screenshot 2" class="card-screenshot" />
+                    </button>
+                  {/if}
+                  {#if project.images[2]}
+                    <button class="card card-btm card-clickable" type="button" onclick={() => openLightbox(project.images[2], `${project.title} screenshot 3`)}>
+                      <img src={project.images[2]} alt="{project.title} screenshot 3" class="card-screenshot" />
+                    </button>
+                  {/if}
+                {:else}
+                  <div class="card card-main">
+                    <div class="card-inner">
+                      <img src={rocketIcon} alt="" class="card-icon" />
+                      <span>Screenshot 1</span>
+                    </div>
+                  </div>
+                  <div class="card card-top">
+                    <div class="card-inner">
+                      <img src={rocketIcon} alt="" class="card-icon" />
+                      <span>Screenshot 2</span>
+                    </div>
+                  </div>
+                  <div class="card card-btm">
+                    <div class="card-inner">
+                      <img src={rocketIcon} alt="" class="card-icon" />
+                      <span>Screenshot 3</span>
+                    </div>
+                  </div>
+                {/if}
+              </div>
+
             </div>
-          </div>
-
-          <div class="project-visuals">
-            {#if project.images[0]?.startsWith('http')}
-              {#if project.images[0]}
-                <button class="card card-main card-clickable" type="button" onclick={() => openLightbox(project.images[0], `${project.title} screenshot 1`)}>
-                  <img src={project.images[0]} alt="{project.title} screenshot 1" class="card-screenshot" />
-                </button>
-              {/if}
-              {#if project.images[1]}
-                <button class="card card-top card-clickable" type="button" onclick={() => openLightbox(project.images[1], `${project.title} screenshot 2`)}>
-                  <img src={project.images[1]} alt="{project.title} screenshot 2" class="card-screenshot" />
-                </button>
-              {/if}
-              {#if project.images[2]}
-                <button class="card card-btm card-clickable" type="button" onclick={() => openLightbox(project.images[2], `${project.title} screenshot 3`)}>
-                  <img src={project.images[2]} alt="{project.title} screenshot 3" class="card-screenshot" />
-                </button>
-              {/if}
-            {:else}
-              <div class="card card-main">
-                <div class="card-inner">
-                  <img src={rocketIcon} alt="" class="card-icon" />
-                  <span>Screenshot 1</span>
-                </div>
-              </div>
-              <div class="card card-top">
-                <div class="card-inner">
-                  <img src={rocketIcon} alt="" class="card-icon" />
-                  <span>Screenshot 2</span>
-                </div>
-              </div>
-              <div class="card card-btm">
-                <div class="card-inner">
-                  <img src={rocketIcon} alt="" class="card-icon" />
-                  <span>Screenshot 3</span>
-                </div>
-              </div>
-            {/if}
-          </div>
-
+          {/each}
         </div>
-      {/each}
+      </div>
+
+      <!-- Navigation arrows -->
+      <button class="carousel-btn carousel-prev" type="button" onclick={prev} aria-label="Previous project">&#8249;</button>
+      <button class="carousel-btn carousel-next" type="button" onclick={next} aria-label="Next project">&#8250;</button>
+
+      <!-- Slide counter + dots -->
+      <div class="carousel-footer">
+        <span class="carousel-counter">
+          {(currentIndex + 1).toString().padStart(2, '0')} / {projects.length.toString().padStart(2, '0')}
+        </span>
+        <div class="carousel-dots">
+          {#each projects as _, i}
+            <button
+              class="carousel-dot"
+              class:active={i === currentIndex}
+              type="button"
+              onclick={() => goTo(i)}
+              aria-label="Go to project {i + 1}"
+            ></button>
+          {/each}
+        </div>
+      </div>
+
     </div>
 
   </section>
@@ -271,23 +335,34 @@
     opacity: 0.7;
   }
 
-  /* ===== SLIDES AREA ===== */
-  .slides-area {
-    display: flex;
-    flex-direction: column;
-    gap: 5rem;
-    padding: 0 6vw;
+  /* ===== CAROUSEL ===== */
+  .carousel-outer {
+    position: relative;
     max-width: 1200px;
     margin: 0 auto;
-    position: relative;
+    padding: 0 4rem 5rem;
     z-index: 10;
   }
 
+  .carousel-viewport {
+    overflow: hidden;
+    border-radius: 4px;
+  }
+
+  .carousel-track {
+    display: flex;
+    transition: transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform;
+  }
+
   .project-slide {
+    flex: 0 0 100%;
+    width: 100%;
     display: flex;
     align-items: center;
     gap: 3vw;
     box-sizing: border-box;
+    padding: 0.5rem 2vw 1rem;
   }
 
   /* ===== PROJECT INFO ===== */
@@ -527,9 +602,92 @@
   .dec-2 { top: 8%; right: 25%; width: 40px; height: 3px; transform: rotate(-20deg); background: var(--nebula-purple); box-shadow: 0 0 15px var(--nebula-purple); }
   .dec-3 { top: 1%; left: 55%; width: 6px; height: 6px; border-radius: 50%; }
 
+  /* ===== CAROUSEL NAVIGATION ===== */
+  .carousel-btn {
+    position: absolute;
+    top: 44%;
+    transform: translateY(-50%);
+    background: rgba(5, 5, 16, 0.75);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    color: #fff;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    font-size: 2rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    z-index: 20;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 0;
+  }
+
+  .carousel-prev { left: 0; }
+  .carousel-next { right: 0; }
+
+  .carousel-btn:hover {
+    background: rgba(0, 212, 255, 0.12);
+    border-color: rgba(0, 212, 255, 0.6);
+    box-shadow: 0 0 16px rgba(0, 212, 255, 0.15);
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  .carousel-btn:active {
+    transform: translateY(-50%) scale(0.95);
+  }
+
+  /* ===== CAROUSEL FOOTER (counter + dots) ===== */
+  .carousel-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    padding-top: 2rem;
+  }
+
+  .carousel-counter {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--text-muted, #8b92ba);
+    letter-spacing: 2px;
+    min-width: 3.5rem;
+    text-align: center;
+  }
+
+  .carousel-dots {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .carousel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+    border: none;
+    background: rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    padding: 0;
+    transition: background 0.3s ease, width 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .carousel-dot.active {
+    width: 24px;
+    background: var(--neon-blue, #00d4ff);
+    box-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
+  }
+
+  .carousel-dot:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.4);
+  }
+
   /* ===== RESPONSIVE ===== */
   @media (max-width: 1024px) {
-    .slides-area { gap: 3.5rem; padding: 0 5vw; }
+    .carousel-outer { padding: 0 3rem 4rem; }
 
     .project-slide {
       flex-direction: column;
@@ -551,15 +709,8 @@
     }
   }
 
-  /* Alternating layout on desktop */
-  @media (min-width: 1025px) {
-    .project-slide:nth-child(even) {
-      flex-direction: row-reverse;
-    }
-  }
-
   @media (max-width: 768px) {
-    .slides-area { gap: 3rem; padding: 0 4vw; }
+    .carousel-outer { padding: 0 2.5rem 3.5rem; }
 
     .section-header h2 { font-size: 2rem; }
     .section-sub { font-size: 0.85rem; }
@@ -577,6 +728,8 @@
     .card-top { width: 40%; height: 34%; }
     .card-btm { width: 38%; height: 32%; }
 
+    .carousel-btn { width: 36px; height: 36px; font-size: 1.5rem; }
+
     .planet-container {
       width: 180vw;
       height: 180vw;
@@ -584,27 +737,8 @@
     }
   }
 
-  /* ===== Scroll-Driven: Project cards parallax ===== */
+  /* ===== Scroll-Driven: Planet parallax ===== */
   @supports (animation-timeline: scroll()) {
-    .project-slide {
-      animation: sda-project-slide linear both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 80%;
-    }
-
-    @keyframes sda-project-slide {
-      from {
-        opacity: 0;
-        transform: translateY(40px);
-        filter: blur(3px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-        filter: blur(0);
-      }
-    }
-
     .planet-container {
       animation: sda-planet-rotate linear both;
       animation-timeline: scroll(root);
