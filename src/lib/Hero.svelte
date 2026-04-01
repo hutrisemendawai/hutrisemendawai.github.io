@@ -189,9 +189,9 @@
     </h2>
 
     <p class="hook-line" bind:this={hookLine}>
-      <span class="hook-accent">&#9670;</span>
+      <span class="hook-accent" aria-hidden="true">&#9670;</span>
       Crafting scalable systems &amp; digital experiences across the universe of code
-      <span class="hook-accent">&#9670;</span>
+      <span class="hook-accent" aria-hidden="true">&#9670;</span>
     </p>
 
     <button class="cta-btn ripple-effect" bind:this={ctaBtn}>
