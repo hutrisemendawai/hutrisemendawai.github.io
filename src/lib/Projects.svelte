@@ -7,9 +7,16 @@
 
   gsap.registerPlugin(ScrollTrigger);
 
+  // Drag / inertia constants
+  const DRAG_THRESHOLD = 70;
+  const VELOCITY_THRESHOLD = 3;
+  const PEEK_DISTANCE = 280;
+
   let sectionRef;
   let planetRef;
   let carouselRef;
+  /** @type {HTMLElement[]} */
+  let slideRefs = [];
 
   // Lightbox state
   let lightboxOpen = $state(false);
@@ -18,7 +25,17 @@
 
   // Carousel state
   let currentIndex = $state(0);
-  let touchStartX = 0;
+  let prevIndex = 0;
+  let isAnimating = false;
+
+  // Drag / inertia state
+  let isDragging = false;
+  let dragStartX = 0;
+  let dragCurrentX = 0;
+  let dragVelocityX = 0;
+  let dragLastX = 0;
+  let dragLastTime = 0;
+  let dragRafPending = false;
 
   function openLightbox(src, alt) {
     lightboxSrc = src;
@@ -38,29 +55,26 @@
   }
 
   function next() {
+    if (isAnimating) return;
     currentIndex = (currentIndex + 1) % projects.length;
   }
 
   function prev() {
+    if (isAnimating) return;
     currentIndex = (currentIndex - 1 + projects.length) % projects.length;
   }
 
   function goTo(index) {
+    if (isAnimating || index === currentIndex) return;
     currentIndex = index;
   }
 
   function handleTouchStart(e) {
-    if (!e.touches?.length) return;
-    touchStartX = e.touches[0].clientX;
+    onDragStart(e);
   }
 
-  function handleTouchEnd(e) {
-    if (!e.changedTouches?.length) return;
-    const diff = touchStartX - e.changedTouches[0].clientX;
-    if (Math.abs(diff) > 50) {
-      if (diff > 0) next();
-      else prev();
-    }
+  function handleTouchEnd() {
+    onDragEnd();
   }
 
   function handleKeydown(e) {
@@ -72,6 +86,154 @@
       if (e.key === 'ArrowRight') { e.preventDefault(); next(); }
     }
   }
+
+  // ── Drag / inertia ──────────────────────────────────────────────────────
+  function onDragStart(e) {
+    if (isAnimating) return;
+    isDragging = true;
+    const x = e.touches ? e.touches[0].clientX : e.clientX;
+    dragStartX = x;
+    dragCurrentX = x;
+    dragLastX = x;
+    dragVelocityX = 0;
+    dragLastTime = Date.now();
+  }
+
+  function onDragMove(e) {
+    if (!isDragging) return;
+    const x = e.touches ? e.touches[0].clientX : e.clientX;
+    const now = Date.now();
+    const dt = Math.max(now - dragLastTime, 1);
+    dragVelocityX = ((x - dragLastX) / dt) * 16;
+    dragLastX = x;
+    dragCurrentX = x;
+    dragLastTime = now;
+
+    // Throttle GSAP updates to one per animation frame
+    if (dragRafPending) return;
+    dragRafPending = true;
+    requestAnimationFrame(() => {
+      dragRafPending = false;
+      const offset = dragCurrentX - dragStartX;
+
+      // Drag the active slide with slight rotation
+      const cur = slideRefs[currentIndex];
+      if (cur) gsap.set(cur, { x: offset, rotateY: -offset * 0.03 });
+
+      // Peek in the adjacent slide proportionally
+      const peekIdx = offset < 0
+        ? (currentIndex + 1) % projects.length
+        : (currentIndex - 1 + projects.length) % projects.length;
+      const progress = Math.min(Math.abs(offset) / PEEK_DISTANCE, 1);
+      const peekSlide = slideRefs[peekIdx];
+      if (peekSlide) {
+        const dir = offset < 0 ? 1 : -1;
+        gsap.set(peekSlide, {
+          x: dir * (1 - progress) * 55 + '%',
+          rotateY: dir * -(1 - progress) * 25,
+          scale: 0.82 + progress * 0.18,
+          opacity: progress * 0.9,
+        });
+      }
+    });
+  }
+
+  function onDragEnd() {
+    if (!isDragging) return;
+    isDragging = false;
+    const offset = dragCurrentX - dragStartX;
+    if (offset < -DRAG_THRESHOLD || dragVelocityX < -VELOCITY_THRESHOLD) {
+      next();
+    } else if (offset > DRAG_THRESHOLD || dragVelocityX > VELOCITY_THRESHOLD) {
+      prev();
+    } else {
+      // Snap back to current with spring
+      const cur = slideRefs[currentIndex];
+      if (cur) gsap.to(cur, { x: 0, rotateY: 0, duration: 0.4, ease: 'back.out(2)' });
+      // Hide the peeked slide
+      const peekIdx = offset < 0
+        ? (currentIndex + 1) % projects.length
+        : (currentIndex - 1 + projects.length) % projects.length;
+      const peekSlide = slideRefs[peekIdx];
+      if (peekSlide) gsap.to(peekSlide, { opacity: 0, duration: 0.3 });
+    }
+  }
+
+  // ── 3D Coverflow slide transition ───────────────────────────────────────
+  function animateSlideTransition(fromIdx, toIdx) {
+    if (!slideRefs[fromIdx] || !slideRefs[toIdx]) return;
+    isAnimating = true;
+
+    const total = projects.length;
+    let d = toIdx - fromIdx;
+    if (d > total / 2) d -= total;
+    if (d < -total / 2) d += total;
+    const dir = d > 0 ? 1 : -1;
+    const dur = 0.65;
+
+    // EXIT: current slide tilts to the side and fades out
+    gsap.to(slideRefs[fromIdx], {
+      x: dir * -38 + '%',
+      rotateY: dir * -30,
+      scale: 0.82,
+      opacity: 0,
+      duration: dur * 0.75,
+      ease: 'power2.in',
+      onComplete() { gsap.set(slideRefs[fromIdx], { pointerEvents: 'none' }); },
+    });
+
+    // ENTER: new slide arrives from the opposite side
+    gsap.set(slideRefs[toIdx], {
+      x: dir * 45 + '%',
+      rotateY: dir * 28,
+      scale: 0.82,
+      opacity: 0,
+      pointerEvents: 'none',
+    });
+    gsap.to(slideRefs[toIdx], {
+      x: '0%',
+      rotateY: 0,
+      scale: 1,
+      opacity: 1,
+      pointerEvents: 'all',
+      duration: dur,
+      ease: 'power3.out',
+      delay: 0.08,
+      onComplete() { isAnimating = false; },
+    });
+
+    // LAYERED PARALLAX: info and visuals animate at different rates
+    const infoEl = slideRefs[toIdx].querySelector('.project-info');
+    const visualsEl = slideRefs[toIdx].querySelector('.project-visuals');
+    if (infoEl) {
+      gsap.fromTo(infoEl,
+        { x: dir * 65, opacity: 0, y: 10 },
+        { x: 0, opacity: 1, y: 0, duration: dur, ease: 'power2.out', delay: 0.12 },
+      );
+    }
+    if (visualsEl) {
+      gsap.fromTo(visualsEl,
+        { x: dir * 110, opacity: 0, scale: 0.92 },
+        { x: 0, opacity: 1, scale: 1, duration: dur * 1.15, ease: 'back.out(1.4)', delay: 0.22 },
+      );
+    }
+
+    // TECH TAG STAGGER: tags animate in sequentially
+    const techTags = slideRefs[toIdx].querySelectorAll('.tech-tag');
+    if (techTags.length) {
+      gsap.fromTo(techTags,
+        { y: 12, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.35, stagger: 0.06, ease: 'power1.out', delay: 0.4 },
+      );
+    }
+  }
+
+  $effect(() => {
+    const newIdx = currentIndex;
+    if (newIdx === prevIndex) return;
+    animateSlideTransition(prevIndex, newIdx);
+    prevIndex = newIdx;
+  });
 
   const projects = [{
       title: "Data Collection for Fishery Activities",
@@ -106,6 +268,16 @@
   onMount(() => {
     const triggers = [];
 
+    // Initialize GSAP state for all slides
+    slideRefs.forEach((slide, i) => {
+      if (!slide) return;
+      if (i === 0) {
+        gsap.set(slide, { opacity: 1, x: 0, rotateY: 0, scale: 1, pointerEvents: 'all' });
+      } else {
+        gsap.set(slide, { opacity: 0, x: 0, rotateY: 0, scale: 0.9, pointerEvents: 'none' });
+      }
+    });
+
     const planetTl = gsap.timeline({
       scrollTrigger: { trigger: sectionRef, start: 'top bottom', end: 'bottom top', scrub: 1 },
     });
@@ -131,6 +303,18 @@
         },
       },
     );
+
+    // Stagger-in initial tech tags when the carousel scrolls into view
+    const initialTags = slideRefs[0]?.querySelectorAll('.tech-tag');
+    if (initialTags?.length) {
+      gsap.fromTo(initialTags,
+        { y: 12, opacity: 0 },
+        {
+          y: 0, opacity: 1, duration: 0.35, stagger: 0.06, ease: 'power1.out', delay: 0.5,
+          scrollTrigger: { trigger: carouselRef, start: 'top 85%' },
+        },
+      );
+    }
 
     return () => {
       triggers.forEach(t => t.kill());
@@ -166,13 +350,14 @@
     <div class="carousel-outer" bind:this={carouselRef}
          role="region"
          aria-label="Featured projects carousel"
+         onmousedown={onDragStart}
          ontouchstart={handleTouchStart}
+         ontouchmove={onDragMove}
          ontouchend={handleTouchEnd}>
 
       <div class="carousel-viewport">
-        <div class="carousel-track" style="transform: translateX(calc(-100% * {currentIndex}))">
-          {#each projects as project, index}
-            <div class="project-slide">
+        {#each projects as project, index}
+          <div class="project-slide" bind:this={slideRefs[index]}>
 
               <div class="project-info">
                 <span class="proj-num">0{index + 1}</span>
@@ -228,7 +413,6 @@
 
             </div>
           {/each}
-        </div>
       </div>
 
       <!-- Navigation arrows -->
@@ -259,7 +443,7 @@
 </div>
 
 <!-- Lightbox Modal -->
-<svelte:window onkeydown={handleKeydown} />
+<svelte:window onkeydown={handleKeydown} onmousemove={onDragMove} onmouseup={onDragEnd} />
 {#if lightboxOpen}
   <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
   <!-- svelte-ignore a11y_interactive_supports_focus -->
@@ -345,24 +529,34 @@
   }
 
   .carousel-viewport {
+    position: relative;
+    height: 420px;
     overflow: hidden;
     border-radius: 4px;
+    perspective: 1400px;
+    perspective-origin: center center;
   }
 
-  .carousel-track {
-    display: flex;
-    transition: transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    will-change: transform;
-  }
+  /* carousel-track removed — slides are now absolutely positioned */
 
   .project-slide {
-    flex: 0 0 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
+    height: 100%;
     display: flex;
     align-items: center;
     gap: 3vw;
     box-sizing: border-box;
     padding: 0.5rem 2vw 1rem;
+    will-change: transform, opacity;
+    cursor: grab;
+    user-select: none;
+  }
+
+  .project-slide:active {
+    cursor: grabbing;
   }
 
   /* ===== PROJECT INFO ===== */
@@ -688,6 +882,7 @@
   /* ===== RESPONSIVE ===== */
   @media (max-width: 1024px) {
     .carousel-outer { padding: 0 3rem 4rem; }
+    .carousel-viewport { height: 660px; }
 
     .project-slide {
       flex-direction: column;
@@ -711,6 +906,7 @@
 
   @media (max-width: 768px) {
     .carousel-outer { padding: 0 2.5rem 3.5rem; }
+    .carousel-viewport { height: 580px; }
 
     .section-header h2 { font-size: 2rem; }
     .section-sub { font-size: 0.85rem; }
