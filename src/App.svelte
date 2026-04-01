@@ -9,6 +9,7 @@
   import About from "./lib/About.svelte";
   import Experience from "./lib/Experience.svelte";
   import Education from "./lib/Education.svelte";
+  import Projects from "./lib/Projects.svelte";
   import Footer from "./lib/Footer.svelte";
   import ParticleBackground from "./lib/ParticleBackground.svelte";
 
@@ -49,5 +50,6 @@
   <About />
   <Experience />
   <Education />
+  <Projects />
   <Footer />
 </main>

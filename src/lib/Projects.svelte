@@ -7,11 +7,6 @@
 
   gsap.registerPlugin(ScrollTrigger);
 
-  // Drag / inertia constants
-  const DRAG_THRESHOLD = 70;
-  const VELOCITY_THRESHOLD = 3;
-  const PEEK_DISTANCE = 280;
-
   let sectionRef;
   let planetRef;
   let carouselRef;
@@ -27,15 +22,6 @@
   let currentIndex = $state(0);
   let prevIndex = 0;
   let isAnimating = false;
-
-  // Drag / inertia state
-  let isDragging = false;
-  let dragStartX = 0;
-  let dragCurrentX = 0;
-  let dragVelocityX = 0;
-  let dragLastX = 0;
-  let dragLastTime = 0;
-  let dragRafPending = false;
 
   function openLightbox(src, alt) {
     lightboxSrc = src;
@@ -69,14 +55,6 @@
     currentIndex = index;
   }
 
-  function handleTouchStart(e) {
-    onDragStart(e);
-  }
-
-  function handleTouchEnd() {
-    onDragEnd();
-  }
-
   function handleKeydown(e) {
     if (e.key === 'Escape' && lightboxOpen) {
       closeLightbox();
@@ -84,78 +62,6 @@
     if (!lightboxOpen) {
       if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
       if (e.key === 'ArrowRight') { e.preventDefault(); next(); }
-    }
-  }
-
-  // ── Drag / inertia ──────────────────────────────────────────────────────
-  function onDragStart(e) {
-    if (isAnimating) return;
-    isDragging = true;
-    const x = e.touches ? e.touches[0].clientX : e.clientX;
-    dragStartX = x;
-    dragCurrentX = x;
-    dragLastX = x;
-    dragVelocityX = 0;
-    dragLastTime = Date.now();
-  }
-
-  function onDragMove(e) {
-    if (!isDragging) return;
-    const x = e.touches ? e.touches[0].clientX : e.clientX;
-    const now = Date.now();
-    const dt = Math.max(now - dragLastTime, 1);
-    dragVelocityX = ((x - dragLastX) / dt) * 16;
-    dragLastX = x;
-    dragCurrentX = x;
-    dragLastTime = now;
-
-    // Throttle GSAP updates to one per animation frame
-    if (dragRafPending) return;
-    dragRafPending = true;
-    requestAnimationFrame(() => {
-      dragRafPending = false;
-      const offset = dragCurrentX - dragStartX;
-
-      // Drag the active slide with slight rotation
-      const cur = slideRefs[currentIndex];
-      if (cur) gsap.set(cur, { x: offset, rotateY: -offset * 0.03 });
-
-      // Peek in the adjacent slide proportionally
-      const peekIdx = offset < 0
-        ? (currentIndex + 1) % projects.length
-        : (currentIndex - 1 + projects.length) % projects.length;
-      const progress = Math.min(Math.abs(offset) / PEEK_DISTANCE, 1);
-      const peekSlide = slideRefs[peekIdx];
-      if (peekSlide) {
-        const dir = offset < 0 ? 1 : -1;
-        gsap.set(peekSlide, {
-          x: dir * (1 - progress) * 55 + '%',
-          rotateY: dir * -(1 - progress) * 25,
-          scale: 0.82 + progress * 0.18,
-          opacity: progress * 0.9,
-        });
-      }
-    });
-  }
-
-  function onDragEnd() {
-    if (!isDragging) return;
-    isDragging = false;
-    const offset = dragCurrentX - dragStartX;
-    if (offset < -DRAG_THRESHOLD || dragVelocityX < -VELOCITY_THRESHOLD) {
-      next();
-    } else if (offset > DRAG_THRESHOLD || dragVelocityX > VELOCITY_THRESHOLD) {
-      prev();
-    } else {
-      // Snap back to current with spring
-      const cur = slideRefs[currentIndex];
-      if (cur) gsap.to(cur, { x: 0, rotateY: 0, duration: 0.4, ease: 'back.out(2)' });
-      // Hide the peeked slide
-      const peekIdx = offset < 0
-        ? (currentIndex + 1) % projects.length
-        : (currentIndex - 1 + projects.length) % projects.length;
-      const peekSlide = slideRefs[peekIdx];
-      if (peekSlide) gsap.to(peekSlide, { opacity: 0, duration: 0.3 });
     }
   }
 
@@ -349,11 +255,7 @@
 
     <div class="carousel-outer" bind:this={carouselRef}
          role="region"
-         aria-label="Featured projects carousel"
-         onmousedown={onDragStart}
-         ontouchstart={handleTouchStart}
-         ontouchmove={onDragMove}
-         ontouchend={handleTouchEnd}>
+         aria-label="Featured projects carousel">
 
       <div class="carousel-viewport">
         {#each projects as project, index}
@@ -443,7 +345,7 @@
 </div>
 
 <!-- Lightbox Modal -->
-<svelte:window onkeydown={handleKeydown} onmousemove={onDragMove} onmouseup={onDragEnd} />
+<svelte:window onkeydown={handleKeydown} />
 {#if lightboxOpen}
   <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
   <!-- svelte-ignore a11y_interactive_supports_focus -->
@@ -551,12 +453,7 @@
     box-sizing: border-box;
     padding: 0.5rem 2vw 1rem;
     will-change: transform, opacity;
-    cursor: grab;
     user-select: none;
-  }
-
-  .project-slide:active {
-    cursor: grabbing;
   }
 
   /* ===== PROJECT INFO ===== */
