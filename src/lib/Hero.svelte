@@ -28,10 +28,10 @@
 
   <div class="hero-content container">
     <div class="title-mask">
-      <h1 class="text-huge" bind:this={titleRef1}>I CAPTURE</h1>
+      <h1 class="hero-title" bind:this={titleRef1}>I CAPTURE</h1>
     </div>
     <div class="title-mask title-right">
-      <h1 class="text-huge text-stroke" bind:this={titleRef2}>THE FUTURE.</h1>
+      <h1 class="hero-title text-stroke" bind:this={titleRef2}>THE FUTURE.</h1>
     </div>
   </div>
 
@@ -92,12 +92,18 @@
     text-align: right;
   }
 
-  .text-huge {
-    font-size: clamp(3.5rem, 8.5vw, 11rem);
+  .hero-title {
+    font-size: clamp(3.5rem, 10vw, 10.25rem);
     color: #f5f5f5;
-    line-height: 0.88;
+    line-height: 0.86;
     white-space: nowrap;
     letter-spacing: -0.06em;
+  }
+
+  @media (max-width: 1200px) {
+    .hero-title {
+      font-size: clamp(3rem, 9.5vw, 8.5rem);
+    }
   }
 
   @media (max-width: 900px) {
@@ -106,10 +112,18 @@
       padding-bottom: 6rem;
     }
 
-    .text-huge {
+    .hero-title {
       font-size: clamp(2.75rem, 16vw, 5.25rem);
       white-space: normal;
       letter-spacing: -0.04em;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .hero-title {
+      font-size: clamp(2.1rem, 15.5vw, 3.9rem);
+      line-height: 0.9;
+      letter-spacing: -0.03em;
     }
   }
 

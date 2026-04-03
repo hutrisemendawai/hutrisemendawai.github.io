@@ -104,7 +104,7 @@
     height: 100vh;
     background-color: rgba(10, 10, 10, 0.85);
     backdrop-filter: blur(10px);
-    z-index: 9999; /* ensure it is above everything */
+    z-index: 9998; /* ensure it is under the custom cursor (9999) */
     display: flex;
     justify-content: center;
     align-items: flex-end;
