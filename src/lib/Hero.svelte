@@ -6,14 +6,21 @@
   let titleRef1;
   let titleRef2;
   let heroCursorRef;
+  let titlesRevealed = false;
 
   onMount(() => {
     if (!heroRef || !titleRef1 || !titleRef2) {
       return;
     }
 
+    titlesRevealed = false;
+
     const ctx = gsap.context(() => {
-      gsap.timeline()
+      gsap.timeline({
+        onComplete: () => {
+          titlesRevealed = true;
+        },
+      })
         .fromTo(titleRef1, 
           { y: 150, rotate: 5, opacity: 0 },
           { y: 0, rotate: 0, opacity: 1, duration: 1.2, ease: "power4.out" }
@@ -67,6 +74,7 @@
     return () => {
       cleanupCursor();
       ctx.revert();
+      titlesRevealed = false;
     };
   });
 </script>
@@ -80,10 +88,10 @@
   </div>
 
   <div class="hero-content container">
-    <div class="title-mask">
+    <div class="title-mask" class:revealed={titlesRevealed}>
       <h1 class="hero-title" bind:this={titleRef1}>I CAPTURE</h1>
     </div>
-    <div class="title-mask title-right">
+    <div class="title-mask title-right" class:revealed={titlesRevealed}>
       <h1 class="hero-title text-stroke" bind:this={titleRef2}>THE FUTURE.</h1>
     </div>
   </div>
@@ -166,10 +174,14 @@
   }
 
   .title-mask {
-    overflow-y: hidden;
-    overflow-x: visible;
-    padding-bottom: 2rem;
-    margin-bottom: -2rem; /* Account for over-descending parts */
+    overflow: hidden;
+    position: relative;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
+  .title-mask.revealed {
+    overflow: visible;
   }
 
   .title-right {
@@ -180,6 +192,7 @@
     font-size: clamp(2.75rem, 7.8vw, 8rem);
     color: #f5f5f5;
     line-height: 0.86;
+    margin: 0;
     white-space: nowrap;
     letter-spacing: -0.05em;
   }
