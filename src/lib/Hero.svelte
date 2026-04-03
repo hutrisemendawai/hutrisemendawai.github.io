@@ -78,12 +78,15 @@
     display: flex;
     flex-direction: column;
     gap: 0;
+    width: 100%;
+    max-width: 100%;
     padding: 0 4rem;
     padding-bottom: 8rem;
   }
 
   .title-mask {
-    overflow: hidden;
+    overflow-y: hidden;
+    overflow-x: visible;
     padding-bottom: 2rem;
     margin-bottom: -2rem; /* Account for over-descending parts */
   }
@@ -93,7 +96,7 @@
   }
 
   .hero-title {
-    font-size: clamp(3rem, 8.4vw, 8.9rem);
+    font-size: clamp(2.75rem, 7.8vw, 8rem);
     color: #f5f5f5;
     line-height: 0.86;
     white-space: nowrap;
@@ -102,7 +105,7 @@
 
   @media (max-width: 1200px) {
     .hero-title {
-      font-size: clamp(2.8rem, 8.8vw, 7.6rem);
+      font-size: clamp(2.6rem, 8.2vw, 7rem);
     }
   }
 
