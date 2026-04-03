@@ -76,7 +76,7 @@
   }
 
   .cta-text {
-    font-size: clamp(4rem, 12vw, 12rem);
+    font-size: clamp(3rem, 8vw, 8rem);
     line-height: 0.9;
     font-family: 'Syne', sans-serif;
   }

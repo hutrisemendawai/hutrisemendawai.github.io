@@ -28,7 +28,7 @@
 
   <div class="hero-content container">
     <div class="title-mask">
-      <h1 class="text-huge" bind:this={titleRef1}>WE CAPTURE</h1>
+      <h1 class="text-huge" bind:this={titleRef1}>I CAPTURE</h1>
     </div>
     <div class="title-mask title-right">
       <h1 class="text-huge text-stroke" bind:this={titleRef2}>THE FUTURE.</h1>
@@ -79,6 +79,7 @@
     flex-direction: column;
     gap: 0;
     padding: 0 4rem;
+    padding-bottom: 8rem;
   }
 
   .title-mask {

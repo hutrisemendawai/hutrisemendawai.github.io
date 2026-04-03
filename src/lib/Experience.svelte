@@ -48,7 +48,7 @@
 <section id="services" class="services" bind:this={bgRef}>
   <div class="container relative-content">
     <div class="header-area">
-      <h2 class="section-title">WE BUILD<br>IT ALL.</h2>
+      <h2 class="section-title">I BUILD<br>IT ALL.</h2>
       <p class="subtitle">From standard to bespoke.</p>
     </div>
 

@@ -72,7 +72,7 @@
       <div class="column right">
         <!-- Using block-level elements without putting div inside p -->
         <div class="body-text" bind:this={textRefs[1]}>
-          We don’t just write code. We augment development with state-of-the-art AI.
+          I don’t just write code. I augment development with state-of-the-art AI.
         </div>
         <div class="tooling" bind:this={textRefs[2]}>
           <div class="tool-row">
