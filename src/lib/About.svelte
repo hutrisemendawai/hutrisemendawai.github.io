@@ -1,5 +1,5 @@
 <script>
-  import { onMount, tick } from "svelte";
+  import { onMount } from "svelte";
   import gsap from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -8,27 +8,33 @@
   let marqueeContentRef2;
   let textRefs = [];
 
-  onMount(async () => {
-    // Marquee animation
-    gsap.to(marqueeContentRef1, {
-      xPercent: -100,
-      ease: "none",
-      duration: 15,
-      repeat: -1
-    });
+  onMount(() => {
+    if (!aboutRef) {
+      return;
+    }
 
-    gsap.to(marqueeContentRef2, {
-      xPercent: -100,
-      ease: "none",
-      duration: 15,
-      repeat: -1
-    });
+    gsap.registerPlugin(ScrollTrigger);
 
-    await tick();
+    const ctx = gsap.context(() => {
+      if (marqueeContentRef1) {
+        gsap.to(marqueeContentRef1, {
+          xPercent: -100,
+          ease: "none",
+          duration: 15,
+          repeat: -1
+        });
+      }
 
-    // Text scroll reveal using ScrollTrigger
-    textRefs.forEach((el) => {
-      if (el) {
+      if (marqueeContentRef2) {
+        gsap.to(marqueeContentRef2, {
+          xPercent: -100,
+          ease: "none",
+          duration: 15,
+          repeat: -1
+        });
+      }
+
+      textRefs.filter(Boolean).forEach((el) => {
         gsap.fromTo(el, 
           { opacity: 0, y: 50 },
           { 
@@ -42,8 +48,12 @@
             }
           }
         );
-      }
-    });
+      });
+    }, aboutRef);
+
+    return () => {
+      ctx.revert();
+    };
   });
 </script>
 

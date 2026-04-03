@@ -9,42 +9,83 @@
   let modalRef;
   let overlayRef;
   let contentRef;
+  let openTimeline;
+  let closeTimeline;
+  let isClosing = false;
   
   onMount(() => {
-    // Disable body scroll
-    document.body.style.overflow = 'hidden';
+    if (!overlayRef || !modalRef || !contentRef) {
+      return;
+    }
 
-    const tl = gsap.timeline();
-    
-    tl.fromTo(overlayRef, 
-      { opacity: 0 }, 
-      { opacity: 1, duration: 0.4, ease: "power2.out" }
-    )
-    .fromTo(modalRef,
-      { y: '100%', opacity: 0 },
-      { y: '0%', opacity: 1, duration: 0.6, ease: "power4.out" },
-      "<0.1"
-    )
-    .fromTo(contentRef.children,
-      { y: 30, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.4, stagger: 0.1, ease: "power3.out" },
-      "<0.3"
-    );
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        closeAndUnmount();
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+
+    const ctx = gsap.context(() => {
+      openTimeline = gsap.timeline();
+
+      openTimeline
+        .fromTo(overlayRef, 
+          { opacity: 0 }, 
+          { opacity: 1, duration: 0.4, ease: "power2.out" }
+        )
+        .fromTo(modalRef,
+          { y: "100%", opacity: 0 },
+          { y: "0%", opacity: 1, duration: 0.6, ease: "power4.out" },
+          "<0.1"
+        )
+        .fromTo(contentRef.children,
+          { y: 30, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.4, stagger: 0.1, ease: "power3.out" },
+          "<0.3"
+        );
+    }, overlayRef);
 
     return () => {
-      document.body.style.overflow = '';
+      window.removeEventListener("keydown", handleEscape);
+      openTimeline?.kill();
+      closeTimeline?.kill();
+      ctx.revert();
+      document.body.style.overflow = previousOverflow;
     };
   });
 
   function closeAndUnmount() {
-    const tl = gsap.timeline({
+    if (isClosing) {
+      return;
+    }
+
+    if (!overlayRef || !modalRef) {
+      dispatch("close");
+      return;
+    }
+
+    isClosing = true;
+    openTimeline?.kill();
+    closeTimeline?.kill();
+
+    const contentNodes = contentRef ? Array.from(contentRef.children) : [];
+
+    closeTimeline = gsap.timeline({
       onComplete: () => {
-        dispatch('close');
+        dispatch("close");
       }
     });
 
-    tl.to(contentRef.children, { y: 20, opacity: 0, duration: 0.2, stagger: 0.05, ease: "power2.in" })
-      .to(modalRef, { y: '100%', opacity: 0, duration: 0.4, ease: "power4.in" }, "<0.1")
+    if (contentNodes.length) {
+      closeTimeline.to(contentNodes, { y: 20, opacity: 0, duration: 0.2, stagger: 0.05, ease: "power2.in" });
+    }
+
+    closeTimeline
+      .to(modalRef, { y: "100%", opacity: 0, duration: 0.4, ease: "power4.in" }, contentNodes.length ? "<0.1" : 0)
       .to(overlayRef, { opacity: 0, duration: 0.3, ease: "power2.in" }, "<0.2");
   }
 </script>

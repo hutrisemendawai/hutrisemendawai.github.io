@@ -5,11 +5,19 @@
   let navRef;
   
   onMount(() => {
+    if (!navRef) {
+      return;
+    }
+
     // Reveal nav after a slight delay
-    gsap.fromTo(navRef, 
+    const navTween = gsap.fromTo(navRef, 
       { y: -50, opacity: 0 },
       { y: 0, opacity: 1, duration: 1, ease: "power4.out", delay: 0.5 }
     );
+
+    return () => {
+      navTween.kill();
+    };
   });
 </script>
 

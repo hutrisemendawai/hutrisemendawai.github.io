@@ -13,11 +13,15 @@
   let listItems = [];
   let bgRef;
 
-  onMount(() => {
-    gsap.registerPlugin(ScrollTrigger);
+  gsap.registerPlugin(ScrollTrigger);
 
-    listItems.forEach((item, i) => {
-      if (item) {
+  onMount(() => {
+    if (!bgRef) {
+      return;
+    }
+
+    const ctx = gsap.context(() => {
+      listItems.filter(Boolean).forEach((item) => {
         gsap.fromTo(item,
           { opacity: 0, x: -50 },
           {
@@ -28,20 +32,25 @@
             }
           }
         );
-      }
-    });
+      });
+    }, bgRef);
+
+    return () => {
+      ctx.revert();
+      gsap.killTweensOf(bgRef);
+    };
   });
 
   function handleHover(index) {
     if(!bgRef) return;
     // Animate background color slightly based on the hovered service
     const colors = ["#1a0505", "#051a1a", "#05051a", "#1a1505"];
-    gsap.to(bgRef, { backgroundColor: colors[index], duration: 0.5 });
+    gsap.to(bgRef, { backgroundColor: colors[index], duration: 0.5, overwrite: "auto" });
   }
 
   function handleLeave() {
     if(!bgRef) return;
-    gsap.to(bgRef, { backgroundColor: "var(--monopo-black)", duration: 0.5 });
+    gsap.to(bgRef, { backgroundColor: "var(--monopo-black)", duration: 0.5, overwrite: "auto" });
   }
 </script>
 

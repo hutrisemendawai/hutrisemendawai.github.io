@@ -1,5 +1,5 @@
 <script>
-  import { onMount, tick } from "svelte";
+  import { onMount } from "svelte";
   import gsap from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
   import ProjectDetails from "./ProjectDetails.svelte";
@@ -59,33 +59,65 @@
   let listItems = [];
   let hoverImageRef; // This acts as the abstract visual placeholder
   let activeProject = null;
+  let projectsRef;
+
+  gsap.registerPlugin(ScrollTrigger);
 
   onMount(() => {
-    gsap.registerPlugin(ScrollTrigger);
+    if (!projectsRef) {
+      return;
+    }
 
-    listItems.forEach((item, i) => {
-      if (item) {
+    const ctx = gsap.context(() => {
+      listItems.filter(Boolean).forEach((item, i) => {
         gsap.fromTo(item,
           { opacity: 0, y: 50 },
           {
-            opacity: 1, y: 0, duration: 0.8, ease: "power2.out", delay: i * 0.1,
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: "power2.out",
+            delay: i * 0.1,
             scrollTrigger: {
               trigger: ".projects-container",
               start: "top 70%"
             }
           }
         );
+      });
+    }, projectsRef);
+
+    let cleanupPointer = () => {};
+
+    if (hoverImageRef && !window.matchMedia("(pointer: coarse)").matches) {
+      const moveImgX = gsap.quickTo(hoverImageRef, "left", { duration: 0.4, ease: "power3" });
+      const moveImgY = gsap.quickTo(hoverImageRef, "top", { duration: 0.4, ease: "power3" });
+
+      const handlePointerMove = (event) => {
+        moveImgX(event.clientX);
+        moveImgY(event.clientY);
+      };
+
+      const hideFollower = () => {
+        handleMouseLeave();
+      };
+
+      window.addEventListener("pointermove", handlePointerMove);
+      document.addEventListener("mouseleave", hideFollower);
+
+      cleanupPointer = () => {
+        window.removeEventListener("pointermove", handlePointerMove);
+        document.removeEventListener("mouseleave", hideFollower);
+      };
+    }
+
+    return () => {
+      cleanupPointer();
+      ctx.revert();
+      if (hoverImageRef) {
+        gsap.killTweensOf(hoverImageRef);
       }
-    });
-
-    // Custom follower for the abstract project visual
-    const moveImgX = gsap.quickTo(hoverImageRef, "left", { duration: 0.4, ease: "power3" });
-    const moveImgY = gsap.quickTo(hoverImageRef, "top", { duration: 0.4, ease: "power3" });
-
-    window.addEventListener("mousemove", (e) => {
-      moveImgX(e.clientX);
-      moveImgY(e.clientY);
-    });
+    };
   });
 
   function handleMouseEnter(color) {
@@ -95,7 +127,8 @@
       opacity: 1, 
       backgroundColor: color,
       duration: 0.4, 
-      ease: "back.out(1.7)" 
+      ease: "back.out(1.7)",
+      overwrite: "auto"
     });
   }
 
@@ -105,14 +138,15 @@
       scale: 0, 
       opacity: 0, 
       duration: 0.3, 
-      ease: "power2.in" 
+      ease: "power2.in",
+      overwrite: "auto"
     });
   }
 </script>
 
 <div class="hover-visual" bind:this={hoverImageRef}></div>
 
-<section id="projects" class="projects">
+<section id="projects" class="projects" bind:this={projectsRef}>
   <div class="container projects-container">
     <div class="section-header">
       <h2 class="section-title">FEATURED<br>WORK.</h2>

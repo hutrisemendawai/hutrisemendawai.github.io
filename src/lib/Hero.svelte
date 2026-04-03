@@ -8,55 +8,65 @@
   let heroCursorRef;
 
   onMount(() => {
-    const tl = gsap.timeline();
-    
-    tl.fromTo(titleRef1, 
-      { y: 150, rotate: 5, opacity: 0 },
-      { y: 0, rotate: 0, opacity: 1, duration: 1.2, ease: "power4.out" }
-    )
-    .fromTo(titleRef2,
-      { y: 150, rotate: -5, opacity: 0 },
-      { y: 0, rotate: 0, opacity: 1, duration: 1.2, ease: "power4.out" },
-      "-=1"
-    );
-
-    if (!heroRef || !heroCursorRef || window.matchMedia("(pointer: coarse)").matches) {
+    if (!heroRef || !titleRef1 || !titleRef2) {
       return;
     }
 
-    const moveCursorX = gsap.quickTo(heroCursorRef, "left", { duration: 0.45, ease: "power3.out" });
-    const moveCursorY = gsap.quickTo(heroCursorRef, "top", { duration: 0.45, ease: "power3.out" });
-    const rotateCursor = gsap.quickTo(heroCursorRef, "rotation", { duration: 0.6, ease: "power3.out" });
+    const ctx = gsap.context(() => {
+      gsap.timeline()
+        .fromTo(titleRef1, 
+          { y: 150, rotate: 5, opacity: 0 },
+          { y: 0, rotate: 0, opacity: 1, duration: 1.2, ease: "power4.out" }
+        )
+        .fromTo(titleRef2,
+          { y: 150, rotate: -5, opacity: 0 },
+          { y: 0, rotate: 0, opacity: 1, duration: 1.2, ease: "power4.out" },
+          "-=1"
+        );
+    }, heroRef);
 
-    const showCursor = () => {
-      gsap.to(heroCursorRef, { opacity: 1, scale: 1, duration: 0.35, ease: "power3.out" });
-    };
+    let cleanupCursor = () => {};
 
-    const hideCursor = () => {
-      gsap.to(heroCursorRef, { opacity: 0, scale: 0.55, rotation: 0, duration: 0.25, ease: "power2.in" });
-    };
+    if (heroCursorRef && !window.matchMedia("(pointer: coarse)").matches) {
+      const moveCursorX = gsap.quickTo(heroCursorRef, "left", { duration: 0.45, ease: "power3.out" });
+      const moveCursorY = gsap.quickTo(heroCursorRef, "top", { duration: 0.45, ease: "power3.out" });
+      const rotateCursor = gsap.quickTo(heroCursorRef, "rotation", { duration: 0.6, ease: "power3.out" });
 
-    const handleMouseMove = (event) => {
-      const bounds = heroRef.getBoundingClientRect();
-      const x = event.clientX - bounds.left;
-      const y = event.clientY - bounds.top;
+      const showCursor = () => {
+        gsap.to(heroCursorRef, { opacity: 1, scale: 1, duration: 0.35, ease: "power3.out", overwrite: "auto" });
+      };
 
-      moveCursorX(x);
-      moveCursorY(y);
+      const hideCursor = () => {
+        gsap.to(heroCursorRef, { opacity: 0, scale: 0.55, rotation: 0, duration: 0.25, ease: "power2.in", overwrite: "auto" });
+      };
 
-      const tilt = gsap.utils.clamp(-14, 14, (x - bounds.width / 2) / 28);
-      rotateCursor(tilt);
-    };
+      const handlePointerMove = (event) => {
+        const bounds = heroRef.getBoundingClientRect();
+        const x = event.clientX - bounds.left;
+        const y = event.clientY - bounds.top;
 
-    heroRef.addEventListener("mouseenter", showCursor);
-    heroRef.addEventListener("mouseleave", hideCursor);
-    heroRef.addEventListener("mousemove", handleMouseMove);
+        moveCursorX(x);
+        moveCursorY(y);
+
+        const tilt = gsap.utils.clamp(-14, 14, (x - bounds.width / 2) / 28);
+        rotateCursor(tilt);
+      };
+
+      heroRef.addEventListener("pointerenter", showCursor);
+      heroRef.addEventListener("pointerleave", hideCursor);
+      heroRef.addEventListener("pointermove", handlePointerMove);
+
+      cleanupCursor = () => {
+        heroRef.removeEventListener("pointerenter", showCursor);
+        heroRef.removeEventListener("pointerleave", hideCursor);
+        heroRef.removeEventListener("pointermove", handlePointerMove);
+        gsap.killTweensOf(heroCursorRef);
+      };
+    }
 
     return () => {
-      heroRef.removeEventListener("mouseenter", showCursor);
-      heroRef.removeEventListener("mouseleave", hideCursor);
-      heroRef.removeEventListener("mousemove", handleMouseMove);
-      gsap.killTweensOf(heroCursorRef);
+      cleanupCursor();
+      ctx.revert();
     };
   });
 </script>

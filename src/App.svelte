@@ -17,24 +17,44 @@
   let scrollProgress;
 
   onMount(() => {
-    // ===== CUSTOM CURSOR FOLLOWER =====
+    if (!cursorRef || !scrollProgress) {
+      return;
+    }
+
     const moveCursorX = gsap.quickTo(cursorRef, "left", { duration: 0.1, ease: "power3" });
     const moveCursorY = gsap.quickTo(cursorRef, "top", { duration: 0.1, ease: "power3" });
 
-    window.addEventListener("mousemove", (e) => {
-      moveCursorX(e.clientX);
-      moveCursorY(e.clientY);
-    });
+    const handleMouseMove = (event) => {
+      moveCursorX(event.clientX);
+      moveCursorY(event.clientY);
+    };
 
-    // Custom cursor hover states
-    const interactiveElements = document.querySelectorAll('a, button, .interactive');
-    interactiveElements.forEach(el => {
-      el.addEventListener('mouseenter', () => cursorRef.classList.add('hover'));
-      el.addEventListener('mouseleave', () => cursorRef.classList.remove('hover'));
-    });
+    const isInteractiveTarget = (target) =>
+      target instanceof Element && Boolean(target.closest("a, button, .interactive"));
 
-    // ===== SCROLL PROGRESS BAR =====
-    ScrollTrigger.create({
+    const handleMouseOver = (event) => {
+      if (isInteractiveTarget(event.target)) {
+        cursorRef.classList.add("hover");
+      }
+    };
+
+    const handleMouseOut = (event) => {
+      if (!isInteractiveTarget(event.target)) {
+        return;
+      }
+
+      if (isInteractiveTarget(event.relatedTarget)) {
+        return;
+      }
+
+      cursorRef.classList.remove("hover");
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseover", handleMouseOver);
+    document.addEventListener("mouseout", handleMouseOut);
+
+    const progressTrigger = ScrollTrigger.create({
       trigger: document.body,
       start: "top top",
       end: "bottom bottom",
@@ -42,6 +62,15 @@
         gsap.set(scrollProgress, { width: `${self.progress * 100}%` });
       },
     });
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseover", handleMouseOver);
+      document.removeEventListener("mouseout", handleMouseOut);
+      progressTrigger.kill();
+      gsap.killTweensOf(cursorRef);
+      cursorRef.classList.remove("hover");
+    };
   });
 </script>
 

@@ -6,20 +6,29 @@
   let footerRef;
   let textRef;
 
+  gsap.registerPlugin(ScrollTrigger);
+
   onMount(() => {
-    gsap.registerPlugin(ScrollTrigger);
+    if (!footerRef || !textRef) {
+      return;
+    }
     
-    // Animate footer text on scroll into view
-    gsap.fromTo(textRef,
-      { y: 100, opacity: 0 },
-      {
-        y: 0, opacity: 1, duration: 1.2, ease: "power4.out",
-        scrollTrigger: {
-          trigger: footerRef,
-          start: "top 80%"
+    const ctx = gsap.context(() => {
+      gsap.fromTo(textRef,
+        { y: 100, opacity: 0 },
+        {
+          y: 0, opacity: 1, duration: 1.2, ease: "power4.out",
+          scrollTrigger: {
+            trigger: footerRef,
+            start: "top 80%"
+          }
         }
-      }
-    );
+      );
+    }, footerRef);
+
+    return () => {
+      ctx.revert();
+    };
   });
 </script>
 
