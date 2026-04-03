@@ -157,9 +157,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 2rem;
     padding: 1.5rem 0;
     border-bottom: 1px solid var(--border-light);
-    transition: background 0.3s ease;
+    transition: all 0.3s ease;
   }
 
   .tool-row:hover {
@@ -169,17 +170,20 @@
   }
 
   .tool-name {
+    flex-shrink: 0;
     font-family: 'Syne', sans-serif;
     font-weight: 700;
     font-size: 1.5rem;
   }
 
   .tool-desc {
+    text-align: right;
     color: var(--text-muted);
     font-family: 'Inter', sans-serif;
     font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 1px;
+    max-width: 250px;
   }
 
   @media (max-width: 900px) {
