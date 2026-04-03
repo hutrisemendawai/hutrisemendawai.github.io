@@ -2,16 +2,63 @@
   import { onMount, tick } from "svelte";
   import gsap from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import ProjectDetails from "./ProjectDetails.svelte";
 
   const projects = [
-    { title: "Sales Invoice Website", category: "Web Application", color: "#FF3333" },
-    { title: "iDempiere Plugins", category: "Enterprise Systems", color: "#3333FF" },
-    { title: "Data Collections for Fishery", category: "Offline-First Android Apps", color: "#33FF33" },
-    { title: "Project Management Website", category: "Web Platform", color: "#FFFF33" }
+    { 
+      id: "sales-invoice",
+      title: "Sales Invoice Website", 
+      category: "Web Application", 
+      color: "#FF3333",
+      tech: ["Svelte", "PocketBase", "Vite"],
+      intro: "A modern, highly responsive sales invoice system built for streamlined transactions.",
+      details: [
+          { type: 'text', content: 'Built with Svelte and Vite for a blazing fast frontend, and powered by PocketBase for an embedded, lightweight backend.' },
+          { type: 'image_placeholder', content: 'Screenshot 1' },
+          { type: 'image_placeholder', content: 'Screenshot 2' }
+      ]
+    },
+    { 
+      id: "idempiere",
+      title: "iDempiere Plugins", 
+      category: "Enterprise Systems", 
+      color: "#3333FF",
+      tech: ["Java", "JasperReports", "PostgreSQL"],
+      intro: "Enterprise resource planning extensions tailored to specific business flows.",
+      details: [
+          { type: 'text', content: 'Fully utilizing and customizing PostgreSQL to handle complex enterprise data requirements. Developed entirely using Java and generated custom operational reports with JasperReports.' }
+      ]
+    },
+    { 
+      id: "fishery",
+      title: "Data Collections for Fishery", 
+      category: "Offline-First Apps", 
+      color: "#33FF33",
+      tech: ["Flutter", "Laravel"],
+      intro: "An offline-capable mobile application designed for field data collection in remote fishery locations.",
+      details: [
+          { type: 'text', content: 'I built this cross-platform Android app using Flutter. Data is stored locally while the user is offline and syncs automatically with the central server once connected to the internet.' },
+          { type: 'text', content: 'The system also features a Laravel-based web dashboard for administrators to securely manage, monitor, and export all compiled data.' }
+      ]
+    },
+    { 
+      id: "project-management",
+      title: "Project Management Website", 
+      category: "Web Platform", 
+      color: "#FFFF33",
+      tech: ["Svelte", "Open Source"],
+      intro: "An open-source, highly interactive productivity web application.",
+      details: [
+          { type: 'text', content: 'I recently worked on this fully open-source project management platform, utilizing Svelte to craft a modern user experience and interface.' },
+          { type: 'text', content: 'The website is designed to look and feel like Spotify, keeping users engaged while they work. It features an interactive Kanban board for users to easily manage their projects.' },
+          { type: 'text', content: 'This project will be regularly updated for more features.' }
+      ]
+    }
   ];
 
   let listItems = [];
   let hoverImageRef; // This acts as the abstract visual placeholder
+  let activeProject = null;
 
   onMount(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -79,6 +126,7 @@
           bind:this={listItems[i]}
           on:mouseenter={() => handleMouseEnter(proj.color)}
           on:mouseleave={handleMouseLeave}
+          on:click|preventDefault={() => { activeProject = proj; }}
         >
           <div class="project-title">{proj.title}</div>
           <div class="project-category">{proj.category}</div>
@@ -88,6 +136,10 @@
     </div>
   </div>
 </section>
+
+{#if activeProject}
+  <ProjectDetails project={activeProject} on:close={() => { activeProject = null; }} />
+{/if}
 
 <style>
   .projects {

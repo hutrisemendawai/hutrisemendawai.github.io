@@ -27,7 +27,7 @@
   <div class="container footer-content">
     <div class="contact-cta">
       <h2 bind:this={textRef} class="cta-text">
-        <a href="mailto:hello@aether.com" class="interactive">LET'S<br>COLLABORATE.</a>
+        <a href="mailto:hutrisemendawai.gg@gmail.com" class="interactive">LET'S<br>COLLABORATE.</a>
       </h2>
     </div>
 
@@ -41,9 +41,8 @@
       <div class="footer-col">
         <h4>Socials</h4>
         <ul>
-          <li><a href="#/" class="interactive">LinkedIn</a></li>
-          <li><a href="#/" class="interactive">GitHub</a></li>
-          <li><a href="#/" class="interactive">Twitter</a></li>
+          <li><a href="https://www.linkedin.com/in/hutrisemendawai/" target="_blank" class="interactive">LinkedIn</a></li>
+          <li><a href="https://github.com/hutrisemendawai" target="_blank" class="interactive">GitHub</a></li>
         </ul>
       </div>
 
