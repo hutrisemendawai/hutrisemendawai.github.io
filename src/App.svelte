@@ -8,24 +8,29 @@
   import Hero from "./lib/Hero.svelte";
   import About from "./lib/About.svelte";
   import Experience from "./lib/Experience.svelte";
-  import Education from "./lib/Education.svelte";
   import Projects from "./lib/Projects.svelte";
   import Footer from "./lib/Footer.svelte";
-  import ParticleBackground from "./lib/ParticleBackground.svelte";
 
   gsap.registerPlugin(ScrollTrigger);
 
-  let cursorGlow;
+  let cursorRef;
   let scrollProgress;
 
   onMount(() => {
-    // ===== CURSOR GLOW FOLLOWER =====
-    const moveGlow = gsap.quickTo(cursorGlow, "left", { duration: 0.3, ease: "power2.out" });
-    const moveGlowY = gsap.quickTo(cursorGlow, "top", { duration: 0.3, ease: "power2.out" });
+    // ===== CUSTOM CURSOR FOLLOWER =====
+    const moveCursorX = gsap.quickTo(cursorRef, "left", { duration: 0.1, ease: "power3" });
+    const moveCursorY = gsap.quickTo(cursorRef, "top", { duration: 0.1, ease: "power3" });
 
     window.addEventListener("mousemove", (e) => {
-      moveGlow(e.clientX);
-      moveGlowY(e.clientY);
+      moveCursorX(e.clientX);
+      moveCursorY(e.clientY);
+    });
+
+    // Custom cursor hover states
+    const interactiveElements = document.querySelectorAll('a, button, .interactive');
+    interactiveElements.forEach(el => {
+      el.addEventListener('mouseenter', () => cursorRef.classList.add('hover'));
+      el.addEventListener('mouseleave', () => cursorRef.classList.remove('hover'));
     });
 
     // ===== SCROLL PROGRESS BAR =====
@@ -41,15 +46,14 @@
 </script>
 
 <div class="scroll-progress" bind:this={scrollProgress}></div>
-<div class="cursor-glow" bind:this={cursorGlow}></div>
-<ParticleBackground />
+<div class="custom-cursor" bind:this={cursorRef}></div>
+
 <Navbar />
 
 <main>
   <Hero />
   <About />
   <Experience />
-  <Education />
   <Projects />
   <Footer />
 </main>
