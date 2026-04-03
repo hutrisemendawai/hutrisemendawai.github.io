@@ -93,16 +93,16 @@
   }
 
   .hero-title {
-    font-size: clamp(3.5rem, 10vw, 10.25rem);
+    font-size: clamp(3rem, 8.4vw, 8.9rem);
     color: #f5f5f5;
     line-height: 0.86;
     white-space: nowrap;
-    letter-spacing: -0.06em;
+    letter-spacing: -0.05em;
   }
 
   @media (max-width: 1200px) {
     .hero-title {
-      font-size: clamp(3rem, 9.5vw, 8.5rem);
+      font-size: clamp(2.8rem, 8.8vw, 7.6rem);
     }
   }
 
@@ -113,7 +113,7 @@
     }
 
     .hero-title {
-      font-size: clamp(2.75rem, 16vw, 5.25rem);
+      font-size: clamp(2.5rem, 15vw, 5rem);
       white-space: normal;
       letter-spacing: -0.04em;
     }
