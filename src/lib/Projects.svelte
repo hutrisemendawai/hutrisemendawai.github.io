@@ -4,10 +4,10 @@
   import { ScrollTrigger } from "gsap/ScrollTrigger";
 
   const projects = [
-    { title: "Nota Gen", category: "Web App / Tools", color: "#FF3333" },
-    { title: "Hutri ERP", category: "Enterprise Systems", color: "#3333FF" },
-    { title: "Nexus Engine", category: "Desktop Application", color: "#33FF33" },
-    { title: "Singularity UI", category: "Design System", color: "#FFFF33" }
+    { title: "Sales Invoice Website", category: "Web Application", color: "#FF3333" },
+    { title: "iDempiere Plugins", category: "Enterprise Systems", color: "#3333FF" },
+    { title: "Data Collections for Fishery", category: "Offline-First Android Apps", color: "#33FF33" },
+    { title: "Project Management Website", category: "Web Platform", color: "#FFFF33" }
   ];
 
   let listItems = [];
