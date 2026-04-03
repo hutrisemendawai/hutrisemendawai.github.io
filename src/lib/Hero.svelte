@@ -93,8 +93,24 @@
   }
 
   .text-huge {
-    font-size: clamp(4rem, 15vw, 14rem);
+    font-size: clamp(3.5rem, 8.5vw, 11rem);
     color: #f5f5f5;
+    line-height: 0.88;
+    white-space: nowrap;
+    letter-spacing: -0.06em;
+  }
+
+  @media (max-width: 900px) {
+    .hero-content {
+      padding: 0 1.5rem;
+      padding-bottom: 6rem;
+    }
+
+    .text-huge {
+      font-size: clamp(2.75rem, 16vw, 5.25rem);
+      white-space: normal;
+      letter-spacing: -0.04em;
+    }
   }
 
   .scroll-indicator {
