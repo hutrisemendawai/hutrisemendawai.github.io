@@ -5,6 +5,7 @@
   let heroRef;
   let titleRef1;
   let titleRef2;
+  let heroCursorRef;
 
   onMount(() => {
     const tl = gsap.timeline();
@@ -18,6 +19,45 @@
       { y: 0, rotate: 0, opacity: 1, duration: 1.2, ease: "power4.out" },
       "-=1"
     );
+
+    if (!heroRef || !heroCursorRef || window.matchMedia("(pointer: coarse)").matches) {
+      return;
+    }
+
+    const moveCursorX = gsap.quickTo(heroCursorRef, "left", { duration: 0.45, ease: "power3.out" });
+    const moveCursorY = gsap.quickTo(heroCursorRef, "top", { duration: 0.45, ease: "power3.out" });
+    const rotateCursor = gsap.quickTo(heroCursorRef, "rotation", { duration: 0.6, ease: "power3.out" });
+
+    const showCursor = () => {
+      gsap.to(heroCursorRef, { opacity: 1, scale: 1, duration: 0.35, ease: "power3.out" });
+    };
+
+    const hideCursor = () => {
+      gsap.to(heroCursorRef, { opacity: 0, scale: 0.55, rotation: 0, duration: 0.25, ease: "power2.in" });
+    };
+
+    const handleMouseMove = (event) => {
+      const bounds = heroRef.getBoundingClientRect();
+      const x = event.clientX - bounds.left;
+      const y = event.clientY - bounds.top;
+
+      moveCursorX(x);
+      moveCursorY(y);
+
+      const tilt = gsap.utils.clamp(-14, 14, (x - bounds.width / 2) / 28);
+      rotateCursor(tilt);
+    };
+
+    heroRef.addEventListener("mouseenter", showCursor);
+    heroRef.addEventListener("mouseleave", hideCursor);
+    heroRef.addEventListener("mousemove", handleMouseMove);
+
+    return () => {
+      heroRef.removeEventListener("mouseenter", showCursor);
+      heroRef.removeEventListener("mouseleave", hideCursor);
+      heroRef.removeEventListener("mousemove", handleMouseMove);
+      gsap.killTweensOf(heroCursorRef);
+    };
   });
 </script>
 
@@ -25,6 +65,9 @@
   <div class="video-overlay"></div>
   <!-- Abstract CSS background representing "Aether" instead of video for now -->
   <div class="aether-bg"></div>
+  <div class="hero-cursor-card" bind:this={heroCursorRef}>
+    <span class="hero-cursor-dot"></span>
+  </div>
 
   <div class="hero-content container">
     <div class="title-mask">
@@ -72,6 +115,34 @@
     z-index: 1;
   }
 
+  .hero-cursor-card {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: clamp(120px, 14vw, 190px);
+    aspect-ratio: 1 / 1;
+    border-radius: 14px;
+    background: #dbe93f;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(0.55);
+    z-index: 2;
+    will-change: left, top, transform, opacity;
+  }
+
+  .hero-cursor-dot {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #1a28ff;
+    box-shadow: 0 0 18px rgba(26, 40, 255, 0.6);
+    transform: translate(-50%, -50%);
+  }
+
   .hero-content {
     position: relative;
     z-index: 2;
@@ -113,6 +184,10 @@
     .hero-content {
       padding: 0 1.5rem;
       padding-bottom: 6rem;
+    }
+
+    .hero-cursor-card {
+      display: none;
     }
 
     .hero-title {

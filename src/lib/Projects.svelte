@@ -13,7 +13,7 @@
       tech: ["Svelte", "PocketBase", "Vite"],
       intro: "A modern, highly responsive sales invoice system built for streamlined transactions.",
       details: [
-          { type: 'text', content: 'Built with Svelte and Vite for a blazing fast frontend, and powered by PocketBase for an embedded, lightweight backend.' },
+          { type: 'text', content: 'Built with Svelte and Vite for a blazing fast frontend, and powered by PocketBase for an embedded, lightweight backend. Spesifically built for PT Karya Trita Sejahtera.' },
           { type: 'image_placeholder', content: 'Screenshot 1' },
           { type: 'image_placeholder', content: 'Screenshot 2' }
       ]
@@ -24,7 +24,7 @@
       category: "Enterprise Systems", 
       color: "#3333FF",
       tech: ["Java", "JasperReports", "PostgreSQL"],
-      intro: "Enterprise resource planning extensions tailored to specific business flows.",
+      intro: "Enterprise resource planning extensions tailored to specific business flows. Spesifically build to integrate with PT Charoen Pokphand Indonesia ERP System.",
       details: [
           { type: 'text', content: 'Fully utilizing and customizing PostgreSQL to handle complex enterprise data requirements. Developed entirely using Java and generated custom operational reports with JasperReports.' }
       ]
