@@ -39,7 +39,7 @@
       <a href="#projects" class="interactive" on:click={closeMenu}>Work</a>
       <a href="#contact" class="interactive btn-nav" on:click={closeMenu}>Let's Talk</a>
     </div>
-    <button class="hamburger" class:open={menuOpen} on:click={toggleMenu} aria-label="Toggle menu" aria-expanded={menuOpen}>
+    <button class="hamburger" class:open={menuOpen} on:click={toggleMenu} aria-label="Toggle menu" aria-expanded={menuOpen ? 'true' : 'false'}>
       <span></span>
       <span></span>
       <span></span>
