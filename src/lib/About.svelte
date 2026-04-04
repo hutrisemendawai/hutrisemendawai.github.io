@@ -201,4 +201,14 @@
       grid-template-columns: 1fr;
     }
   }
+
+  @media (max-width: 768px) {
+    .about-content {
+      padding-top: 4rem;
+      padding-bottom: 4rem;
+    }
+    .tool-name {
+      font-size: 1.2rem;
+    }
+  }
 </style>

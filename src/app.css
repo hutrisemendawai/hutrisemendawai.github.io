@@ -54,6 +54,19 @@ body {
   cursor: none;
 }
 
+/* Restore cursor on touch devices */
+@media (pointer: coarse) {
+  body {
+    cursor: auto;
+  }
+  .custom-cursor {
+    display: none !important;
+  }
+  .btn {
+    cursor: pointer;
+  }
+}
+
 .custom-cursor {
   position: fixed;
   top: 0;
@@ -103,6 +116,13 @@ section {
   justify-content: center;
   position: relative;
   overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  section {
+    padding: 5rem 1.25rem;
+    min-height: auto;
+  }
 }
 
 .container {
