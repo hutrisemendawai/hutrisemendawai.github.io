@@ -21,38 +21,52 @@
       return;
     }
 
-    const moveCursorX = gsap.quickTo(cursorRef, "left", { duration: 0.1, ease: "power3" });
-    const moveCursorY = gsap.quickTo(cursorRef, "top", { duration: 0.1, ease: "power3" });
+    const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
 
-    const handleMouseMove = (event) => {
-      moveCursorX(event.clientX);
-      moveCursorY(event.clientY);
-    };
+    let cleanupCursor = () => {};
 
-    const isInteractiveTarget = (target) =>
-      target instanceof Element && Boolean(target.closest("a, button, .interactive"));
+    if (!isTouchDevice) {
+      const moveCursorX = gsap.quickTo(cursorRef, "left", { duration: 0.1, ease: "power3" });
+      const moveCursorY = gsap.quickTo(cursorRef, "top", { duration: 0.1, ease: "power3" });
 
-    const handleMouseOver = (event) => {
-      if (isInteractiveTarget(event.target)) {
-        cursorRef.classList.add("hover");
-      }
-    };
+      const handleMouseMove = (event) => {
+        moveCursorX(event.clientX);
+        moveCursorY(event.clientY);
+      };
 
-    const handleMouseOut = (event) => {
-      if (!isInteractiveTarget(event.target)) {
-        return;
-      }
+      const isInteractiveTarget = (target) =>
+        target instanceof Element && Boolean(target.closest("a, button, .interactive"));
 
-      if (isInteractiveTarget(event.relatedTarget)) {
-        return;
-      }
+      const handleMouseOver = (event) => {
+        if (isInteractiveTarget(event.target)) {
+          cursorRef.classList.add("hover");
+        }
+      };
 
-      cursorRef.classList.remove("hover");
-    };
+      const handleMouseOut = (event) => {
+        if (!isInteractiveTarget(event.target)) {
+          return;
+        }
 
-    window.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseover", handleMouseOver);
-    document.addEventListener("mouseout", handleMouseOut);
+        if (isInteractiveTarget(event.relatedTarget)) {
+          return;
+        }
+
+        cursorRef.classList.remove("hover");
+      };
+
+      window.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseover", handleMouseOver);
+      document.addEventListener("mouseout", handleMouseOut);
+
+      cleanupCursor = () => {
+        window.removeEventListener("mousemove", handleMouseMove);
+        document.removeEventListener("mouseover", handleMouseOver);
+        document.removeEventListener("mouseout", handleMouseOut);
+        gsap.killTweensOf(cursorRef);
+        cursorRef.classList.remove("hover");
+      };
+    }
 
     const progressTrigger = ScrollTrigger.create({
       trigger: document.body,
@@ -64,12 +78,8 @@
     });
 
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseover", handleMouseOver);
-      document.removeEventListener("mouseout", handleMouseOut);
+      cleanupCursor();
       progressTrigger.kill();
-      gsap.killTweensOf(cursorRef);
-      cursorRef.classList.remove("hover");
     };
   });
 </script>

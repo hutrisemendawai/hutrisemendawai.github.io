@@ -172,4 +172,11 @@
       padding: 2rem 0;
     }
   }
+
+  @media (max-width: 768px) {
+    .services {
+      padding-top: 5rem;
+      padding-bottom: 5rem;
+    }
+  }
 </style>

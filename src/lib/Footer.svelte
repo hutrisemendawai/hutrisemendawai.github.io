@@ -154,4 +154,13 @@
       text-align: left;
     }
   }
+
+  @media (max-width: 768px) {
+    footer {
+      padding: 5rem 0 2rem 0;
+    }
+    .contact-cta {
+      margin-bottom: 4rem;
+    }
+  }
 </style>

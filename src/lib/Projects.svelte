@@ -282,4 +282,13 @@
       padding: 2rem 0;
     }
   }
+
+  @media (max-width: 768px) {
+    .projects {
+      padding: 5rem 0;
+    }
+    .section-header {
+      margin-bottom: 3rem;
+    }
+  }
 </style>
