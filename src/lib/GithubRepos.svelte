@@ -38,46 +38,73 @@
   });
 
   function updatePageObjects(animateWithGsap = true) {
-    const start = (currentPage - 1) * itemsPerPage;
-    const end = start + itemsPerPage;
-    repos = allRepos.slice(start, end);
+    if (!sectionRef) {
+      const start = (currentPage - 1) * itemsPerPage;
+      const end = start + itemsPerPage;
+      repos = allRepos.slice(start, end);
+      return;
+    }
 
-    if (!sectionRef) return;
-    
-    // Allow DOM to update requested items before animating
-    setTimeout(() => {
-      if (animateWithGsap) {
-        gsap.fromTo(listItems.filter(Boolean),
-          { opacity: 0, y: 30 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.6,
-            ease: "power2.out",
-            stagger: 0.1,
-            overwrite: "auto"
-          }
-        );
-      } else {
-        ScrollTrigger.create({
-          trigger: ".github-repos-container",
-          start: "top 70%",
-          once: true,
-          onEnter: () => {
-            gsap.fromTo(listItems.filter(Boolean),
-              { opacity: 0, y: 50 },
-              {
-                opacity: 1,
-                y: 0,
-                duration: 0.8,
-                ease: "power2.out",
-                stagger: 0.1
-              }
-            );
-          }
+    const applyData = () => {
+      const start = (currentPage - 1) * itemsPerPage;
+      const end = start + itemsPerPage;
+      repos = allRepos.slice(start, end);
+
+      // Allow DOM to update array before animating in
+      setTimeout(() => {
+        if (!animateWithGsap) {
+          ScrollTrigger.create({
+            trigger: ".github-repos-container",
+            start: "top 70%",
+            once: true,
+            onEnter: () => {
+              gsap.fromTo(listItems.filter(Boolean),
+                { opacity: 0, y: 50 },
+                {
+                  opacity: 1,
+                  y: 0,
+                  duration: 0.8,
+                  ease: "power2.out",
+                  stagger: 0.1
+                }
+              );
+            }
+          });
+        } else {
+          gsap.fromTo(listItems.filter(Boolean),
+            { opacity: 0, y: 50 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.8,
+              ease: "power2.out",
+              stagger: 0.1,
+              overwrite: "auto"
+            }
+          );
+        }
+      }, 50);
+    };
+
+    if (animateWithGsap) {
+      const currentItems = listItems.filter(Boolean);
+      if (currentItems.length > 0) {
+        // Animate out existing items smoothly
+        gsap.to(currentItems, {
+          opacity: 0,
+          y: -20,
+          duration: 0.4,
+          ease: "power2.in",
+          stagger: 0.05,
+          onComplete: applyData,
+          overwrite: "auto"
         });
+      } else {
+        applyData();
       }
-    }, 50);
+    } else {
+      applyData();
+    }
   }
 
   function prevPage() {
@@ -131,46 +158,48 @@
     {:else if repos.length === 0}
       <div class="error-state">No repositories found in this quadrant.</div>
     {:else}
-      <div class="repo-grid">
-        {#each repos as repo, i}
-          <a
-            href={repo.html_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="repo-card interactive"
-            bind:this={listItems[i]}
-          >
-            <div class="repo-top">
-              <h3 class="repo-name">{repo.name}</h3>
-              <div class="repo-desc">{repo.description || "No description provided."}</div>
-            </div>
-            <div class="repo-bottom">
-              {#if repo.language}
-                <div class="repo-lang">
-                  <span class="lang-dot" style="background-color: {getLanguageColor(repo.language)};"></span>
-                  {repo.language}
-                </div>
-              {/if}
-              <div class="repo-stats">
-                <span class="stat">⭐ {repo.stargazers_count}</span>
-                <span class="stat">🔄 {repo.forks_count}</span>
-              </div>
-            </div>
-          </a>
-        {/each}
-      </div>
+      <div class="repo-carousel-wrapper">
+        {#if totalPages > 1}
+          <button class="nav-arrow prev-arrow interactive" on:click={prevPage} disabled={currentPage === 1} aria-label="Previous page">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+        {/if}
 
-      {#if totalPages > 1}
-        <div class="pagination">
-          <button class="page-btn interactive" on:click={prevPage} disabled={currentPage === 1}>
-            ← PREV
-          </button>
-          <span class="page-info">PAGE {currentPage} OF {totalPages}</span>
-          <button class="page-btn interactive" on:click={nextPage} disabled={currentPage === totalPages}>
-            NEXT →
-          </button>
+        <div class="repo-grid">
+          {#each repos as repo, i}
+            <a
+              href={repo.html_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="repo-card interactive"
+              bind:this={listItems[i]}
+            >
+              <div class="repo-top">
+                <h3 class="repo-name">{repo.name}</h3>
+                <div class="repo-desc">{repo.description || "No description provided."}</div>
+              </div>
+              <div class="repo-bottom">
+                {#if repo.language}
+                  <div class="repo-lang">
+                    <span class="lang-dot" style="background-color: {getLanguageColor(repo.language)};"></span>
+                    {repo.language}
+                  </div>
+                {/if}
+                <div class="repo-stats">
+                  <span class="stat">⭐ {repo.stargazers_count}</span>
+                  <span class="stat">🔄 {repo.forks_count}</span>
+                </div>
+              </div>
+            </a>
+          {/each}
         </div>
-      {/if}
+
+        {#if totalPages > 1}
+          <button class="nav-arrow next-arrow interactive" on:click={nextPage} disabled={currentPage === totalPages} aria-label="Next page">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+        {/if}
+      </div>
     {/if}
   </div>
 </section>
@@ -221,7 +250,16 @@
     padding: 3rem 0;
   }
 
+  .repo-carousel-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    position: relative;
+    width: 100%;
+  }
+
   .repo-grid {
+    flex: 1;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 2rem;
@@ -299,47 +337,36 @@
     gap: 1rem;
   }
 
-  .pagination {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 4rem;
-    padding-top: 2rem;
-    border-top: 1px solid var(--border-light);
-  }
-
-  .page-btn {
+  .nav-arrow {
     background: transparent;
     border: 1px solid var(--border-light);
     color: var(--text-main);
-    padding: 0.8rem 1.5rem;
-    border-radius: 30px;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 600;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    flex-shrink: 0;
   }
 
-  .page-btn:hover:not(:disabled) {
+  .nav-arrow:hover:not(:disabled) {
     background: var(--text-main);
     color: var(--monopo-dark);
     border-color: var(--text-main);
+    transform: scale(1.05);
   }
 
-  .page-btn:disabled {
-    opacity: 0.3;
+  .nav-arrow:disabled {
+    opacity: 0.2;
     cursor: not-allowed;
   }
 
-  .page-info {
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    color: var(--monopo-white);
-    letter-spacing: 1px;
+  .nav-arrow svg {
+    width: 24px;
+    height: 24px;
   }
 
   @media (max-width: 900px) {
@@ -358,17 +385,19 @@
     .github-repos {
       padding: 5rem 0;
     }
+    .repo-carousel-wrapper {
+      gap: 1rem;
+    }
     .repo-grid {
       grid-template-columns: 1fr;
     }
-    .pagination {
-      flex-direction: column;
-      gap: 1.5rem;
+    .nav-arrow {
+      width: 40px;
+      height: 40px;
     }
-    .page-btn {
-      width: 100%;
-      text-align: center;
-      justify-content: center;
+    .nav-arrow svg {
+      width: 18px;
+      height: 18px;
     }
   }
 </style>
