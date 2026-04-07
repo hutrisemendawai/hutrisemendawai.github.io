@@ -4,17 +4,29 @@
   import { ScrollTrigger } from "gsap/ScrollTrigger";
 
   let repos = [];
+  let allRepos = [];
   let loading = true;
   let sectionRef;
   let listItems = [];
+  
+  let currentPage = 1;
+  const itemsPerPage = 6;
+  let totalPages = 1;
 
   gsap.registerPlugin(ScrollTrigger);
 
   onMount(async () => {
     try {
-      const response = await fetch("https://api.github.com/users/hutrisemendawai/repos?sort=updated&per_page=6");
+      // Fetch a larger batch to allow client-side pagination while handling filtering
+      const response = await fetch("https://api.github.com/users/hutrisemendawai/repos?sort=updated&per_page=60");
       if (response.ok) {
-        repos = await response.json();
+        const rawRepos = await response.json();
+        // Filter out the requested repositories and ensure they are public
+        const excludeList = ["hutrisemendawai.github.io", "hutrisemendawai"];
+        allRepos = rawRepos.filter(repo => !excludeList.includes(repo.name) && !repo.private);
+        totalPages = Math.ceil(allRepos.length / itemsPerPage);
+        
+        updatePageObjects(false);
       } else {
         console.error("Failed to fetch repos", response.status);
       }
@@ -23,34 +35,64 @@
     } finally {
       loading = false;
     }
+  });
 
-    if (repos.length > 0) {
-      // Small timeout to allow DOM to render the each block
-      setTimeout(() => {
-        if (!sectionRef) return;
-        const ctx = gsap.context(() => {
-          listItems.filter(Boolean).forEach((item, i) => {
-            gsap.fromTo(item,
+  function updatePageObjects(animateWithGsap = true) {
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    repos = allRepos.slice(start, end);
+
+    if (!sectionRef) return;
+    
+    // Allow DOM to update requested items before animating
+    setTimeout(() => {
+      if (animateWithGsap) {
+        gsap.fromTo(listItems.filter(Boolean),
+          { opacity: 0, y: 30 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            ease: "power2.out",
+            stagger: 0.1,
+            overwrite: "auto"
+          }
+        );
+      } else {
+        ScrollTrigger.create({
+          trigger: ".github-repos-container",
+          start: "top 70%",
+          once: true,
+          onEnter: () => {
+            gsap.fromTo(listItems.filter(Boolean),
               { opacity: 0, y: 50 },
               {
                 opacity: 1,
                 y: 0,
                 duration: 0.8,
                 ease: "power2.out",
-                delay: i * 0.1,
-                scrollTrigger: {
-                  trigger: ".github-repos-container",
-                  start: "top 70%"
-                }
+                stagger: 0.1
               }
             );
-          });
-        }, sectionRef);
+          }
+        });
+      }
+    }, 50);
+  }
 
-        return () => ctx.revert();
-      }, 50);
+  function prevPage() {
+    if (currentPage > 1) {
+      currentPage--;
+      updatePageObjects(true);
     }
-  });
+  }
+
+  function nextPage() {
+    if (currentPage < totalPages) {
+      currentPage++;
+      updatePageObjects(true);
+    }
+  }
 
   function getLanguageColor(lang) {
     if(!lang) return "var(--text-muted)";
@@ -117,6 +159,18 @@
           </a>
         {/each}
       </div>
+
+      {#if totalPages > 1}
+        <div class="pagination">
+          <button class="page-btn interactive" on:click={prevPage} disabled={currentPage === 1}>
+            ← PREV
+          </button>
+          <span class="page-info">PAGE {currentPage} OF {totalPages}</span>
+          <button class="page-btn interactive" on:click={nextPage} disabled={currentPage === totalPages}>
+            NEXT →
+          </button>
+        </div>
+      {/if}
     {/if}
   </div>
 </section>
@@ -245,6 +299,49 @@
     gap: 1rem;
   }
 
+  .pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-light);
+  }
+
+  .page-btn {
+    background: transparent;
+    border: 1px solid var(--border-light);
+    color: var(--text-main);
+    padding: 0.8rem 1.5rem;
+    border-radius: 30px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .page-btn:hover:not(:disabled) {
+    background: var(--text-main);
+    color: var(--monopo-dark);
+    border-color: var(--text-main);
+  }
+
+  .page-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .page-info {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    color: var(--monopo-white);
+    letter-spacing: 1px;
+  }
+
   @media (max-width: 900px) {
     .section-header {
       flex-direction: column;
@@ -263,6 +360,15 @@
     }
     .repo-grid {
       grid-template-columns: 1fr;
+    }
+    .pagination {
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .page-btn {
+      width: 100%;
+      text-align: center;
+      justify-content: center;
     }
   }
 </style>
