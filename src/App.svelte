@@ -9,6 +9,7 @@
   import About from "./lib/About.svelte";
   import Experience from "./lib/Experience.svelte";
   import Projects from "./lib/Projects.svelte";
+  import GithubRepos from "./lib/GithubRepos.svelte";
   import Footer from "./lib/Footer.svelte";
 
   gsap.registerPlugin(ScrollTrigger);
@@ -94,5 +95,6 @@
   <About />
   <Experience />
   <Projects />
+  <GithubRepos />
   <Footer />
 </main>
